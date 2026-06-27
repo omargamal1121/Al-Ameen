@@ -36,9 +36,7 @@ const WebsiteClosed = () => {
       >
         {/* Brand/Logo Symbol */}
         <div className="mb-8 flex justify-center">
-          <div className="h-16 w-16 rounded-full border border-neutral-800 flex items-center justify-center bg-neutral-900/50 backdrop-blur-md">
-            <span className="text-xl font-light tracking-widest text-neutral-400">R&S</span>
-          </div>
+            <span className="text-xs font-bold tracking-widest text-[#c9a227]">AL-AMEEN</span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-extralight tracking-widest text-white uppercase mb-6 prata-regular">
@@ -60,7 +58,7 @@ const WebsiteClosed = () => {
           </button>
 
           <a
-            href="mailto:support@rands.com"
+            href="mailto:info@alameenwires.com"
             className="w-full sm:w-auto border border-neutral-800 text-neutral-300 px-8 py-3 rounded-none font-medium hover:bg-white hover:text-black hover:border-white transition duration-300 uppercase text-xs tracking-widest text-center"
           >
             Contact Support
@@ -69,7 +67,7 @@ const WebsiteClosed = () => {
 
         {/* Footer Info */}
         <div className="mt-16 text-[10px] tracking-[0.2em] text-neutral-600 uppercase font-light">
-          <p>© {new Date().getFullYear()} R&S Luxury. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Al-Ameen Wires. All rights reserved.</p>
         </div>
       </motion.div>
     </div>

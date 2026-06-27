@@ -184,7 +184,7 @@ const Product = () => {
           <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-10">
             <div>
               <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-black uppercase tracking-[0.3em] text-gray-300">R&S Boutique Edition</span>
+                <span className="text-xs font-black uppercase tracking-[0.3em] text-[#c9a227]">Al-Ameen Edition</span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(s => <div key={s} className="w-1 h-1 rounded-full bg-black/10" />)}
                 </div>
