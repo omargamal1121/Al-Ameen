@@ -1,0 +1,154 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Prata&family=Roboto:ital,wght@0,100..900;1,100..900&family=Tajawal:wght@200;300;400;500;700;800;900&family=Varela+Round&display=swap");
+@import "tailwindcss";
+
+/* =============================================
+   الأمين (Al-Ameen) — Electric Wires Brand Palette
+   Primary: Deep Green  #1a6b2e
+   Accent:  Gold/Yellow #c9a227
+   Dark:    Forest Dark #0f3d1a
+   Light:   Mint Tint   #f0faf3
+   ============================================= */
+:root {
+  --brand-green: #1a6b2e;
+  --brand-green-dark: #0f3d1a;
+  --brand-green-light: #2d9e4a;
+  --brand-gold: #c9a227;
+  --brand-gold-light: #f0c040;
+  --brand-gold-dark: #a07d10;
+  --brand-mint: #f0faf3;
+  --premium-gradient: linear-gradient(135deg, #0f3d1a 0%, #1a6b2e 50%, #2d9e4a 100%);
+  --luxury-gold: #c9a227;
+  --wire-navy: #0f3d1a;
+  --wire-orange: #c9a227;
+  --wire-steel: #4a7c59;
+}
+
+* {
+  font-family: 'Outfit', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: #fff;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2d9e4a;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c9a227;
+}
+
+/* === Base Styles === */
+a.active hr {
+  display: block;
+}
+.prata-regular {
+  font-family: "Prata", serif;
+}
+
+/* === Green Shimmer === */
+@keyframes textShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.text-shimmer {
+  background: linear-gradient(90deg, #0f3d1a 0%, #c9a227 35%, #2d9e4a 65%, #0f3d1a 100%);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: textShimmer 3s linear infinite;
+}
+
+/* === Gold Wire Pulse Animation === */
+@keyframes wirePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.4); }
+  50%       { box-shadow: 0 0 0 12px rgba(201, 162, 39, 0); }
+}
+
+/* === Premium Button (Green → Gold sweep) === */
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+}
+.btn-premium:hover {
+  color: #fff !important;
+  letter-spacing: 0.15em;
+}
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #c9a227, #f0c040);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: -1;
+}
+.btn-premium:hover::before {
+  top: 0;
+}
+
+/* === Discount Badge === */
+.discount-badge {
+  background: linear-gradient(45deg, #1a6b2e, #2d9e4a);
+  color: white;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 4px;
+  box-shadow: 0 4px 15px rgba(26, 107, 46, 0.35);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+/* === Luxury Card === */
+.card-luxury {
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.card-luxury:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(26, 107, 46, 0.12);
+}
+
+/* === Brand-colored underline for active nav links === */
+a.active hr {
+  background: #c9a227;
+}
+
+/* === Mobile Nav Active State === */
+@media (max-width: 640px) {
+  a.active {
+    background-color: #1a6b2e;
+    color: white;
+  }
+}
+
+/* === Global Perspective for Motion === */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* === Wire Brand Highlight Text === */
+.text-brand-green { color: #1a6b2e; }
+.text-brand-gold  { color: #c9a227; }
+.bg-brand-green   { background-color: #1a6b2e; }
+.bg-brand-gold    { background-color: #c9a227; }
+
+
