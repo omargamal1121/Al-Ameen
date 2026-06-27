@@ -73,17 +73,17 @@ import contact_img from './730474104_1524659579128481_946130011832374470_n.jpg'
 import razorpay_logo from './razorpay_logo.png'
 import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
-import hero_img2 from './476159558_1133840051543771_1570607624734810384_n.jpg'
-import hero_img3 from './476465198_1133817561546020_5505324272074492233_n.jpg'
-import scroll1 from './476888499_1133810788213364_8267227403005735724_n.jpg'
+import hero_img2 from '../images/476159558_1133840051543771_1570607624734810384_n.jpg'
+import hero_img3 from '../images/476465198_1133817561546020_5505324272074492233_n.jpg'
+import scroll1 from '../images/476888499_1133810788213364_8267227403005735724_n.jpg'
 import scroll2 from './main.jpg'
-import scroll1_max from './476888499_1133810788213364_8267227403005735724_n.jpg'
+import scroll1_max from '../images/476888499_1133810788213364_8267227403005735724_n.jpg'
 import scroll2_max from './main.jpg'
-import Jakets_img from './476159558_1133840051543771_1570607624734810384_n.jpg'  // Jakets Collection
-import TShirts_img from './476465198_1133817561546020_5505324272074492233_n.jpg'
-import Summer_collection_img from './476888499_1133810788213364_8267227403005735724_n.jpg'
+import Jakets_img from '../images/476159558_1133840051543771_1570607624734810384_n.jpg'  // Jakets Collection
+import TShirts_img from '../images/476465198_1133817561546020_5505324272074492233_n.jpg'
+import Summer_collection_img from '../images/476888499_1133810788213364_8267227403005735724_n.jpg'
 import Winter_collection_img from './main.jpg'
-import eniem from './476888499_1133810788213364_8267227403005735724_n.jpg'
+import eniem from '../images/476888499_1133810788213364_8267227403005735724_n.jpg'
 import baggey1 from './baggey1.webp'
 import baggey2 from './baggey2.webp'
 import baggey3 from './baggey3.webp'
@@ -95,18 +95,18 @@ import baggey7 from './baggey7.webp'
 import Joggers_img from './JoggersCollection.webp'
 import hero_banner_img from './productImage.webp'
 
-// Al-Ameen brand images from /images folder
+// Al-Ameen brand images from src/assets/images folder
 import brand_img1 from './main.jpg'                                                   // main showroom
-import brand_img2 from './476159558_1133840051543771_1570607624734810384_n.jpg'        // cable product 1
-import brand_img3 from './476465198_1133817561546020_5505324272074492233_n.jpg'        // cable product 2
-import brand_img4 from './476888499_1133810788213364_8267227403005735724_n.jpg'        // cable product 3
+import brand_img2 from '../images/476159558_1133840051543771_1570607624734810384_n.jpg'        // cable product 1
+import brand_img3 from '../images/476465198_1133817561546020_5505324272074492233_n.jpg'        // cable product 2
+import brand_img4 from '../images/476888499_1133810788213364_8267227403005735724_n.jpg'        // cable product 3
 import brand_img5 from './727446000_1524050239189415_8353417820901079198_n.jpg'        // showroom / about
 import brand_img6 from './730474104_1524659579128481_946130011832374470_n.jpg'         // warehouse / contact
-import brand_hero_main from './brand_hero_main.png'                                   // AI hero banner 1
-import brand_hero_2 from './brand_hero_2.png'                                         // AI hero banner 2
-import prod_new1 from './prod_new1.jpg'                                                // New product image 1
-import prod_new2 from './prod_new2.jpg'                                                // New product image 2
-import prod_new3 from './prod_new3.jpg'                                                // New product image 3
+import brand_hero_main from '../images/Gemini_Generated_Image_xppru4xppru4xppr.png'                                   // AI hero banner 1
+import brand_hero_2 from '../images/Gemini_Generated_Image_n00vcmn00vcmn00v.png'                                         // AI hero banner 2
+import prod_new1 from '../images/8ed5b1f2-bd55-46d8-a0c3-35f87e873b59.jpg'                                                // New product image 1
+import prod_new2 from '../images/86dd0d06-9706-4c46-bc9c-875cd3a85a41.jpg'                                                // New product image 2
+import prod_new3 from '../images/476243077_1133533211574455_7476219783936602942_n.jpg'                                                // New product image 3
 
 export const assets = {
     logo,
