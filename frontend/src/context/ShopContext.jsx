@@ -7,6 +7,7 @@ import wishlistService from "../services/wishlistService";
 import discountService from "../services/discountService";
 import authService from "../services/authService";
 import { staticProducts } from "../assets/frontend_assets/staticData";
+import { clearAllGuestData } from "../utils/guestSession";
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
@@ -564,6 +565,28 @@ const ShopContextProvider = (props) => {
     return wishlistItems.length;
   };
 
+  // Guest-related functions
+  const clearGuestCart = () => {
+    setCartItems({});
+    localStorage.removeItem('cartItems');
+  };
+
+  const updateGuestToken = (token) => {
+    if (token) {
+      localStorage.setItem('guest_token', token);
+    } else {
+      localStorage.removeItem('guest_token');
+    }
+  };
+
+  const setGuestOrderInfo = (info) => {
+    if (info) {
+      localStorage.setItem('guestOrderInfo', JSON.stringify(info));
+    } else {
+      localStorage.removeItem('guestOrderInfo');
+    }
+  };
+
   const checkout = async () => {
     if (token) {
       try {
@@ -641,6 +664,11 @@ const ShopContextProvider = (props) => {
     clearWishlist,
     getWishlistCount,
     serverCart, // Expose server cart data
+    // Guest-related functions
+    clearGuestCart,
+    updateGuestToken,
+    setGuestOrderInfo,
+    resolveVariantId,
   };
 
   return (
