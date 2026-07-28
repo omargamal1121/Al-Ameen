@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { assets } from '../assets/frontend_assets/assets.js'
 import { Link } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
@@ -11,8 +11,10 @@ import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
 import { Autoplay, Pagination, Navigation, EffectCoverflow } from "swiper/modules";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 
 const HeroBanner = () => {
+  const { t } = useTranslation();
   const { backendUrl } = useContext(ShopContext);
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,19 @@ const HeroBanner = () => {
     setViewMode('static');
     setLoading(false);
   }, []);
+
+  const slidesData = useMemo(() => {
+    return viewMode === 'collections' ? collections : [
+      { name: "الأمين للكابلات",  subtitleKey: 'PREMIUM_CABLES',  image: assets.brand_hero_main, link: "/collection" },
+      { name: "جودة معتمدة",       subtitleKey: 'IEC_ISO_CERTIFIED',      image: assets.brand_hero_2,    link: "/collection" },
+      { name: "Power Cables",     subtitleKey: 'HIGH_VOLTAGE',          image: assets.brand_img1, link: "/collection" },
+      { name: "Control Wires",    subtitleKey: 'INDUSTRIAL_CONTROL',          image: assets.brand_img2, link: "/collection" },
+      { name: "Coaxial Series",   subtitleKey: 'SIGNAL_COMMUNICATION',       image: assets.brand_img3, link: "/collection" },
+      { name: "Cable Spools",     subtitleKey: 'BULK_CUSTOM',               image: assets.brand_img4, link: "/collection" },
+      { name: "Al-Ameen Wires",   subtitleKey: 'EGYPT_TRUSTED',           image: assets.brand_img5, link: "/collection" },
+      { name: "Armoured Range",   subtitleKey: 'HEAVY_DUTY',       image: assets.brand_img6, link: "/collection" },
+    ];
+  }, [viewMode, collections, t]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -49,17 +64,6 @@ const HeroBanner = () => {
       </div>
     );
   }
-
-  const slidesData = viewMode === 'collections' ? collections : [
-    { name: "الأمين للكابلات",  subtitle: "Premium Cables for Every Project",  image: assets.brand_hero_main, link: "/collection" },
-    { name: "جودة معتمدة",       subtitle: "IEC & ISO Certified Standards",      image: assets.brand_hero_2,    link: "/collection" },
-    { name: "Power Cables",     subtitle: "High-Voltage Transmission",          image: assets.brand_img1, link: "/collection" },
-    { name: "Control Wires",    subtitle: "Industrial Control Systems",          image: assets.brand_img2, link: "/collection" },
-    { name: "Coaxial Series",   subtitle: "Signal & Communication Grade",       image: assets.brand_img3, link: "/collection" },
-    { name: "Cable Spools",     subtitle: "Bulk & Custom Lengths",               image: assets.brand_img4, link: "/collection" },
-    { name: "Al-Ameen Wires",   subtitle: "Egypt's Trusted Supplier",           image: assets.brand_img5, link: "/collection" },
-    { name: "Armoured Range",   subtitle: "Heavy-Duty & Underground Use",       image: assets.brand_img6, link: "/collection" },
-  ];
 
   return (
     <div className="w-full h-[65vh] md:h-[85vh] relative overflow-hidden bg-[#0f3d1a]">
@@ -98,7 +102,7 @@ const HeroBanner = () => {
                         className="flex flex-col items-center"
                       >
                         <motion.span variants={textVariants} className="text-sm uppercase tracking-[0.5em] mb-6 font-bold text-white/70">
-                          {item.subtitle || "Featured Selection"}
+                          {item.subtitleKey ? t(item.subtitleKey) : t('FEATURED_SELECTION')}
                         </motion.span>
                         <motion.h2 variants={textVariants} className="text-5xl md:text-8xl font-black mb-12 tracking-tighter drop-shadow-2xl">
                           {item.name}
@@ -106,7 +110,7 @@ const HeroBanner = () => {
                         <motion.div variants={textVariants}>
                           <Link to={finalLink}>
                             <button className="btn-premium px-16 py-5 bg-[#c9a227] text-[#0f3d1a] font-black text-xs uppercase tracking-[0.3em] rounded-full shadow-2xl hover:scale-110 hover:bg-yellow-300 active:scale-95 transition-all">
-                              {viewMode === 'collections' ? "See Collection" : "Shop Now"}
+                              {viewMode === 'collections' ? t('SEE_COLLECTION') : t('SHOP_NOW')}
                             </button>
                           </Link>
                         </motion.div>

@@ -4,10 +4,12 @@ import { ShopContext } from "../context/ShopContext";
 import { motion, AnimatePresence } from "framer-motion";
 import Title from "../components/Title";
 import { FaChevronDown, FaTimes, FaFilter, FaThLarge, FaList } from "react-icons/fa";
+import { useLocalization } from "../utils/localization";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const { backendUrl } = useContext(ShopContext);
+  const { getLocalizedName, getLocalizedDescription } = useLocalization();
   const [category, setCategory] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,8 +49,10 @@ const CategoryPage = () => {
   const sortedSubcategories = [...subcategories]
     .filter(sub => !inStock || sub.inStock)
     .sort((a, b) => {
-      if (sortOption === "nameAZ") return a.name.localeCompare(b.name);
-      if (sortOption === "nameZA") return b.name.localeCompare(a.name);
+      const nameA = getLocalizedName(a);
+      const nameB = getLocalizedName(b);
+      if (sortOption === "nameAZ") return nameA.localeCompare(nameB);
+      if (sortOption === "nameZA") return nameB.localeCompare(nameA);
       if (sortOption === "dateNew") return new Date(b.createdAt) - new Date(a.createdAt);
       return 0;
     });
@@ -78,7 +82,7 @@ const CategoryPage = () => {
           <img
             src={category?.images?.[0]?.url || "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=2000"}
             className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-10000 ease-out"
-            alt={category?.name}
+            alt={getLocalizedName(category)}
           />
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
         </div>
@@ -89,7 +93,7 @@ const CategoryPage = () => {
           className="relative z-10 text-center px-4"
         >
           <span className="text-white/60 text-xs font-black uppercase tracking-[0.5em] mb-4 block">Store Directory</span>
-          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase mb-6 drop-shadow-2xl">{category?.name}</h1>
+          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase mb-6 drop-shadow-2xl">{getLocalizedName(category)}</h1>
           <div className="w-20 h-1 bg-white mx-auto shadow-2xl"></div>
         </motion.div>
       </section>
@@ -102,7 +106,7 @@ const CategoryPage = () => {
             <span>/</span>
             <Link to="/collection" className="hover:text-black">SHOP</Link>
             <span>/</span>
-            <span className="text-black">{category?.name}</span>
+            <span className="text-black">{getLocalizedName(category)}</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -134,7 +138,7 @@ const CategoryPage = () => {
                     <img
                       src={sub.images[0].url}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      alt={sub.name}
+                      alt={getLocalizedName(sub)}
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center font-black text-xs text-gray-300">NO VISUAL</div>
@@ -149,10 +153,10 @@ const CategoryPage = () => {
 
                 <div className="mt-6 px-2">
                   <div className="flex justify-between items-start mb-1">
-                    <h3 className="text-lg font-black tracking-tighter text-gray-900 leading-none">{sub.name}</h3>
+                    <h3 className="text-lg font-black tracking-tighter text-gray-900 leading-none">{getLocalizedName(sub)}</h3>
                     <span className="text-[10px] font-bold text-gray-300 uppercase">Featured</span>
                   </div>
-                  <p className="text-xs text-gray-400 font-medium line-clamp-1 italic">{sub.description || "Discover high-end curated items"}</p>
+                  <p className="text-xs text-gray-400 font-medium line-clamp-1 italic">{getLocalizedDescription(sub) || "Discover high-end curated items"}</p>
                 </div>
               </Link>
             </motion.div>

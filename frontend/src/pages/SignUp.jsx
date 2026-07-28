@@ -3,8 +3,10 @@ import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext';
 import authService from '../services/authService';
+import { useTranslation } from 'react-i18next';
 
 const SignUp = () => {
+    const { t } = useTranslation();
     const { backendUrl } = useContext(ShopContext);
     const [formData, setFormData] = useState({
         name: '',
@@ -32,45 +34,45 @@ const SignUp = () => {
     const validateForm = () => {
         // Name validation
         if (!formData.name.match(/^[a-zA-Z][a-zA-Z\s\-,]*[a-zA-Z]$/)) {
-            setError('Name must start and end with a letter and may contain spaces, hyphens, and commas in between');
+            setError(t('NAME_VALIDATION_ERROR'));
             return false;
         }
 
         // Username validation
         if (!formData.userName.match(/^(?![_\.])[a-zA-Z0-9._]+(?<![_\.])$/)) {
-            setError('Username must contain only letters, numbers, dots, and underscores, and must not start or end with a dot or underscore');
+            setError(t('USERNAME_VALIDATION_ERROR'));
             return false;
         }
 
         // Phone number validation
         if (!formData.phoneNumber.match(/^01[0-9]{9}$/)) {
-            setError('Phone number must be a valid 11-digit Egyptian number starting with 01');
+            setError(t('PHONE_VALIDATION_ERROR'));
             return false;
         }
 
         // Age validation
         const age = parseInt(formData.age);
         if (isNaN(age) || age < 18 || age > 100) {
-            setError('Age must be between 18 and 100');
+            setError(t('AGE_VALIDATION_ERROR'));
             return false;
         }
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            setError('Please enter a valid email address');
+            setError(t('EMAIL_VALIDATION_ERROR'));
             return false;
         }
 
         // Password validation
         if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters long');
+            setError(t('PASSWORD_VALIDATION_ERROR'));
             return false;
         }
 
         // Confirm password validation
         if (formData.password !== formData.confirmPassword) {
-            setError('Confirm password does not match the password');
+            setError(t('CONFIRM_PASSWORD_ERROR'));
             return false;
         }
 
@@ -106,8 +108,8 @@ const SignUp = () => {
             const data = await response.json();
             if (response.ok) {
                 // Handle Fashion-main API success response format
-                const successMessage = data.responseBody?.message || 'User registered successfully!';
-                setSuccess(`${successMessage} Redirecting to login...`);
+                const successMessage = data.responseBody?.message || t('USER_REGISTERED_SUCCESSFULLY');
+                setSuccess(`${successMessage} ${t('REDIRECTING_TO_LOGIN')}`);
                 setTimeout(() => {
                     navigate('/login');
                 }, 2000);
@@ -115,7 +117,7 @@ const SignUp = () => {
                 // Handle Fashion-main API error response format
                 const errorMessage = data.responseBody?.message ||
                     (data.responseBody?.error?.message) ||
-                    'Failed to register. Please try again.';
+                    t('FAILED_TO_REGISTER');
                 setError(errorMessage);
             }
         } catch (error) {
@@ -123,7 +125,7 @@ const SignUp = () => {
             const message =
                 error?.response?.data?.message ||
                 error?.message ||
-                "Failed to register. Please check your connection and try again.";
+                t('FAILED_TO_REGISTER_CONNECTION');
             setError(message);
         } finally {
             setLoading(false);
@@ -144,7 +146,7 @@ const SignUp = () => {
             variants={formVariants}
         >
             <div className='inline-flex items-center gap-2 mb-2 mt-10'>
-                <p className='text-3xl prata-regular'>Sign Up</p>
+                <p className='text-3xl prata-regular'>{t('SIGN_UP')}</p>
                 <hr className='border-none h-[1.5px] w-8 bg-gray-800' />
             </div>
 
@@ -174,7 +176,7 @@ const SignUp = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Enter your Full Name'
+                placeholder={t('ENTER_YOUR_FULL_NAME')}
                 required
             />
             <input
@@ -183,7 +185,7 @@ const SignUp = () => {
                 value={formData.userName}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Enter your Username'
+                placeholder={t('ENTER_YOUR_USERNAME')}
                 required
             />
             <input
@@ -192,7 +194,7 @@ const SignUp = () => {
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Enter your Phone Number (e.g., 01xxxxxxxxx)'
+                placeholder={t('ENTER_YOUR_PHONE_NUMBER')}
                 required
             />
             <input
@@ -201,7 +203,7 @@ const SignUp = () => {
                 value={formData.age}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Enter your Age (18-100)'
+                placeholder={t('ENTER_YOUR_AGE')}
                 min="18"
                 max="100"
                 required
@@ -212,7 +214,7 @@ const SignUp = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Enter your Email'
+                placeholder={t('ENTER_YOUR_EMAIL')}
                 required
             />
             <input
@@ -221,7 +223,7 @@ const SignUp = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Enter your Password'
+                placeholder={t('ENTER_YOUR_PASSWORD')}
                 required
             />
             <input
@@ -230,11 +232,11 @@ const SignUp = () => {
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 className='outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors'
-                placeholder='Confirm your Password'
+                placeholder={t('CONFIRM_YOUR_PASSWORD')}
                 required
             />
             <div className='w-full flex justify-between text-sm mt-[-8px]'>
-                <p className='cursor-pointer'>Already have an account? <Link to="/login" className='hover:text-gray-600 hover:underline transition-all duration-300'>Login</Link></p>
+                <p className='cursor-pointer'>{t('ALREADY_HAVE_ACCOUNT')} <Link to="/login" className='hover:text-gray-600 hover:underline transition-all duration-300'>{t('LOGIN')}</Link></p>
             </div>
             <button
                 type="submit"
@@ -244,12 +246,12 @@ const SignUp = () => {
                     : 'bg-black text-white hover:bg-white hover:text-black'
                     }`}
             >
-                {loading ? 'Registering...' : 'Sign Up'}
+                {loading ? t('REGISTERING') : t('SIGN_UP')}
             </button>
 
             <div className="w-full flex items-center justify-between mt-4">
                 <hr className="w-full border-gray-300" />
-                <span className="px-2 text-gray-500 text-sm">OR</span>
+                <span className="px-2 text-gray-500 text-sm">{t('OR')}</span>
                 <hr className="w-full border-gray-300" />
             </div>
 

@@ -127,17 +127,26 @@ class AuthService {
   async refreshToken() {
     try {
       const currentToken = sessionStorage.getItem("token");
+      const refreshToken = sessionStorage.getItem("refreshToken");
+
       if (!currentToken) {
         throw new Error("No token to refresh");
       }
 
+      if (!refreshToken) {
+        throw new Error("No refresh token available");
+      }
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-      const response = await axios.get(
+      const response = await axios.post(
         `${backendUrl}/api/Account/refresh-token`,
+        { refreshToken },
         {
+          headers: {
+            "Content-Type": "application/json",
+          },
           timeout: 10000,
-          withCredentials: true,
           skipAuthRefresh: true,
         }
       );
@@ -168,7 +177,16 @@ class AuthService {
         data?.responseBody?.data?.accessToken ||
         (typeof data === "string" ? data : null);
 
+      const newRefreshToken =
+        data?.refreshToken ||
+        data?.data?.refreshToken ||
+        data?.responseBody?.data?.refreshToken;
+
       if (newToken && typeof newToken === "string" && newToken.length > 10) {
+        // Update stored tokens
+        if (newRefreshToken) {
+          sessionStorage.setItem("refreshToken", newRefreshToken);
+        }
         return newToken;
       } else {
         throw new Error("Invalid token response format");
@@ -254,6 +272,7 @@ class AuthService {
 
   logout() {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("refreshToken");
     window.location.href = "/";
   }
 }

@@ -571,7 +571,7 @@ const ViewProduct = ({ token, productId }) => {
           })}
           {collections.length === 0 && (
             <div className="col-span-full py-12 flex flex-col items-center justify-center text-gray-300 gap-4 opacity-50">
-              <div className="text-4xl">🌫️</div>
+              <div className="text-4xl">🔌</div>
               <p className="text-xs font-black uppercase tracking-widest">Isolated Asset - No Associated Collections</p>
             </div>
           )}

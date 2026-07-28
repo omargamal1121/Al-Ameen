@@ -9,21 +9,22 @@ const ProductAdd = ({ token }) => {
   const searchParams = new URLSearchParams(location.search);
   const editId = searchParams.get("edit");
   const [loading, setLoading] = useState(false);
-  const [subcategories, setSubcategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [formData, setFormData] = useState({
-    name: "", description: "", subcategoryid: "", fitType: "", gender: "", price: "",
+    name: "", description: "", categoryId: "", price: "",
     isActive: true, inStock: true, onSale: false, material: "", careInstructions: "", shippingInfo: ""
   });
 
   const [images, setImages] = useState({ main: null, additional: [] });
   const [previews, setPreviews] = useState({ main: null, additional: [] });
+  const [variants, setVariants] = useState([{ color: "" }]);
 
   useEffect(() => {
     (async () => {
       try {
-        const subs = await API.subcategories.getAll(token);
-        setSubcategories(subs);
+        const cats = await API.categories.getAll(token);
+        setCategories(cats);
       } catch (e) { toast.error("Failed to load categories"); }
     })();
   }, [token]);
@@ -35,15 +36,10 @@ const ProductAdd = ({ token }) => {
         const res = await API.products.getById(editId, token);
         const p = res?.responseBody?.data;
         if (p) {
-          const genderMap = { "Man": "0", "Woman": "1", "Kids": "2", "Uni": "3", "Both": "3" };
-          const fitMap = { "Slim": "1", "Regular": "2", "Oversized": "3", "Skinny": "4", "Loose": "5" };
-
           setFormData({
             name: p.name || "", 
             description: p.description || "", 
-            subcategoryid: p.subCategoryId?.toString() || "",
-            fitType: fitMap[p.fitType] || p.fitType?.toString() || "", 
-            gender: genderMap[p.gender] || p.gender?.toString() || "", 
+            categoryId: p.categoryId?.toString() || "",
             price: p.price?.toString() || "",
             isActive: p.isActive ?? true, 
             inStock: p.inStock ?? true, 
@@ -123,7 +119,7 @@ const ProductAdd = ({ token }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const productPayload = { ...formData, subcategoryid: Number(formData.subcategoryid), fitType: Number(formData.fitType), gender: Number(formData.gender), price: Number(formData.price) };
+      const productPayload = { ...formData, categoryId: Number(formData.categoryId), price: Number(formData.price) };
 
       let productId = editId;
       if (editId) {
@@ -131,6 +127,20 @@ const ProductAdd = ({ token }) => {
       } else {
         const res = await API.products.create(productPayload, token);
         productId = res.responseBody?.data?.id;
+        
+        // Create variants after product creation
+        if (productId && variants.length > 0) {
+          for (const variant of variants) {
+            if (variant.color) {
+              try {
+                await API.variants.add(productId, { color: variant.color }, token);
+              } catch (err) {
+                console.error("Failed to add variant", err);
+                toast.error(`Failed to add variant: ${variant.color}`);
+              }
+            }
+          }
+        }
       }
 
       if (productId && images.main) await API.images.uploadMain(productId, images.main, token);
@@ -158,7 +168,7 @@ const ProductAdd = ({ token }) => {
         <div className="lg:col-span-8 flex flex-col gap-8">
           <div className="bg-white p-10 rounded-[48px] border border-gray-100 shadow-sm flex flex-col gap-10">
             <div className="flex items-center gap-4">
-              <div className="w-2 h-10 bg-emerald-500 rounded-full" />
+              <div className="w-2 h-10 bg-orange-500 rounded-full" />
               <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase">Product Details</h3>
             </div>
 
@@ -167,7 +177,7 @@ const ProductAdd = ({ token }) => {
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Product Name</label>
                 <input
                   name="name" value={formData.name} onChange={handleInputChange} required
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-emerald-50 focus:border-emerald-300 transition-all font-bold text-lg"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold text-lg"
                   placeholder="Enter product name"
                 />
               </div>
@@ -176,7 +186,7 @@ const ProductAdd = ({ token }) => {
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
                 <textarea
                   name="description" value={formData.description} onChange={handleInputChange} required
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-emerald-50 focus:border-emerald-300 transition-all font-medium text-gray-600 min-h-[150px]"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
                   placeholder="Enter product description..."
                 />
               </div>
@@ -185,50 +195,85 @@ const ProductAdd = ({ token }) => {
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Price</label>
                 <input
                   name="price" type="number" value={formData.price} onChange={handleInputChange} required
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-emerald-50 focus:border-emerald-300 transition-all font-black text-xl"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-black text-xl"
                   placeholder="0.00"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Subcategory</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Category</label>
                 <select
-                  name="subcategoryid" value={formData.subcategoryid} onChange={handleInputChange} required
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-emerald-50 focus:border-emerald-300 transition-all font-bold"
+                  name="categoryId" value={formData.categoryId} onChange={handleInputChange} required
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold"
                 >
-                  <option value="">Select Subcategory</option>
-                  {subcategories.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  <option value="">Select Category</option>
+                  {categories.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
               </div>
+            </div>
+          </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Fit Type</label>
-                <select
-                  name="fitType" value={formData.fitType} onChange={handleInputChange} required
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-emerald-50 focus:border-emerald-300 transition-all font-bold"
-                >
-                  <option value="">Select Fit Type</option>
-                  <option value="1">Slim</option>
-                  <option value="2">Regular</option>
-                  <option value="3">Oversized</option>
-                  <option value="4">Skinny</option>
-                  <option value="5">Loose</option>
-                </select>
-              </div>
+          {/* Variants Section */}
+          <div className="bg-white p-10 rounded-[48px] border border-gray-100 shadow-sm flex flex-col gap-10">
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-10 bg-orange-500 rounded-full" />
+              <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase">Product Variants</h3>
+            </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Gender</label>
-                <select
-                  name="gender" value={formData.gender} onChange={handleInputChange} required
-                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-emerald-50 focus:border-emerald-300 transition-all font-bold"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="0">Man</option>
-                  <option value="1">Woman</option>
-                  <option value="2">Kids</option>
-                  <option value="3">Uni</option>
-                </select>
-              </div>
+            <div className="flex flex-col gap-6">
+              {variants.map((variant, idx) => (
+                <div key={idx} className="flex gap-4 items-center">
+                  <div className="flex-1 flex flex-col gap-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Color</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={variant.color}
+                        onChange={(e) => {
+                          const newVariants = [...variants];
+                          newVariants[idx].color = e.target.value;
+                          setVariants(newVariants);
+                        }}
+                        className="flex-1 bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold"
+                        placeholder="#FFFFFF or Black"
+                      />
+                      <div className="relative">
+                        <input
+                          type="color"
+                          value={variant.color.startsWith('#') ? variant.color : "#000000"}
+                          onChange={(e) => {
+                            const newVariants = [...variants];
+                            newVariants[idx].color = e.target.value.toUpperCase();
+                            setVariants(newVariants);
+                          }}
+                          className="w-16 h-[52px] rounded-[24px] border border-gray-200 cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {variants.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newVariants = variants.filter((_, i) => i !== idx);
+                        setVariants(newVariants);
+                      }}
+                      className="mt-6 p-4 bg-rose-100 text-rose-600 rounded-[24px] hover:bg-rose-200 transition-all"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setVariants([...variants, { color: "" }])}
+                className="py-4 border-2 border-dashed border-gray-200 rounded-[24px] text-gray-400 font-black uppercase tracking-widest hover:border-orange-300 hover:text-orange-500 transition-all"
+              >
+                + Add Variant
+              </button>
             </div>
           </div>
 
@@ -237,19 +282,19 @@ const ProductAdd = ({ token }) => {
         {/* Images & Settings */}
         <div className="lg:col-span-4 flex flex-col gap-8">
           {/* Main Visual Uplink */}
-          <div className="bg-emerald-900 p-10 rounded-[48px] shadow-2xl shadow-emerald-900/20 text-white flex flex-col gap-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">Primary Image</h4>
+          <div className="bg-orange-900 p-10 rounded-[48px] shadow-2xl shadow-orange-900/20 text-white flex flex-col gap-8">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-400">Primary Image</h4>
             <div className="relative aspect-square rounded-[40px] bg-white/5 border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden group">
               {previews.main ? (
                 <img src={previews.main} className="w-full h-full object-cover" alt="" />
               ) : (
                 <div className="text-center p-6">
-                  <div className="text-4xl mb-4 opacity-30">📸</div>
+                  <div className="text-4xl mb-4 opacity-30">�</div>
                   <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Upload Main Photo</p>
                 </div>
               )}
               <input type="file" onChange={handleMainImageChange} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
-              <div className="absolute bottom-6 right-6 p-4 bg-white text-emerald-900 rounded-full shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute bottom-6 right-6 p-4 bg-white text-orange-900 rounded-full shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" /></svg>
               </div>
             </div>
@@ -271,10 +316,10 @@ const ProductAdd = ({ token }) => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  {img.isNew && <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-emerald-500 text-white text-[7px] font-black uppercase rounded-full">New</div>}
+                  {img.isNew && <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-orange-500 text-white text-[7px] font-black uppercase rounded-full">New</div>}
                 </div>
               ))}
-              <div className="relative aspect-square rounded-[24px] bg-gray-50 border border-dashed border-gray-200 flex items-center justify-center hover:bg-emerald-50 hover:border-emerald-200 transition-all cursor-pointer group">
+              <div className="relative aspect-square rounded-[24px] bg-gray-50 border border-dashed border-gray-200 flex items-center justify-center hover:bg-orange-50 hover:border-orange-200 transition-all cursor-pointer group">
                 <span className="text-2xl opacity-20 group-hover:opacity-100 group-hover:scale-125 transition-all">➕</span>
                 <input type="file" multiple onChange={handleAdditionalImagesChange} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
               </div>
@@ -286,7 +331,7 @@ const ProductAdd = ({ token }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded-[32px] text-sm font-black uppercase tracking-widest transition-all shadow-2xl shadow-emerald-900/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-4"
+              className="w-full py-6 bg-orange-600 hover:bg-orange-700 text-white rounded-[32px] text-sm font-black uppercase tracking-widest transition-all shadow-2xl shadow-orange-900/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-4"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

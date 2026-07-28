@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./components/layout/Navbar";
 import Sidebar from "./components/layout/Sidebar";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 // Dashboard
 import Dashboard from "./pages/dashboard/Dashboard";
 
@@ -17,8 +18,6 @@ import OrderDetails from "./pages/orders/OrderDetails";
 
 // Categories
 import CategoryManager from "./pages/categories/CategoryManager";
-import SubCategoryDetails from "./pages/categories/SubCategoryDetails";
-import SubCategoryManager from "./pages/categories/SubCategoryManager";
 
 // Collections
 import CollectionManager from "./pages/collections/CollectionManager";
@@ -32,8 +31,6 @@ import BulkDiscountPage from "./pages/discounts/BulkDiscountPage";
 import UserList from "./pages/users/UserList";
 import AdminOperations from "./pages/users/AdminOperations";
 
-// Settings
-import Settings from "./pages/settings/Settings";
 import Login from "./components/layout/Login";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -63,6 +60,8 @@ const decodeJwtRoles = (jwt) => {
 };
 
 function App() {
+  const { i18n } = useTranslation();
+
   // Migrate any leftover token from localStorage → sessionStorage (one-time)
   useEffect(() => {
     const legacyToken = localStorage.getItem("token");
@@ -71,6 +70,12 @@ function App() {
       localStorage.removeItem("token");
     }
   }, []);
+
+  // Set document direction based on language
+  useEffect(() => {
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
   const [token, setToken] = useState(sessionStorage.getItem("token") || "");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -186,21 +191,17 @@ function App() {
                     <Route path="/discounts" element={<DiscountManager token={token} />} />
                     <Route path="/discounts/:id" element={<DiscountDetails token={token} />} />
                     <Route path="/bulk-discount" element={<BulkDiscountPage token={token} />} />
-                    <Route path="/sub-category" element={<SubCategoryManager token={token} />} />
                     <Route path="/collections" element={<CategoryManager token={token} backendUrl={backendUrl} />} />
                     <Route path="/orders" element={<OrderManager token={token} />} />
                     <Route path="/orders/create" element={<OrderManager token={token} />} />
                     <Route path="/orders/view/:orderId" element={<OrderDetails token={token} />} />
                     <Route path="/users" element={<UserList token={token} />} />
                     <Route path="/admin-operations" element={<AdminOperations token={token} />} />
-                    <Route path="/settings" element={<Settings token={token} />} />
                     <Route path="/category/view/:categoryId" element={<CategoryManager token={token} backendUrl={backendUrl} />} />
                     <Route path="/category/edit/:categoryId" element={<CategoryManager token={token} backendUrl={backendUrl} />} />
                     <Route path="/collection-manager" element={<CollectionManager token={token} />} />
                     <Route path="/collection/view/:collectionId" element={<CollectionManager token={token} />} />
                     <Route path="/collection/edit/:collectionId" element={<CollectionManager token={token} />} />
-                    {/* Dedicated details pages */}
-                    <Route path="/subcategories/:id" element={<SubCategoryDetails token={token} />} />
                   </>
                 )}
               </Routes>

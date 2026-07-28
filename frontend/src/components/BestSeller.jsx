@@ -76,7 +76,7 @@ const BestSeller = () => {
             <Title text1={t('BEST')} text2={t('SELLERS')} />
           </div>
           <p className="max-w-2xl text-gray-500 font-light italic text-lg shimmer-text">
-            Industry-trusted cables. Proven performance across thousands of installations nationwide.
+            {t('BESTSELLER_DESC')}
           </p>
         </motion.div>
 

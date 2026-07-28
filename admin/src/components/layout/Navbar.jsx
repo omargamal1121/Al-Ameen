@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { assets } from '../../assets/assets'
 
 const Navbar = ({ setToken, toggleSidebar }) => {
   return (
@@ -18,7 +17,7 @@ const Navbar = ({ setToken, toggleSidebar }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
             </button>
-            <img className='h-8 w-auto' src={assets.logo} alt="Admin logo" />
+            <span className='text-xl font-black text-gray-900 tracking-tighter uppercase'>Al-Ameen Cables</span>
           </div>
 
           {/* Right: Logout — always visible */}

@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import authService from "./services/authService";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
@@ -80,11 +81,19 @@ const PaymentRoute = () => {
 const App = () => {
   const location = useLocation();
   const { user } = useContext(ShopContext);
+  const { i18n } = useTranslation();
+  
   useEffect(() => {
     // Ensure interceptors are initialized (constructor already does this)
     // Optionally, you could test cookie availability here if needed
     void authService.hasValidToken();
   }, []);
+
+  // Set document direction based on language
+  useEffect(() => {
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
   // Determine if user is DeliveryCompany (or Delivery)
   const rawRoles = user?.roles || user?.role || user?.userRoles || [];
   const roles = Array.isArray(rawRoles) ? rawRoles : [rawRoles];

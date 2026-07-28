@@ -5,15 +5,12 @@ const ProductSearchForm = ({
   searchParams,
   handleInputChange,
   handleSearch,
-  subcategories,
-  fitTypes,
+  categories,
   loading,
 }) => {
   const {
     searchTerm,
-    subcategoryId,
-    gender,
-    fitType,
+    categoryId,
     minPrice,
     maxPrice,
     status,
@@ -40,35 +37,12 @@ const ProductSearchForm = ({
         />
 
         <FormInput
-          label="Subcategory"
+          label="Category"
           type="select"
-          name="subcategoryId"
-          value={subcategoryId}
+          name="categoryId"
+          value={categoryId}
           onChange={handleInputChange}
-          options={[{ id: "", name: "All Subcategories" }, ...subcategories]}
-        />
-
-        <FormInput
-          label="Gender"
-          type="select"
-          name="gender"
-          value={gender}
-          onChange={handleInputChange}
-          options={[
-            { id: "", name: "All Genders" },
-            { id: "1", name: "Male" },
-            { id: "2", name: "Female" },
-            { id: "3", name: "Both" },
-          ]}
-        />
-
-        <FormInput
-          label="Fit Type"
-          type="select"
-          name="fitType"
-          value={fitType}
-          onChange={handleInputChange}
-          options={[{ id: "", name: "All Fit Types" }, ...fitTypes]}
+          options={[{ id: "", name: "All Categories" }, ...categories]}
         />
 
         <div className="flex gap-2">
@@ -241,9 +215,7 @@ const ProductSearchForm = ({
                 // Reset all search params
                 const resetParams = {
                   searchTerm: "",
-                  subcategoryId: "",
-                  gender: "",
-                  fitType: "",
+                  categoryId: "",
                   minPrice: "",
                   maxPrice: "",
                   status: "",

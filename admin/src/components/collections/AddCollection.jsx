@@ -12,7 +12,9 @@ const AddCollection = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
+  const [arName, setArName] = useState("");
   const [description, setDescription] = useState("");
+  const [arDescription, setArDescription] = useState("");
   const [displayOrder, setDisplayOrder] = useState(1);
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
@@ -24,7 +26,9 @@ const AddCollection = ({
 
   const resetForm = () => {
     setName("");
+    setArName("");
     setDescription("");
+    setArDescription("");
     setDisplayOrder(1);
     setImages([]);
     setMainImage(null);
@@ -36,7 +40,9 @@ const AddCollection = ({
   useEffect(() => {
     if (!editCollectionMode) {
       setName("");
+      setArName("");
       setDescription("");
+      setArDescription("");
       setDisplayOrder(1);
       setImages([]);
       setMainImage(null);
@@ -55,7 +61,9 @@ const AddCollection = ({
 
           const col = res.data?.responseBody?.data || res.data?.data || res.data;
           setName(col.name || "");
+          setArName(col.arName || "");
           setDescription(col.description || "");
+          setArDescription(col.arDescription || "");
           setDisplayOrder(col.displayOrder || 1);
 
           if (col.images?.length > 0) {
@@ -101,7 +109,9 @@ const AddCollection = ({
     if (!token) return toast.error("Authentication required");
 
     const cleanedName = cleanText(name);
+    const cleanedArName = cleanText(arName);
     const cleanedDescription = cleanText(description);
+    const cleanedArDescription = cleanText(arDescription);
 
     if (!cleanedName || cleanedName.length < 2) return toast.error("Identity name too short");
 
@@ -109,7 +119,9 @@ const AddCollection = ({
     try {
       const body = {
         name: cleanedName,
+        arName: cleanedArName || null,
         description: cleanedDescription,
+        arDescription: cleanedArDescription || null,
         displayOrder: Number(displayOrder),
       };
 
@@ -222,6 +234,28 @@ const AddCollection = ({
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-rose-50 focus:border-rose-400 transition-all font-medium text-gray-600 min-h-[120px]"
                 placeholder="Describe the specialized nature of this grouping..."
                 required
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name (Optional)</label>
+              <input
+                value={arName}
+                onChange={(e) => setArName(e.target.value)}
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-rose-50 focus:border-rose-400 transition-all font-bold text-gray-700"
+                placeholder="e.g. بيع الصيف"
+                dir="rtl"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description (Optional)</label>
+              <textarea
+                value={arDescription}
+                onChange={(e) => setArDescription(e.target.value)}
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-rose-50 focus:border-rose-400 transition-all font-medium text-gray-600 min-h-[120px]"
+                placeholder="وصف المجموعة باللغة العربية..."
+                dir="rtl"
               />
             </div>
           </div>

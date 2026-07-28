@@ -19,7 +19,6 @@ class AuthService {
     this.listeners.forEach((listener) => listener({ token, user }));
   }
 
-  // Works with backend middleware that validates access tokens and stores refresh token in cookies
   setupInterceptors() {
     axios.interceptors.request.use(
       (config) => {
@@ -28,11 +27,6 @@ class AuthService {
         // Don't add Authorization header for refresh token requests
         if (token && !config.url?.includes("/api/Account/refresh-token")) {
           config.headers.Authorization = `Bearer ${token}`;
-        }
-
-        // Ensure withCredentials is true for refresh token requests
-        if (config.url?.includes("/api/Account/refresh-token")) {
-          config.withCredentials = true;
         }
 
         return config;
@@ -115,11 +109,20 @@ class AuthService {
   async refreshToken() {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      // Cookie-based refresh, no Authorization header; include cookies
-      const response = await axios.get(
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      if (!refreshToken) {
+        throw new Error("No refresh token available");
+      }
+
+      // POST request with refreshToken in body
+      const response = await axios.post(
         `${backendUrl}/api/Account/refresh-token`,
+        { refreshToken },
         {
-          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
           timeout: 10000,
         }
       );
@@ -139,7 +142,16 @@ class AuthService {
         data?.responseBody?.data?.accessToken ||
         (typeof data === "string" ? data : null);
 
+      const newRefreshToken =
+        data?.refreshToken ||
+        data?.data?.refreshToken ||
+        data?.responseBody?.data?.refreshToken;
+
       if (newToken && typeof newToken === "string" && newToken.length > 20) {
+        // Update stored tokens
+        if (newRefreshToken) {
+          localStorage.setItem("refreshToken", newRefreshToken);
+        }
         console.log("✅ Token refreshed successfully");
         return newToken;
       }
@@ -160,6 +172,7 @@ class AuthService {
 
   logout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     delete axios.defaults.headers.common["Authorization"];
     this.notify("", null);

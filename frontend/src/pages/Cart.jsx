@@ -6,8 +6,10 @@ import CartTotal from "../components/CartTotal";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const Cart = () => {
+  const { t } = useTranslation();
   const {
     products,
     currency,
@@ -140,12 +142,12 @@ const Cart = () => {
       });
 
       // Show success message
-      toast.success("Item removed from cart");
+      toast.success(t('ITEM_REMOVED'));
     } catch (error) {
       console.error("Failed to delete item:", error);
       setErrorMessage(
         error.response?.data?.responseBody?.message ||
-        "Failed to delete item. Please try again."
+        t('FAILED_DELETE_ITEM')
       );
     } finally {
       setLoading(false);
@@ -171,12 +173,12 @@ const Cart = () => {
       // Clear local state for both guest and logged-in users
       setCartData([]);
       setCartItems({});
-      toast.success("Cart cleared successfully");
+      toast.success(t('CART_CLEARED'));
     } catch (error) {
       console.error("Failed to clear cart:", error);
       setErrorMessage(
         error.response?.data?.responseBody?.message ||
-        "Failed to clear cart. Please try again."
+        t('FAILED_CLEAR_CART')
       );
     } finally {
       setLoading(false);
@@ -220,7 +222,7 @@ const Cart = () => {
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-3"
       >
         <div className="text-xl sm:text-2xl">
-          <Title text1={"YOUR"} text2={"CART"} />
+          <Title text1={t('YOUR')} text2={t('CART')} />
         </div>
         {cartData.length > 0 && (
           <button
@@ -229,7 +231,7 @@ const Cart = () => {
             className={`bg-red-500 text-white px-3 sm:px-4 py-2 text-xs sm:text-sm rounded transition-all duration-300 w-full sm:w-auto
               ${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"}`}
           >
-            {loading ? "Clearing..." : "Clear Cart"}
+            {loading ? t('CLEARING') : t('CLEAR_CART')}
           </button>
         )}
       </motion.div>
@@ -263,22 +265,22 @@ const Cart = () => {
               <div className="flex items-start gap-3 sm:gap-6">
                 <img
                   src={item.image || (productData.image && productData.image[0]) || ""}
-                  alt={productData.name || "Product"}
+                  alt={productData.name || t('PRODUCT')}
                   className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
                 />
                 <div className="flex-1">
                   <p className="text-sm sm:text-base md:text-lg font-medium line-clamp-2">
-                    {productData.name || "Product"}
+                    {productData.name || t('PRODUCT')}
                   </p>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
                     <div className="flex flex-col">
                       {item.priceAtAddTime && item.price !== item.priceAtAddTime ? (
                         <>
                           <p className="text-xs text-gray-400 line-through">
-                            Added: {currency}{item.priceAtAddTime}
+                            {t('ADDED')} {currency}{item.priceAtAddTime}
                           </p>
                           <p className="font-semibold text-sm sm:text-base text-red-600">
-                            Now: {currency}{item.price}
+                            {t('NOW')} {currency}{item.price}
                           </p>
                         </>
                       ) : (
@@ -289,10 +291,10 @@ const Cart = () => {
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="px-2 py-1 text-xs sm:text-sm border border-gray-300 bg-slate-50 rounded">
-                        Size: {item.size}
+                        {t('SIZE_LABEL')} {item.size}
                       </p>
                       <div className="flex items-center gap-1 sm:gap-2">
-                        <span className="text-xs sm:text-sm">Color:</span>
+                        <span className="text-xs sm:text-sm">{t('COLOR_LABEL')}</span>
                         <div
                           className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-gray-300 flex items-center justify-center"
                           style={{
@@ -314,7 +316,7 @@ const Cart = () => {
                 </div>
               </div>
               <div className="flex items-center gap-3 sm:gap-0 sm:block">
-                <label className="text-xs sm:text-sm text-gray-600 sm:hidden">Quantity:</label>
+                <label className="text-xs sm:text-sm text-gray-600 sm:hidden">{t('QUANTITY_LABEL')}:</label>
                 <input
                   type="number"
                   min={1}
@@ -338,7 +340,7 @@ const Cart = () => {
                 <img
                   className={`w-5 sm:w-5 cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-70"}`}
                   src={assets.bin_icon}
-                  alt="Delete"
+                  alt={t('DELETE')}
                   onClick={() =>
                     !loading && handleDeleteItem(item._id, item.variantId || item.size)
                   }
@@ -364,13 +366,13 @@ const Cart = () => {
               onClick={async () => {
                 // 🆕 Check if user is logged in first
                 if (!token) {
-                  toast.info("Please log in to proceed with checkout.");
+                  toast.info(t('PLEASE_LOGIN_CHECKOUT'));
                   navigate("/login");
                   return;
                 }
 
                 if (cartData.length === 0) {
-                  toast.error("Your cart is empty. Please add items before checkout.");
+                  toast.error(t('CART_EMPTY'));
                   return;
                 }
 
@@ -385,14 +387,14 @@ const Cart = () => {
                   );
 
                   if (response.status === 200 || response.status === 201) {
-                    toast.success(response.data?.responseBody?.message || "Checkout successful");
+                    toast.success(response.data?.responseBody?.message || t('CHECKOUT_SUCCESS'));
                     // Navigate to place order (payment and address page)
                     navigate("/place-order");
                   } else {
-                    toast.error("Checkout failed.");
+                    toast.error(t('CHECKOUT_FAILED'));
                   }
                 } catch (error) {
-                  const errMsg = error.response?.data?.responseBody?.message || "Checkout failed. Please try again.";
+                  const errMsg = error.response?.data?.responseBody?.message || t('CHECKOUT_FAILED_RETRY');
                   toast.error(errMsg);
                   console.error("Checkout error:", error);
                 } finally {
@@ -404,7 +406,7 @@ const Cart = () => {
                          hover:bg-white hover:text-black border border-black transition-all duration-300
                          disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto text-sm sm:text-base"
             >
-              {loading ? "Processing..." : cartData.length === 0 ? "Cart is Empty" : "Proceed to Checkout"}
+              {loading ? t('PROCESSING') : cartData.length === 0 ? t('CART_IS_EMPTY') : t('PROCEED_TO_CHECKOUT')}
             </button>
           </div>
         </div>

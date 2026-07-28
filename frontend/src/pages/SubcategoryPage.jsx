@@ -4,10 +4,14 @@ import { ShopContext } from "../context/ShopContext";
 import { motion, AnimatePresence } from "framer-motion";
 import ProductItem from "../components/ProductItem";
 import { FaFilter, FaTimes, FaSortAmountDown } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { useLocalization } from "../utils/localization";
 
 const SubcategoryPage = () => {
   const { subcategoryId } = useParams();
   const { backendUrl, currency } = useContext(ShopContext);
+  const { t } = useTranslation();
+  const { getLocalizedName } = useLocalization();
   const [subcategory, setSubcategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +57,7 @@ const SubcategoryPage = () => {
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="w-12 h-12 border-4 border-gray-100 border-t-black rounded-full animate-spin"></div>
-      <p className="mt-4 text-xs font-black uppercase tracking-[0.3em] text-gray-400">Curating Products</p>
+      <p className="mt-4 text-xs font-black uppercase tracking-[0.3em] text-gray-400">{t('CURATING_PRODUCTS')}</p>
     </div>
   );
 
@@ -64,18 +68,18 @@ const SubcategoryPage = () => {
         <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-end gap-8">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <div className="flex items-center gap-3 text-[10px] font-black tracking-[0.3em] text-gray-400 uppercase mb-4">
-              <Link to="/" className="hover:text-black transition-colors">Home</Link>
+              <Link to="/" className="hover:text-black transition-colors">{t('HOME')}</Link>
               <span>/</span>
-              <Link to="/collection" className="hover:text-black transition-colors">Shop</Link>
+              <Link to="/collection" className="hover:text-black transition-colors">{t('SHOP')}</Link>
               <span>/</span>
-              <span className="text-black">{subcategory?.name}</span>
+              <span className="text-black">{getLocalizedName(subcategory)}</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-4 leading-[0.8]">{subcategory?.name}</h1>
-            <p className="text-gray-400 font-medium italic max-w-xl">{subcategory?.description || "A masterfully curated selection of high-end fashion pieces for the discerning eye."}</p>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-4 leading-[0.8]">{getLocalizedName(subcategory)}</h1>
+            <p className="text-gray-400 font-medium italic max-w-xl">{getLocalizedName(subcategory) || "A masterfully curated selection of high-end fashion pieces for the discerning eye."}</p>
           </motion.div>
 
           <div className="flex flex-col items-end gap-4">
-            <span className="text-[10px] font-black bg-black text-white px-4 py-1 rounded-full uppercase tracking-widest">{products.length} Items Found</span>
+            <span className="text-[10px] font-black bg-black text-white px-4 py-1 rounded-full uppercase tracking-widest">{products.length} {t('ITEMS_FOUND')}</span>
             <button
               onClick={() => setShowFilterPanel(true)}
               className="group flex items-center gap-4 bg-white border border-gray-200 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:border-black transition-all shadow-sm hover:shadow-xl"
@@ -113,8 +117,8 @@ const SubcategoryPage = () => {
         {sortedProducts.length === 0 && (
           <div className="py-40 text-center rounded-[3rem] border-2 border-dashed border-gray-100">
             <div className="mb-6 opacity-20"><FaSortAmountDown size={40} className="mx-auto" /></div>
-            <p className="text-xs font-black uppercase tracking-[0.4em] text-gray-300">Null Set Matching Criteria</p>
-            <button onClick={() => { setInStock(false); setPriceRange({ min: 0, max: 20000 }); }} className="mt-8 text-xs font-black underline hover:text-gray-500">Reset System</button>
+            <p className="text-xs font-black uppercase tracking-[0.4em] text-gray-300">{t('NULL_SET_MATCHING')}</p>
+            <button onClick={() => { setInStock(false); setPriceRange({ min: 0, max: 20000 }); }} className="mt-8 text-xs font-black underline hover:text-gray-500">{t('RESET_SYSTEM')}</button>
           </div>
         )}
       </main>
@@ -132,7 +136,7 @@ const SubcategoryPage = () => {
             >
               <div className="flex justify-between items-center mb-16">
                 <div>
-                  <h2 className="text-4xl font-black tracking-tighter">FILTERS</h2>
+                  <h2 className="text-4xl font-black tracking-tighter">{t('FILTERS')}</h2>
                   <div className="h-1 w-12 bg-black mt-2"></div>
                 </div>
                 <button onClick={() => setShowFilterPanel(false)} className="h-12 w-12 rounded-full bg-gray-50 flex items-center justify-center hover:scale-110 transition-transform">
@@ -145,7 +149,7 @@ const SubcategoryPage = () => {
                 <section>
                   <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-6 font-bold">Inventory Status</h4>
                   <label className="flex items-center justify-between cursor-pointer group">
-                    <span className="font-bold text-sm group-hover:tracking-widest transition-all">Available Only</span>
+                    <span className="font-bold text-sm group-hover:tracking-widest transition-all">{t('IN_STOCK')}</span>
                     <input
                       type="checkbox"
                       checked={inStock}
@@ -204,7 +208,7 @@ const SubcategoryPage = () => {
                 <button
                   onClick={() => { setInStock(false); setPriceRange({ min: 0, max: 20000 }); setSortOption('featured'); }}
                   className="w-full text-xs font-black uppercase tracking-widest text-gray-300 hover:text-black"
-                >Reset All</button>
+                >{t('RESET_SYSTEM')}</button>
               </div>
             </motion.div>
           </>

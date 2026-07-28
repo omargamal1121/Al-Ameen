@@ -9,9 +9,11 @@ import { toast } from "react-toastify";
 import WishlistButton from "../components/WishlistButton";
 import MostWanted from "../components/MostWanted";
 import { FaChevronLeft, FaChevronRight, FaPlus, FaMinus, FaRulerCombined, FaTruck, FaShieldAlt, FaUndo, FaTimes } from "react-icons/fa";
+import { useLocalization } from "../utils/localization";
 
 const Product = () => {
   const { t } = useTranslation();
+  const { getLocalizedName } = useLocalization();
   const { productId } = useParams();
   const { products, addToCart, backendUrl, currency } = useContext(ShopContext);
 
@@ -136,11 +138,11 @@ const Product = () => {
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-12">
-          <Link to="/" className="hover:text-black transition-colors">Home</Link>
+          <Link to="/" className="hover:text-black transition-colors">{t('HOME')}</Link>
           <span>/</span>
-          <Link to="/collection" className="hover:text-black transition-colors">Collections</Link>
+          <Link to="/collection" className="hover:text-black transition-colors">{t('COLLECTIONS_BREADCRUMB')}</Link>
           <span>/</span>
-          <span className="text-black">{productData.name}</span>
+          <span className="text-black">{getLocalizedName(productData)}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
@@ -174,7 +176,7 @@ const Product = () => {
               {/* Badges */}
               {productData.finalPrice < productData.price && (
                 <div className="absolute top-6 left-6 bg-black text-white text-[10px] font-black py-2 px-6 rounded-full uppercase tracking-widest shadow-xl">
-                  Exclusive Sale
+                  {t('EXCLUSIVE_SALE')}
                 </div>
               )}
             </div>
@@ -184,12 +186,12 @@ const Product = () => {
           <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-10">
             <div>
               <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-black uppercase tracking-[0.3em] text-[#c9a227]">Al-Ameen Edition</span>
+                <span className="text-xs font-black uppercase tracking-[0.3em] text-[#c9a227]">{t('AL_AMEEN_EDITION')}</span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(s => <div key={s} className="w-1 h-1 rounded-full bg-black/10" />)}
                 </div>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85] mb-6">{productData.name}</h1>
+              <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85] mb-6">{getLocalizedName(productData)}</h1>
 
               <div className="flex items-center gap-4">
                 <span className="text-4xl font-black">{currency}{selectedVariant?.finalPrice || productData.finalPrice || productData.price}</span>
@@ -204,7 +206,7 @@ const Product = () => {
             {/* Selection - Color */}
             {colors.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">Color Palette</h4>
+                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">{t('COLOR_PALETTE')}</h4>
                 <div className="flex flex-wrap gap-4">
                   {colors.map((c, i) => (
                     <button
@@ -227,9 +229,9 @@ const Product = () => {
             {/* Selection - Size */}
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">Select Proportions</h4>
+                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">{t('SELECT_PROPORTIONS')}</h4>
                 <button onClick={() => setShowSizeGuide(true)} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
-                  <FaRulerCombined /> Sizing Map
+                  <FaRulerCombined /> {t('SIZING_MAP')}
                 </button>
               </div>
               <div className="grid grid-cols-4 gap-3">
@@ -261,21 +263,21 @@ const Product = () => {
                 disabled={isSubmitting}
                 className="flex-1 bg-black text-white py-5 rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
-                {isSubmitting ? 'Authenticating...' : 'Add To Private Collection'}
+                {isSubmitting ? t('AUTHENTICATING') : t('ADD_TO_PRIVATE_COLLECTION')}
               </button>
             </div>
 
             {/* Details & Specs */}
             <div className="grid grid-cols-1 gap-4 pt-10">
               <div className="p-6 rounded-3xl bg-gray-50/50 border border-gray-100">
-                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-black">Master Narrative</h5>
-                <p className="text-sm text-gray-500 font-medium leading-relaxed">{productData.description}</p>
+                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-black">{t('MASTER_NARRATIVE')}</h5>
+                <p className="text-sm text-gray-500 font-medium leading-relaxed">{getLocalizedName(productData)}</p>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { icon: <FaTruck />, label: 'Prime Hub' },
+                  { icon: <FaTruck />, label: t('PRIME_HUB') },
                   { icon: <FaShieldAlt />, label: 'Guaranteed' },
-                  { icon: <FaUndo />, label: 'Elite Returns' }
+                  { icon: <FaUndo />, label: t('ELITE_RETURNS') }
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-gray-50/30 border border-gray-50">
                     <div className="text-black mb-2">{item.icon}</div>
@@ -319,21 +321,21 @@ const Product = () => {
           <motion.div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setShowSizeGuide(false)} className="absolute inset-0 bg-black/80 backdrop-blur-md" />
             <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="relative bg-white w-full max-w-2xl rounded-[3rem] p-12 shadow-2xl">
-              <h2 className="text-4xl font-black tracking-tighter mb-8 uppercase">AESTHETIC MAP</h2>
+              <h2 className="text-4xl font-black tracking-tighter mb-8 uppercase">{t('AESTHETIC_MAP')}</h2>
               <div className="overflow-hidden rounded-3xl border border-gray-100">
                 <table className="w-full text-xs">
                   <thead className="bg-black text-white px-4">
-                    <tr><th className="py-5 px-6 text-left font-black uppercase tracking-widest">Global Size</th><th className="py-5 px-6 text-left font-black uppercase tracking-widest">Dimension Info</th></tr>
+                    <tr><th className="py-5 px-6 text-left font-black uppercase tracking-widest">{t('GLOBAL_SIZE')}</th><th className="py-5 px-6 text-left font-black uppercase tracking-widest">{t('DIMENSION_INFO')}</th></tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 font-bold">
-                    <tr><td className="py-5 px-6">SMALL</td><td className="py-5 px-6 text-gray-400 font-medium">Standard Fit (EU 30-32)</td></tr>
-                    <tr><td className="py-5 px-6">MEDIUM</td><td className="py-5 px-6 text-gray-400 font-medium">Standard Fit (EU 33-35)</td></tr>
-                    <tr><td className="py-5 px-6">LARGE</td><td className="py-5 px-6 text-gray-400 font-medium">Standard Fit (EU 36-38)</td></tr>
-                    <tr><td className="py-5 px-6">X-LARGE</td><td className="py-5 px-6 text-gray-400 font-medium">Standard Fit (EU 39-41)</td></tr>
+                    <tr><td className="py-5 px-6">{t('SMALL')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 30-32)</td></tr>
+                    <tr><td className="py-5 px-6">{t('MEDIUM')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 33-35)</td></tr>
+                    <tr><td className="py-5 px-6">{t('LARGE')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 36-38)</td></tr>
+                    <tr><td className="py-5 px-6">{t('X_LARGE')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 39-41)</td></tr>
                   </tbody>
                 </table>
               </div>
-              <button onClick={() => setShowSizeGuide(false)} className="w-full mt-8 py-5 bg-black text-white rounded-[2rem] font-black uppercase text-xs tracking-widest shadow-xl">Dismiss Gallery</button>
+              <button onClick={() => setShowSizeGuide(false)} className="w-full mt-8 py-5 bg-black text-white rounded-[2rem] font-black uppercase text-xs tracking-widest shadow-xl">{t('DISMISS_GALLERY')}</button>
             </motion.div>
           </motion.div>
         )}

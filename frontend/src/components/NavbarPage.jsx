@@ -92,7 +92,7 @@ const NavbarPage = () => {
       style={{ backdropFilter: "none" }}
     >
       <ul
-        className={`hidden sm:flex gap-5 text-sm text-gray-700 flex-1
+        className={`hidden sm:flex gap-5 text-sm text-gray-700 flex-1 ${i18n.language === 'ar' ? 'justify-end' : 'justify-start'}
         `}
       >
         <NavLink
@@ -110,11 +110,11 @@ const NavbarPage = () => {
             to="/collection"
             className="flex items-center gap-1 focus:outline-none uppercase tracking-widest"
           >
-            {t("CATEGORY")} <span className="ml-1 text-[10px]">&#9662;</span>
+            {t("CATEGORY")} <span className={`${i18n.language === 'ar' ? 'mr-1' : 'ml-1'} text-[10px]`}>{i18n.language === 'ar' ? '&#9652;' : '&#9662;'}</span>
           </NavLink>
 
           {/* Main Categories Dropdown */}
-          <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-72 bg-white shadow-2xl z-[100] hidden group-hover:block transition-all duration-300 border border-gray-100 rounded-b-2xl">
+          <div className={`absolute mt-2 w-72 bg-white shadow-2xl z-[100] hidden group-hover:block transition-all duration-300 border border-gray-100 rounded-b-2xl ${i18n.language === 'ar' ? 'right-0' : 'left-0'}`}>
             <ul className="flex flex-col py-3">
               {Array.isArray(categories) && categories.length > 0 ? (
                 categories.map((cat) => (
@@ -129,7 +129,7 @@ const NavbarPage = () => {
                       <span className="text-sm tracking-tight">{cat.name}</span>
                       {Array.isArray(categorySubcategories[cat.id]) &&
                         categorySubcategories[cat.id].length > 0 && (
-                          <span className="text-[10px] ml-2 font-black transition-transform group-hover/sub:translate-x-1">❯</span>
+                          <span className={`text-[10px] ${i18n.language === 'ar' ? 'mr-2' : 'ml-2'} font-black transition-transform ${i18n.language === 'ar' ? 'group-hover/sub:-translate-x-1' : 'group-hover/sub:translate-x-1'}`}>❯</span>
                         )}
                     </Link>
 
@@ -137,7 +137,7 @@ const NavbarPage = () => {
                     {Array.isArray(categorySubcategories[cat.id]) &&
                       categorySubcategories[cat.id].length > 0 && (
                         <div
-                          className="absolute left-[calc(100%-10px)] top-0 pl-4 hidden group-hover/sub:block z-[110]"
+                          className={`absolute top-0 ${i18n.language === 'ar' ? 'pr-4' : 'pl-4'} hidden group-hover/sub:block z-[110] ${i18n.language === 'ar' ? 'right-[calc(100%-10px)]' : 'left-[calc(100%-10px)]'}`}
                         >
                           <ul className="w-64 bg-white shadow-2xl border border-gray-100 rounded-2xl py-3 transform transition-all duration-300">
                             <li className="px-5 py-2 border-b border-gray-50 mb-2">
@@ -149,7 +149,7 @@ const NavbarPage = () => {
                               <li key={sub.id} className="px-3">
                                 <Link
                                   to={`/subcategory/${sub.id}`}
-                                  className="block px-4 py-2.5 hover:bg-gray-50 hover:pl-6 rounded-xl cursor-pointer text-gray-600 text-xs font-bold transition-all duration-200"
+                                  className={`block px-4 py-2.5 hover:bg-gray-50 ${i18n.language === 'ar' ? 'hover:pr-6' : 'hover:pl-6'} rounded-xl cursor-pointer text-gray-600 text-xs font-bold transition-all duration-200`}
                                 >
                                   {sub.name}
                                 </Link>
@@ -278,41 +278,41 @@ const NavbarPage = () => {
 
       {/* Sidebar menu for small screen */}
       <div
-        className={`absolute top-0 right-0 bottom-0 bg-white h-screen transition-all ${visible ? "w-full" : "w-0"}`}
+        className={`absolute top-0 ${i18n.language === 'ar' ? 'left-0' : 'right-0'} bottom-0 bg-white h-screen transition-all ${visible ? "w-full" : "w-0"}`}
       >
         <div className="flex flex-col text-gray-600">
           <div
             onClick={() => setvisible(false)}
-            className="flex items-center gap-4 p-3 cursor-pointer"
+            className={`flex items-center gap-4 p-3 cursor-pointer ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}
           >
-            <img src={assets.dropdown_icon} className="h-4 rotate-180" alt="" />
-            <p>Back</p>
+            <img src={assets.dropdown_icon} className={`h-4 ${i18n.language === 'ar' ? '' : 'rotate-180'}`} alt="" />
+            <p>{t('BACK')}</p>
           </div>
           <NavLink
             onClick={() => setvisible(false)}
             to="/"
-            className="py-2 pl-6 border-b-2"
+            className={`py-2 ${i18n.language === 'ar' ? 'pr-6' : 'pl-6'} border-b-2`}
           >
             {t("HOME")}
           </NavLink>
           <NavLink
             onClick={() => setvisible(false)}
             to="/collection"
-            className="py-2 pl-6 border-b-2"
+            className={`py-2 ${i18n.language === 'ar' ? 'pr-6' : 'pl-6'} border-b-2`}
           >
             {t("COLLECTION")}
           </NavLink>
           <NavLink
             onClick={() => setvisible(false)}
             to="/about"
-            className="py-2 pl-6 border-b-2"
+            className={`py-2 ${i18n.language === 'ar' ? 'pr-6' : 'pl-6'} border-b-2`}
           >
             {t("ABOUT")}
           </NavLink>
           <NavLink
             onClick={() => setvisible(false)}
             to="/contact"
-            className="py-2 pl-6 border-b-2"
+            className={`py-2 ${i18n.language === 'ar' ? 'pr-6' : 'pl-6'} border-b-2`}
           >
             {t("CONTACT")}
           </NavLink>

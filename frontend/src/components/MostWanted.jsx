@@ -43,7 +43,7 @@ const MostWanted = () => {
         return (
             <div className="my-20 px-4 sm:px-[5vw]">
                 <div className="text-left py-8">
-                    <Title text1={'MOST'} text2={'WANTED'} />
+                    <Title text1={t('MOST')} text2={t('WANTED')} />
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                     {[...Array(4)].map((_, index) => (
@@ -66,11 +66,11 @@ const MostWanted = () => {
                 className="text-left py-8 flex flex-col md:flex-row md:items-end justify-between items-start gap-4 mb-8"
             >
                 <div>
-                    <Title text1={'MOST'} text2={'WANTED'} />
+                    <Title text1={t('MOST')} text2={t('WANTED')} />
                     <div className="h-1 w-20 bg-black mt-2"></div>
                 </div>
                 <p className="max-w-lg text-gray-500 font-light text-sm md:text-base">
-                    Most-specified by engineers &amp; contractors across Egypt. The cables your peers rely on, project after project.
+                    {t('MOST_WANTED_DESC')}
                 </p>
             </motion.div>
 

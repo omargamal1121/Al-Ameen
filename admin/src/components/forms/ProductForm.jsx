@@ -8,8 +8,7 @@ const ProductForm = ({
   handleFileChange,
   handleSubmit,
   loading,
-  subcategories,
-  fitTypes,
+  categories,
   submitButtonText = "Add Product",
   loadingButtonText = "Adding...",
   resetForm,
@@ -17,10 +16,10 @@ const ProductForm = ({
 }) => {
   const {
     name,
+    arName,
     description,
-    subcategoryid,
-    fitType,
-    gender,
+    arDescription,
+    categoryId,
     price,
     mainImage,
     additionalImages,
@@ -33,9 +32,7 @@ const ProductForm = ({
   const validateForm = () => {
     if (!name) return "Product name is required";
     if (!price) return "Price is required";
-    if (!subcategoryid) return "Subcategory is required";
-    if (!fitType) return "Fit type is required";
-    if (!gender) return "Gender is required";
+    if (!categoryId) return "Category is required";
     if (!description) return "Description is required";
     if (!mainImage) return "Main image is required";
     return null;
@@ -123,39 +120,13 @@ const ProductForm = ({
         />
 
         <FormInput
-          label="Subcategory"
+          label="Category"
           type="select"
-          name="subcategoryid"
-          value={subcategoryid}
+          name="categoryId"
+          value={categoryId}
           onChange={handleInputChange}
-          options={subcategories}
-          placeholder="Select Subcategory"
-          required
-        />
-
-        <FormInput
-          label="Fit Type"
-          type="select"
-          name="fitType"
-          value={fitType}
-          onChange={handleInputChange}
-          options={fitTypes}
-          placeholder="Select Fit Type"
-          required
-        />
-
-        <FormInput
-          label="Gender"
-          type="select"
-          name="gender"
-          value={gender}
-          onChange={handleInputChange}
-          options={[
-            { id: "1", name: "Male" },
-            { id: "2", name: "Female" },
-            { id: "3", name: "Both" },
-          ]}
-          placeholder="Select Gender"
+          options={categories}
+          placeholder="Select Category"
           required
         />
       </div>
@@ -169,6 +140,25 @@ const ProductForm = ({
         onChange={handleInputChange}
         placeholder="Enter product description"
         required
+      />
+
+      {/* Arabic Name */}
+      <FormInput
+        label="Arabic Name (Optional)"
+        name="arName"
+        value={arName || ''}
+        onChange={handleInputChange}
+        placeholder="Enter Arabic name"
+      />
+
+      {/* Arabic Description */}
+      <FormInput
+        label="Arabic Description (Optional)"
+        type="textarea"
+        name="arDescription"
+        value={arDescription || ''}
+        onChange={handleInputChange}
+        placeholder="Enter Arabic description"
       />
 
       {/* Product Status */}

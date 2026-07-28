@@ -33,11 +33,15 @@ const Login = ({ setToken }) => {
       // ✅ Handle API response according to schema
       const { statuscode, responseBody } = response.data || {};
       const token = responseBody?.data?.token;
+      const refreshToken = responseBody?.data?.refreshToken;
       const roles = responseBody?.data?.roles || [];
 
       if (statuscode === 200 && token) {
         setToken(token);
         sessionStorage.setItem("token", token);
+        if (refreshToken) {
+          sessionStorage.setItem("refreshToken", refreshToken);
+        }
         sessionStorage.setItem("roles", JSON.stringify(roles));
         toast.success(responseBody?.message || "Login successful");
       } else {

@@ -14,7 +14,9 @@ const AddCategory = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
+  const [arName, setArName] = useState("");
   const [description, setDescription] = useState("");
+  const [arDescription, setArDescription] = useState("");
   const [displayOrder, setDisplayOrder] = useState(1);
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
@@ -28,7 +30,9 @@ const AddCategory = ({
 
   const resetForm = () => {
     setName("");
+    setArName("");
     setDescription("");
+    setArDescription("");
     setDisplayOrder(1);
     setImages([]);
     setMainImage(null);
@@ -40,7 +44,9 @@ const AddCategory = ({
   useEffect(() => {
     if (!editCategoryMode) {
       setName("");
+      setArName("");
       setDescription("");
+      setArDescription("");
       setDisplayOrder(1);
       setImages([]);
       setMainImage(null);
@@ -62,7 +68,9 @@ const AddCategory = ({
           const cat =
             res.data?.responseBody?.data || res.data?.data || res.data;
           setName(cat.name || "");
+          setArName(cat.arName || "");
           setDescription(cat.description || "");
+          setArDescription(cat.arDescription || "");
           setDisplayOrder(cat.displayOrder || 1);
 
           if (cat.images?.length > 0) {
@@ -108,7 +116,9 @@ const AddCategory = ({
     if (!token) return toast.error("You must log in first!");
 
     const cleanedName = cleanText(name);
+    const cleanedArName = cleanText(arName);
     const cleanedDescription = cleanText(description);
+    const cleanedArDescription = cleanText(arDescription);
     const cleanedOrder = Math.max(1, Number(displayOrder));
 
     if (!cleanedName || cleanedName.length < 2)
@@ -118,7 +128,9 @@ const AddCategory = ({
     try {
       const body = {
         name: cleanedName,
+        arName: cleanedArName || null,
         description: cleanedDescription,
+        arDescription: cleanedArDescription || null,
         displayOrder: cleanedOrder,
       };
 
@@ -236,6 +248,28 @@ const AddCategory = ({
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-medium text-gray-600 min-h-[120px]"
                 placeholder="Describe the essence of this category..."
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name (Optional)</label>
+              <input
+                value={arName}
+                onChange={(e) => setArName(e.target.value)}
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-bold text-gray-700"
+                placeholder="e.g. الإلكترونيات"
+                dir="rtl"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description (Optional)</label>
+              <textarea
+                value={arDescription}
+                onChange={(e) => setArDescription(e.target.value)}
+                className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-medium text-gray-600 min-h-[120px]"
+                placeholder="وصف القسم باللغة العربية..."
+                dir="rtl"
               />
             </div>
           </div>

@@ -1,30 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-
-const stats = [
-  { value: 500, suffix: '+', label: 'Projects Powered', icon: '🏗️' },
-  { value: 25, suffix: ' Yrs', label: 'Years of Experience', icon: '📅' },
-  { value: 100, suffix: '%', label: 'Pure Copper Guaranteed', icon: '⚡' },
-  { value: 1000, suffix: '+', label: 'Tons Delivered Yearly', icon: '🚛' },
-];
-
-const reasons = [
-  {
-    icon: '🔬',
-    title: 'Certified Quality',
-    desc: 'Every cable batch passes IEC 60502, ISO 9001, and Egyptian Standards testing before leaving our factory.',
-  },
-  {
-    icon: '🤝',
-    title: 'Trusted by Engineers',
-    desc: 'Specified by electrical engineers and contractors across Egypt for residential, industrial, and infrastructure projects.',
-  },
-  {
-    icon: '🏭',
-    title: 'Direct from Factory',
-    desc: 'No middlemen. Buy direct at competitive prices with full technical support and fast delivery across Egypt.',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 function Counter({ target, suffix }) {
   const [count, setCount] = useState(0);
@@ -47,58 +23,87 @@ function Counter({ target, suffix }) {
   return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
 }
 
-const StatsSection = () => (
-  <section className="my-0 bg-[#0a1e0f]">
-    {/* Stats counters */}
-    <div className="px-4 sm:px-[5vw] pt-16 pb-10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {stats.map((s, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.15, duration: 0.6 }}
-            className="flex flex-col items-center"
-          >
-            <span className="text-4xl mb-2">{s.icon}</span>
-            <p className="text-3xl sm:text-4xl font-black text-[#c9a227]">
-              <Counter target={s.value} suffix={s.suffix} />
-            </p>
-            <p className="text-gray-300 text-sm mt-1 font-medium">{s.label}</p>
-          </motion.div>
-        ))}
-      </div>
-    </div>
+const StatsSection = () => {
+  const { t } = useTranslation();
 
-    {/* Why Choose Al-Ameen */}
-    <div className="px-4 sm:px-[5vw] pb-16 pt-8 border-t border-white/10">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-center text-2xl sm:text-3xl font-black text-white tracking-widest uppercase mb-10"
-      >
-        Why Choose <span className="text-[#c9a227]">Al-Ameen?</span>
-      </motion.h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {reasons.map((r, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.15, duration: 0.6 }}
-            className="bg-white/5 border border-white/10 rounded-2xl p-7 text-center hover:border-[#c9a227]/50 hover:bg-white/8 transition-all duration-300 group"
-          >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{r.icon}</div>
-            <h3 className="text-white font-bold text-lg mb-3">{r.title}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{r.desc}</p>
-          </motion.div>
-        ))}
+  const stats = [
+    { value: 500, suffix: '+', label: t('PROJECTS_POWERED'), icon: '🏗️' },
+    { value: 25, suffix: ' Yrs', label: t('YEARS_OF_EXPERIENCE'), icon: '📅' },
+    { value: 100, suffix: '%', label: t('PURE_COPPER_GUARANTEED'), icon: '⚡' },
+    { value: 1000, suffix: '+', label: t('TONS_DELIVERED_YEARLY'), icon: '🚛' },
+  ];
+
+  const reasons = [
+    {
+      icon: '🔬',
+      title: t('CERTIFIED_QUALITY'),
+      desc: t('CERTIFIED_QUALITY_DESC'),
+    },
+    {
+      icon: '🤝',
+      title: t('TRUSTED_BY_ENGINEERS'),
+      desc: t('TRUSTED_BY_ENGINEERS_DESC'),
+    },
+    {
+      icon: '🏭',
+      title: t('DIRECT_FROM_FACTORY'),
+      desc: t('DIRECT_FROM_FACTORY_DESC'),
+    },
+  ];
+
+  return (
+    <section className="my-0 bg-[#0a1e0f]">
+      {/* Stats counters */}
+      <div className="px-4 sm:px-[5vw] pt-16 pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {stats.map((s, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, duration: 0.6 }}
+              className="flex flex-col items-center"
+            >
+              <span className="text-4xl mb-2">{s.icon}</span>
+              <p className="text-3xl sm:text-4xl font-black text-[#c9a227]">
+                <Counter target={s.value} suffix={s.suffix} />
+              </p>
+              <p className="text-gray-300 text-sm mt-1 font-medium">{s.label}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+
+      {/* Why Choose Al-Ameen */}
+      <div className="px-4 sm:px-[5vw] pb-16 pt-8 border-t border-white/10">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center text-2xl sm:text-3xl font-black text-white tracking-widest uppercase mb-10"
+        >
+          {t('WHY_CHOOSE_AL_AMEEN')}
+        </motion.h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {reasons.map((r, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, duration: 0.6 }}
+              className="bg-white/5 border border-white/10 rounded-2xl p-7 text-center hover:border-[#c9a227]/50 hover:bg-white/8 transition-all duration-300 group"
+            >
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{r.icon}</div>
+              <h3 className="text-white font-bold text-lg mb-3">{r.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{r.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default StatsSection;

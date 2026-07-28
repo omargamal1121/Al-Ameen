@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import WishlistButton from "./WishlistButton";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocalization } from "../utils/localization";
 
 const ProductItem = ({
   id,
@@ -16,6 +17,7 @@ const ProductItem = ({
   hidePrice = false,
 }) => {
   const { currency } = useContext(ShopContext);
+  const { getLocalizedName } = useLocalization();
   const productId = id || _id || propProductId;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -112,7 +114,7 @@ const ProductItem = ({
       {/* 🏷️ Product Info */}
       <div className="pt-4 px-1">
         <p className="text-xs uppercase tracking-widest text-gray-400 mb-1">New Arrival</p>
-        <p className="text-sm font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-1">{name}</p>
+        <p className="text-sm font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-1">{getLocalizedName({ name, arName: null })}</p>
 
         {/* 💰 Price Display (Conditional) */}
         {!hidePrice && (

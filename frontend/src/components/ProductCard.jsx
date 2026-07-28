@@ -2,9 +2,11 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import WishlistButton from "./WishlistButton";
+import { useLocalization } from "../utils/localization";
 
 const ProductCard = ({ product }) => {
   const { currency, addToCart } = useContext(ShopContext);
+  const { getLocalizedName, getLocalizedDescription } = useLocalization();
 
   // Handle missing product data gracefully
   if (!product) {
@@ -68,10 +70,10 @@ const ProductCard = ({ product }) => {
       <div className="p-4">
         <Link to={`/product/${product.id}`} className="block">
           <h3 className="mb-1 text-sm font-medium text-gray-900 line-clamp-1">
-            {product.name}
+            {getLocalizedName(product)}
           </h3>
           <p className="text-xs text-gray-500 line-clamp-2 h-8">
-            {product.description}
+            {getLocalizedDescription(product)}
           </p>
         </Link>
 

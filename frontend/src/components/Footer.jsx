@@ -2,8 +2,10 @@ import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/frontend_assets/assets";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
   const context = useContext(ShopContext);
   const setShowSearch = context?.setShowSearch;
   const navigate = useNavigate();
@@ -46,33 +48,33 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <p className="uppercase tracking-widest text-xs text-[#c9a227] font-bold mb-5">Quick Links</p>
+            <p className="uppercase tracking-widest text-xs text-[#c9a227] font-bold mb-5">{t('QUICK_LINKS')}</p>
             <ul className="space-y-3 text-sm text-gray-300">
-              <li><a onClick={() => { setShowSearch(true); navigate("/collection"); }} className="hover:text-[#c9a227] transition-colors cursor-pointer">🔍 Search Products</a></li>
-              <li><a href="/collection" className="hover:text-[#c9a227] transition-colors cursor-pointer">📦 All Cables</a></li>
-              <li><a href="/about" className="hover:text-[#c9a227] transition-colors cursor-pointer">🏭 About Us</a></li>
-              <li><a href="/contact" className="hover:text-[#c9a227] transition-colors cursor-pointer">📞 Contact</a></li>
-              <li><a href="/policy" className="hover:text-[#c9a227] transition-colors cursor-pointer">📋 Return Policy</a></li>
+              <li><a onClick={() => { setShowSearch(true); navigate("/collection"); }} className="hover:text-[#c9a227] transition-colors cursor-pointer">🔍 {t('SEARCH_PRODUCTS')}</a></li>
+              <li><a href="/collection" className="hover:text-[#c9a227] transition-colors cursor-pointer">📦 {t('ALL_CABLES')}</a></li>
+              <li><a href="/about" className="hover:text-[#c9a227] transition-colors cursor-pointer">🏭 {t('ABOUT_US')}</a></li>
+              <li><a href="/contact" className="hover:text-[#c9a227] transition-colors cursor-pointer">📞 {t('CONTACT')}</a></li>
+              <li><a href="/policy" className="hover:text-[#c9a227] transition-colors cursor-pointer">📋 {t('RETURN_POLICY')}</a></li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <p className="uppercase tracking-widest text-xs text-[#c9a227] font-bold mb-5">Get Bulk Quotes</p>
+            <p className="uppercase tracking-widest text-xs text-[#c9a227] font-bold mb-5">{t('GET_BULK_QUOTES')}</p>
             <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-              Subscribe for exclusive bulk pricing, new product alerts, and technical updates.
+              {t('SUBSCRIBE_NEWSLETTER')}
             </p>
             <div className="flex items-center bg-transparent border border-gray-600 focus-within:border-[#c9a227] transition-colors rounded-lg overflow-hidden">
               <input
                 type="email"
-                placeholder="Your email address"
+                placeholder={t('YOUR_EMAIL_ADDRESS')}
                 className="flex-1 bg-transparent text-gray-200 placeholder-gray-500 px-4 py-3 focus:outline-none text-sm"
               />
               <button className="px-5 py-3 bg-[#c9a227] text-[#0a1e0f] font-bold text-sm hover:bg-yellow-400 transition-colors" aria-label="Subscribe">
                 →
               </button>
             </div>
-            <p className="text-gray-600 text-xs mt-3">⚡ Join 1,000+ engineers & contractors</p>
+            <p className="text-gray-600 text-xs mt-3">⚡ {t('JOIN_ENGINEERS')}</p>
           </div>
         </div>
 
@@ -81,14 +83,14 @@ const Footer = () => {
 
         {/* Bottom row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <span>© 2025 Al-Ameen Wires & Cables — All rights reserved.</span>
+          <span>© 2025 Al-Ameen Wires & Cables — {t('ALL_RIGHTS_RESERVED')}</span>
           <div className="flex items-center gap-2">
             <span className="text-[#c9a227]">⚡</span>
-            <span>IEC Certified</span>
+            <span>{t('IEC_CERTIFIED')}</span>
             <span className="mx-1">·</span>
-            <span>ISO 9001</span>
+            <span>{t('ISO_9001')}</span>
             <span className="mx-1">·</span>
-            <span>Egyptian Standard ES</span>
+            <span>{t('EGYPTIAN_STANDARD')}</span>
           </div>
         </div>
 

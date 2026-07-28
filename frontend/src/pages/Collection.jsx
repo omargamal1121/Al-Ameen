@@ -4,9 +4,11 @@ import ProductItem from "../components/ProductItem";
 import { Link, useParams } from "react-router-dom";
 import TypeCollection from "../components/TypeCollection";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const Collection = () => {
     const { products, search, showSearch } = useContext(ShopContext);
+    const { t } = useTranslation();
     const [showFilter, setShowFilter] = useState(false);
     const [sortOption, setSortOption] = useState("featured");
     const [minPrice, setMinPrice] = useState("");
@@ -65,8 +67,8 @@ const Collection = () => {
         >
             {/* Breadcrumbs */}
             <div className="text-xs text-gray-500 mb-4 flex gap-2">
-                <Link to="/" className="hover:underline">Home</Link> /
-                <Link to="/collection" className="hover:underline">Shop</Link> /
+                <Link to="/" className="hover:underline">{t('HOME')}</Link> /
+                <Link to="/collection" className="hover:underline">{t('SHOP')}</Link> /
                 <span className="text-black">{displayName}</span>
             </div>
 
@@ -82,7 +84,7 @@ const Collection = () => {
                 >
                     {/* Tune SVG icon */}
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 17h6m0 0v-2m0 2v2m6-6h6m0 0v-2m0 2v2M3 7h6m0 0V5m0 2v2m6 6h6m0 0v-2m0 2v2" /></svg>
-                    FILTER AND SORT
+                    {t('FILTER_AND_SORT')}
                 </button>
                 <div className="flex items-center gap-8">
                     <select
@@ -90,16 +92,16 @@ const Collection = () => {
                         value={sortOption}
                         onChange={e => setSortOption(e.target.value)}
                     >
-                        <option value="featured">FEATURED</option>
-                        <option value="best-selling">BEST SELLING</option>
-                        <option value="az">ALPHABETICALLY, A-Z</option>
-                        <option value="za">ALPHABETICALLY, Z-A</option>
-                        <option value="price-low-high">PRICE, LOW TO HIGH</option>
-                        <option value="price-high-low">PRICE, HIGH TO LOW</option>
-                        <option value="date-old-new">DATE, OLD TO NEW</option>
-                        <option value="date-new-old">DATE, NEW TO OLD</option>
+                        <option value="featured">{t('FEATURED')}</option>
+                        <option value="best-selling">{t('BEST_SELLING')}</option>
+                        <option value="az">{t('ALPHABETICALLY_AZ')}</option>
+                        <option value="za">{t('ALPHABETICALLY_ZA')}</option>
+                        <option value="price-low-high">{t('PRICE_LOW_HIGH')}</option>
+                        <option value="price-high-low">{t('PRICE_HIGH_LOW')}</option>
+                        <option value="date-old-new">{t('DATE_OLD_NEW')}</option>
+                        <option value="date-new-old">{t('DATE_NEW_OLD')}</option>
                     </select>
-                    <span className="text-xs text-gray-500">{filteredProducts.length} PRODUCTS</span>
+                    <span className="text-xs text-gray-500">{filteredProducts.length} {t('PRODUCTS_COUNT')}</span>
                 </div>
             </div>
 
@@ -126,26 +128,26 @@ const Collection = () => {
                             transition={{ type: 'spring', stiffness: 400, damping: 40 }}
                         >
                             <button className="absolute top-4 right-4 text-xl" onClick={() => setShowFilter(false)}>×</button>
-                            <h2 className="text-lg font-bold mb-4">FILTER AND SORT</h2>
+                            <h2 className="text-lg font-bold mb-4">{t('FILTER_AND_SORT')}</h2>
                             <div className="mb-4">
                                 <label className="flex items-center gap-2">
                                     <input type="checkbox" checked={inStock} onChange={e => setInStock(e.target.checked)} />
-                                    Availability (In stock)
+                                    {t('AVAILABILITY_IN_STOCK')}
                                 </label>
                             </div>
                             <div className="mb-4">
-                                <label className="block mb-1">Price</label>
+                                <label className="block mb-1">{t('PRICE')}</label>
                                 <div className="flex gap-2">
                                     <input
                                         type="number"
-                                        placeholder="Min"
+                                        placeholder={t('MIN')}
                                         className="border border-gray-200 outline-none px-2 py-1 w-1/2"
                                         value={minPrice}
                                         onChange={e => setMinPrice(e.target.value)}
                                     />
                                     <input
                                         type="number"
-                                        placeholder="Max"
+                                        placeholder={t('MAX')}
                                         className="border border-gray-200 outline-none px-2 py-1 w-1/2"
                                         value={maxPrice}
                                         onChange={e => setMaxPrice(e.target.value)}
@@ -153,20 +155,20 @@ const Collection = () => {
                                 </div>
                             </div>
                             <div className="mb-4">
-                                <label className="block mb-1">Sort By</label>
+                                <label className="block mb-1">{t('SORT_BY')}</label>
                                 <select
                                     className="w-full border border-gray-200 outline-none px-2 py-1"
                                     value={sortOption}
                                     onChange={e => setSortOption(e.target.value)}
                                 >
-                                    <option value="featured">FEATURED</option>
-                                    <option value="best-selling">BEST SELLING</option>
-                                    <option value="az">ALPHABETICALLY, A-Z</option>
-                                    <option value="za">ALPHABETICALLY, Z-A</option>
-                                    <option value="price-low-high">PRICE, LOW TO HIGH</option>
-                                    <option value="price-high-low">PRICE, HIGH TO LOW</option>
-                                    <option value="date-old-new">DATE, OLD TO NEW</option>
-                                    <option value="date-new-old">DATE, NEW TO OLD</option>
+                                    <option value="featured">{t('FEATURED')}</option>
+                                    <option value="best-selling">{t('BEST_SELLING')}</option>
+                                    <option value="az">{t('ALPHABETICALLY_AZ')}</option>
+                                    <option value="za">{t('ALPHABETICALLY_ZA')}</option>
+                                    <option value="price-low-high">{t('PRICE_LOW_HIGH')}</option>
+                                    <option value="price-high-low">{t('PRICE_HIGH_LOW')}</option>
+                                    <option value="date-old-new">{t('DATE_OLD_NEW')}</option>
+                                    <option value="date-new-old">{t('DATE_NEW_OLD')}</option>
                                 </select>
                             </div>
                             <div className="flex justify-between mt-8">
@@ -175,8 +177,8 @@ const Collection = () => {
                                     setMinPrice("");
                                     setMaxPrice("");
                                     setSortOption("featured");
-                                }}>CLEAR</button>
-                                <button className="bg-black text-white px-4 py-2 text-xs cursor-pointer" onClick={() => setShowFilter(false)}>APPLY</button>
+                                }}>{t('CLEAR')}</button>
+                                <button className="bg-black text-white px-4 py-2 text-xs cursor-pointer" onClick={() => setShowFilter(false)}>{t('APPLY')}</button>
                             </div>
                         </motion.div>
                     </>
@@ -199,7 +201,7 @@ const Collection = () => {
                         />
                     ))
                 ) : (
-                    <p className="col-span-full text-center text-gray-400">No products found.</p>
+                    <p className="col-span-full text-center text-gray-400">{t('NO_PRODUCTS_FOUND')}</p>
                 )}
             </div>
 

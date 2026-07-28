@@ -226,7 +226,7 @@ const DiscountDetails = ({ token }) => {
                 ))
               ) : (
                 <div className="p-20 flex flex-col items-center justify-center gap-6 opacity-30">
-                  <div className="text-8xl">🌫️</div>
+                  <div className="text-8xl">🔌</div>
                   <p className="text-sm font-black uppercase tracking-[0.4em] text-gray-400">No products linked</p>
                 </div>
               )}

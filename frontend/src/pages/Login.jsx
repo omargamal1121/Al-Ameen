@@ -150,7 +150,7 @@ const Login = () => {
         value={formData.email}
         onChange={handleInputChange}
         className="outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors"
-        placeholder="Enter your Email"
+        placeholder={t('ENTER_YOUR_EMAIL')}
         required
       />
       <input
@@ -159,14 +159,14 @@ const Login = () => {
         value={formData.password}
         onChange={handleInputChange}
         className="outline-none w-full border-2 border-gray-300 py-2 px-3 rounded-md focus:border-gray-600 transition-colors"
-        placeholder="Enter your Password"
+        placeholder={t('ENTER_YOUR_PASSWORD')}
         required
       />
       <div className="w-full flex justify-between text-sm mt-[-8px]">
         <p>
           Don’t have an account?{" "}
           <Link to="/signup" className="hover:text-gray-600 hover:underline">
-            Sign Up
+            {t('SIGN_UP')}
           </Link>
         </p>
         <Link

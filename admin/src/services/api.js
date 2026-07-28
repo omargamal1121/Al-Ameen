@@ -158,16 +158,12 @@ const API = {
     list: async ({ page = 1, pageSize = 10, ...filters }, token) => {
       try {
         const useAdvancedSearch =
-          filters.subcategoryId ||
-          filters.gender ||
-          filters.fitType ||
+          filters.categoryId ||
           filters.minPrice ||
           filters.maxPrice ||
           filters.inStock !== undefined ||
           filters.onSale === true ||
           filters.color ||
-          filters.minSize ||
-          filters.maxSize ||
           filters.sortBy;
 
         if (useAdvancedSearch) {
@@ -186,12 +182,8 @@ const API = {
           }
           const requestBody = {};
 
-          if (filters.subcategoryId && parseInt(filters.subcategoryId) !== 0)
-            requestBody.subcategoryid = parseInt(filters.subcategoryId);
-          if (filters.gender && parseInt(filters.gender) !== 0)
-            requestBody.gender = parseInt(filters.gender);
-          if (filters.fitType && parseInt(filters.fitType) !== 0)
-            requestBody.fitType = parseInt(filters.fitType);
+          if (filters.categoryId && parseInt(filters.categoryId) !== 0)
+            requestBody.categoryid = parseInt(filters.categoryId);
           if (filters.minPrice && parseFloat(filters.minPrice) !== 0)
             requestBody.minPrice = parseFloat(filters.minPrice);
           if (filters.maxPrice && parseFloat(filters.maxPrice) !== 0)
@@ -206,10 +198,6 @@ const API = {
             requestBody.sortDescending = filters.sortDescending;
           if (filters.color && filters.color !== "")
             requestBody.color = filters.color;
-          if (filters.minSize && parseInt(filters.minSize) !== 0)
-            requestBody.minSize = parseInt(filters.minSize);
-          if (filters.maxSize && parseInt(filters.maxSize) !== 0)
-            requestBody.maxSize = parseInt(filters.maxSize);
 
           try {
             const url = `${backendUrl}/api/Products/advanced-search?${queryParams.toString()}`;
@@ -280,9 +268,7 @@ const API = {
             params.append("includeDeleted", mergedFilters.includeDeleted);
           }
         }
-        if (mergedFilters.subcategoryId) params.append("subcategoryId", mergedFilters.subcategoryId);
-        if (mergedFilters.gender) params.append("gender", mergedFilters.gender);
-        if (mergedFilters.fitType) params.append("fitType", mergedFilters.fitType);
+        if (mergedFilters.categoryId) params.append("categoryId", mergedFilters.categoryId);
         if (mergedFilters.minPrice) params.append("minPrice", mergedFilters.minPrice);
         if (mergedFilters.maxPrice) params.append("maxPrice", mergedFilters.maxPrice);
         if (mergedFilters.inStock === true) params.append("inStock", "true");
@@ -470,10 +456,11 @@ const API = {
     },
   },
 
-  subcategories: {
+
+  categories: {
     getAll: async (token) => {
       try {
-        const res = await axios.get(`${backendUrl}/api/subcategories`, {
+        const res = await axios.get(`${backendUrl}/api/categories`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         return res.data?.responseBody?.data || [];
@@ -482,17 +469,6 @@ const API = {
           return [];
         }
         throw err;
-      }
-    },
-    deleteImage: async (subCatId, imageId, token) => {
-      try {
-        const response = await axios.delete(
-          `${backendUrl}/api/subcategories/${subCatId}/images/${imageId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        return response.data;
-      } catch (error) {
-        throw error;
       }
     },
   },

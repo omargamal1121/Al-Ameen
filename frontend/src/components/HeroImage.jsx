@@ -24,13 +24,13 @@ const HeroImage = ({ height }) => {
 
   useEffect(() => {
     const staticSlides = [
-      { name: "Power Cables", image: assets.brand_hero_main, link: "/collection", type: 'lifestyle', subtitle: 'New Arrivals' },
-      { name: "Control & Signal", image: assets.brand_hero_2, link: "/collection", type: 'lifestyle', subtitle: 'Industrial Grade' },
-      { name: "Coaxial Series", image: assets.brand_img1, link: "/collection", type: 'lifestyle', subtitle: 'Certified Standards' }
+      { name: "Power Cables", image: assets.brand_hero_main, link: "/collection", type: 'lifestyle', subtitleKey: 'NEW_ARRIVALS' },
+      { name: "Control & Signal", image: assets.brand_hero_2, link: "/collection", type: 'lifestyle', subtitleKey: 'INDUSTRIAL_GRADE' },
+      { name: "Coaxial Series", image: assets.brand_img1, link: "/collection", type: 'lifestyle', subtitleKey: 'CERTIFIED_STANDARDS' }
     ];
     setSlides(staticSlides);
     setLoading(false);
-  }, []);
+  }, [t]);
 
   const resolveImageUrl = (url) => {
     if (!url) return null;
@@ -110,7 +110,7 @@ const HeroImage = ({ height }) => {
                           variants={itemVariants}
                           className="text-white/80 uppercase tracking-[0.5em] text-sm mb-6 font-bold drop-shadow-lg"
                         >
-                          {slide.subtitle}
+                          {t(slide.subtitleKey)}
                         </motion.span>
                         <motion.h1
                           variants={itemVariants}

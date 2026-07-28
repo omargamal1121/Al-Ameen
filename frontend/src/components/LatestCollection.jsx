@@ -51,7 +51,7 @@ const LatestCollection = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b border-gray-100 pb-8">
           <Title text1={t('LATEST')} text2={t('PRODUCTS')} />
           <p className="max-w-md text-gray-500 text-sm md:text-base mt-4 md:mt-0 font-light">
-            Stay ahead with our freshest drops. Curated items for the modern lifestyle.
+            {t('STAY_AHEAD_DESC')}
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
@@ -83,7 +83,7 @@ const LatestCollection = () => {
           <div className="absolute -top-6 -left-6 text-9xl font-black text-gray-50/50 -z-10 select-none">NEW</div>
         </div>
         <p className="max-w-md text-gray-500 text-sm md:text-base mt-4 md:mt-0 font-light italic">
-          "Precision-engineered for every application." — Explore our latest cable arrivals.
+          {t('LATEST_PRODUCTS_DESC')}
         </p>
       </motion.div>
 

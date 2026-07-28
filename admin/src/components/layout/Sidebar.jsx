@@ -8,8 +8,8 @@ const SideLink = ({ to, icon, iconAlt, label, onClick }) => (
     to={to}
     onClick={onClick}
     className={({ isActive }) =>
-      `group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-50 ${
-        isActive ? "bg-blue-50 text-blue-700" : "text-gray-700"
+      `group relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors hover:bg-gray-100 ${
+        isActive ? "bg-orange-50 text-orange-700" : "text-gray-700"
       }`
     }
   >
@@ -18,7 +18,7 @@ const SideLink = ({ to, icon, iconAlt, label, onClick }) => (
         {/* Active indicator bar */}
         <span
           className={`absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r transition-colors ${
-            isActive ? "bg-blue-600" : "bg-transparent"
+            isActive ? "bg-orange-600" : "bg-transparent"
           }`}
         />
         <img className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" src={icon} alt={iconAlt} />
@@ -57,7 +57,6 @@ const Sidebar = ({ isOpen = false, onClose = () => {}, deliveryOnly = false }) =
             label: "Collections",
             items: [
               { to: "/collections",       icon: assets.collection_icon, iconAlt: "Categories",      label: "Categories" },
-              { to: "/sub-category",      icon: assets.collection_icon, iconAlt: "Subcategories",   label: "Subcategories" },
               { to: "/collection-manager",icon: assets.collection_icon, iconAlt: "Collections",     label: "Collections" },
             ],
           },
@@ -75,16 +74,6 @@ const Sidebar = ({ isOpen = false, onClose = () => {}, deliveryOnly = false }) =
           : []),
       ],
     },
-    ...(!deliveryOnly
-      ? [
-          {
-            label: "Settings",
-            items: [
-              { to: "/settings", icon: assets.settings_icon, iconAlt: "Settings", label: "Settings" },
-            ],
-          },
-        ]
-      : []),
   ];
 
   return (

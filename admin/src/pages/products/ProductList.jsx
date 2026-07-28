@@ -145,7 +145,7 @@ const ProductCard = React.memo(({ p, navigate, toggleStatus, handleRestore, hand
 const ProductList = ({ token }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const subcategoryIdFromUrl = searchParams.get("subcategory") || searchParams.get("subcategoryId");
+  const categoryIdFromUrl = searchParams.get("category") || searchParams.get("categoryId");
   const collectionIdFromUrl = searchParams.get("collection") || searchParams.get("collectionId");
 
   const [products, setProducts] = useState([]);
@@ -158,24 +158,23 @@ const ProductList = ({ token }) => {
   const [deletedFilter, setDeletedFilter] = useState("not_deleted");
   const [specialFilter, setSpecialFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
-  const [genderFilter, setGenderFilter] = useState("");
-  const [subcategoryFilter, setSubcategoryFilter] = useState(subcategoryIdFromUrl || "");
-  const [subcategories, setSubcategories] = useState([]);
+  const [categoryFilter, setCategoryFilter] = useState(categoryIdFromUrl || "");
+  const [categories, setCategories] = useState([]);
   // Confirmation modal state
   const [confirmState, setConfirmState] = useState({ open: false, title: '', message: '', onConfirm: null, variant: 'danger', loading: false });
   const pageSize = 12;
 
-  // Fetch subcategories for filter
+  // Fetch categories for filter
   useEffect(() => {
-    const fetchSubs = async () => {
+    const fetchCats = async () => {
       try {
-        const subs = await API.subcategories.getAll(token);
-        setSubcategories(subs);
+        const cats = await API.categories.getAll(token);
+        setCategories(cats);
       } catch (err) {
-        console.error("Failed to load subcategories for filter");
+        console.error("Failed to load categories for filter");
       }
     };
-    if (token) fetchSubs();
+    if (token) fetchCats();
   }, [token]);
 
   // Debounce search term
@@ -196,8 +195,8 @@ const ProductList = ({ token }) => {
         res = (await axios.get(`${backendUrl}/api/Collection/${collectionIdFromUrl}/products`, {
           headers: { Authorization: `Bearer ${token}` }
         })).data;
-      } else if (subcategoryFilter && subcategoryFilter !== "") {
-        res = (await axios.get(`${backendUrl}/api/Products/subcategory/${subcategoryFilter}`, {
+      } else if (categoryFilter && categoryFilter !== "") {
+        res = (await axios.get(`${backendUrl}/api/Products/category/${categoryFilter}`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { page, pageSize }
         })).data;
@@ -224,9 +223,6 @@ const ProductList = ({ token }) => {
         // Send inStock only when explicitly filtered (true or false) — omit when "all"
         if (stockFilter === "instock") filters.inStock = true;
         else if (stockFilter === "outofstock") filters.inStock = false;
-
-        // Send gender only when a specific gender is selected
-        if (genderFilter !== "") filters.gender = genderFilter;
 
         if (deletedFilter === "all") {
           filters.includeDeleted = null;
@@ -274,7 +270,7 @@ const ProductList = ({ token }) => {
     } finally {
       setLoading(false);
     }
-  }, [token, debouncedSearch, page, statusFilter, deletedFilter, subcategoryFilter, collectionIdFromUrl, specialFilter, stockFilter, genderFilter]);
+  }, [token, debouncedSearch, page, statusFilter, deletedFilter, categoryFilter, collectionIdFromUrl, specialFilter, stockFilter]);
 
   useEffect(() => {
     fetchProducts();
@@ -282,7 +278,7 @@ const ProductList = ({ token }) => {
 
   useEffect(() => {
     setPage(1);
-  }, [statusFilter, deletedFilter, debouncedSearch, specialFilter, stockFilter, genderFilter, subcategoryFilter]);
+  }, [statusFilter, deletedFilter, debouncedSearch, specialFilter, stockFilter, categoryFilter]);
 
   const toggleStatus = useCallback(async (product) => {
     try {
@@ -348,8 +344,8 @@ const ProductList = ({ token }) => {
 
   // Sync filter when URL params change (from external navigation)
   useEffect(() => {
-    if (subcategoryIdFromUrl) setSubcategoryFilter(subcategoryIdFromUrl);
-  }, [subcategoryIdFromUrl]);
+    if (categoryIdFromUrl) setCategoryFilter(categoryIdFromUrl);
+  }, [categoryIdFromUrl]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -366,20 +362,20 @@ const ProductList = ({ token }) => {
       />
       
       {/* Contextual Filter Indicator */}
-      {(subcategoryFilter || collectionIdFromUrl) && (
+      {(categoryFilter || collectionIdFromUrl) && (
         <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-[32px] flex items-center justify-between animate-in slide-in-from-top-4 duration-500">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-black text-xs shadow-lg">🎯</div>
             <div className="flex flex-col">
               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Active Content Matrix</span>
               <span className="text-sm font-bold text-emerald-900 leading-none">
-                {subcategoryFilter ? `Filtering Products by Subcategory #${subcategoryFilter}` : `Filtering Products by Collection #${collectionIdFromUrl}`}
+                {categoryFilter ? `Filtering Products by Category #${categoryFilter}` : `Filtering Products by Collection #${collectionIdFromUrl}`}
               </span>
             </div>
           </div>
           <button 
             onClick={() => {
-              setSubcategoryFilter("");
+              setCategoryFilter("");
               navigate("/products");
             }}
             className="px-6 py-2.5 bg-white border border-emerald-200 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
@@ -436,30 +432,29 @@ const ProductList = ({ token }) => {
               {[
                 { label: 'Status', value: statusFilter, setter: setStatusFilter, options: [{v:'all', l:'All'}, {v:'active', l:'Live'}, {v:'inactive', l:'Inactive'}] },
                 { label: 'Archive', value: deletedFilter, setter: setDeletedFilter, options: [{v:'all', l:'Combined'}, {v:'deleted', l:'Trashed'}, {v:'not_deleted', l:'Active Only'}] },
-                { label: 'Stock', value: stockFilter, setter: setStockFilter, options: [{v:'all', l:'Quantity: All'}, {v:'instock', l:'In Stock'}, {v:'outofstock', l:'Exhausted'}] },
-                { label: 'Gender', value: genderFilter, setter: setGenderFilter, options: [{v:'', l:'Gender: All'}, {v:'0', l:'Man'}, {v:'1', l:'Woman'}, {v:'2', l:'Kids'}, {v:'3', l:'Unisex'}] }
+                { label: 'Stock', value: stockFilter, setter: setStockFilter, options: [{v:'all', l:'Quantity: All'}, {v:'instock', l:'In Stock'}, {v:'outofstock', l:'Exhausted'}] }
               ].map((filter) => (
-                <div key={filter.label} className="flex bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100 hover:border-emerald-200 transition-colors">
+                <div key={filter.label} className="flex bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100 hover:border-orange-200 transition-colors">
                   <select
                     value={filter.value}
                     onChange={(e) => filter.setter(e.target.value)}
-                    className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer text-gray-600 hover:text-emerald-600 transition-colors appearance-none"
+                    className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer text-gray-600 hover:text-orange-600 transition-colors appearance-none"
                   >
                     {filter.options.map(opt => <option key={opt.v} value={opt.v}>{opt.l}</option>)}
                   </select>
                 </div>
               ))}
 
-              {/* Specialized Subcategory Filter */}
-              <div className="flex bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100 hover:border-emerald-300 transition-colors">
+              {/* Specialized Category Filter */}
+              <div className="flex bg-orange-50 px-4 py-2 rounded-2xl border border-orange-100 hover:border-orange-300 transition-colors">
                 <select
-                  value={subcategoryFilter}
-                  onChange={(e) => setSubcategoryFilter(e.target.value)}
-                  className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer text-emerald-700 hover:text-emerald-900 transition-colors appearance-none max-w-[120px]"
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="bg-transparent text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer text-orange-700 hover:text-orange-900 transition-colors appearance-none max-w-[120px]"
                 >
                   <option value="">Type: All</option>
-                  {subcategories.map(sub => (
-                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
@@ -475,7 +470,7 @@ const ProductList = ({ token }) => {
           ))
         ) : products.length === 0 ? (
           <div className="col-span-full py-40 flex flex-col items-center gap-6 text-gray-300">
-            <div className="text-8xl opacity-20">🌫️</div>
+            <div className="text-8xl opacity-20">🔌</div>
             <p className="font-black uppercase tracking-[0.3em] text-xs">No products found</p>
           </div>
         ) : (
