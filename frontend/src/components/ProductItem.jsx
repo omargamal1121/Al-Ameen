@@ -19,7 +19,7 @@ const ProductItem = ({
 }) => {
   const { currency } = useContext(ShopContext);
   const { getLocalizedName } = useLocalization();
-  const productId = id || _id || propProductId;
+  const productId = id || propProductId || _id;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -82,16 +82,22 @@ const ProductItem = ({
           {/* 🖼️ Product Image with Cycling Animation */}
           <div className="w-full h-full relative">
             <AnimatePresence mode="wait">
-              <motion.img
-                key={currentImageIndex}
-                initial={{ opacity: 0.8, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0.8, scale: 1.05 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="w-full h-full object-cover"
-                src={imageArray[currentImageIndex] || "https://via.placeholder.com/300x400?text=No+Image"}
-                alt={name || "Product image"}
-              />
+              {imageArray[currentImageIndex] ? (
+                <motion.img
+                  key={currentImageIndex}
+                  initial={{ opacity: 0.8, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0.8, scale: 1.05 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="w-full h-full object-cover"
+                  src={imageArray[currentImageIndex]}
+                  alt={name || "Product image"}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <span className="text-gray-400 text-sm">No Image</span>
+                </div>
+              )}
             </AnimatePresence>
 
             {/* Progress dots for image cycling */}

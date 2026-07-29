@@ -17,7 +17,7 @@ const ProductCard = ({ product }) => {
   const mainImage =
     product.images && product.images.length > 0
       ? product.images.find((img) => img.isMain)?.url || product.images[0].url
-      : "https://via.placeholder.com/300x400";
+      : null;
 
   // Format price and discount
   const price = product.price || 0;

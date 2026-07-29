@@ -70,21 +70,18 @@ const Product = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!productId) return;
+      if (!productId) {
+        console.error("Product ID is undefined");
+        return;
+      }
       try {
         const res = await axios.get(`${backendUrl}/api/Products/${productId}?isActive=true&includeDeleted=false`);
         if (res.data?.responseBody?.data) {
           const product = res.data.responseBody.data;
           setProductData(product);
           const productImages = Array.isArray(product.images)
-            ? product.images.map(img => img.url || img.imageUrl).filter(Boolean)
-            : Array.isArray(product.image)
-              ? product.image
-              : product.image
-                ? [product.image]
-                : product.mainImageUrl
-                  ? [product.mainImageUrl]
-                  : [];
+            ? product.images.map(img => img.url).filter(Boolean)
+            : [];
           setActiveImage(productImages[0] || '');
         }
       } catch (err) {

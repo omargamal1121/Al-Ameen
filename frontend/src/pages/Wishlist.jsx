@@ -186,7 +186,7 @@ const Wishlist = () => {
                 product?.images?.find(img => img.isMain)?.url ||
                 product?.images?.[0]?.url ||
                 (Array.isArray(product.images) && product.images[0]) ||
-                'https://via.placeholder.com/300x400?text=No+Image';
+                null;
 
               const originalPrice = product?.price || 0;
               const finalPrice = product?.finalPrice || originalPrice;
@@ -201,12 +201,17 @@ const Wishlist = () => {
                 >
                   <div className="relative aspect-square overflow-hidden bg-gray-100">
                     <Link to={`/product/${product?.id}`}>
-                      <img
-                        src={mainImage}
-                        alt={product?.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/300x400?text=No+Image'; }}
-                      />
+                      {mainImage ? (
+                        <img
+                          src={mainImage}
+                          alt={product?.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-gray-400 text-sm">No Image</span>
+                        </div>
+                      )}
                     </Link>
                     <button
                       onClick={() => handleRemoveFromWishlist(product?.id)}

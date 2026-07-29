@@ -15,8 +15,8 @@ const BestSeller = () => {
     if (Array.isArray(products) && products.length > 0) {
       const activeProducts = products.filter(product => product.isActive === true);
       const sortedProducts = activeProducts.sort((a, b) => {
-        const idA = parseInt(a._id) || 0;
-        const idB = parseInt(b._id) || 0;
+        const idA = parseInt(a.id || a._id) || 0;
+        const idB = parseInt(b.id || b._id) || 0;
         return idB - idA;
       });
       setBestSeller(sortedProducts.slice(0, 4));
@@ -108,6 +108,7 @@ const BestSeller = () => {
                   id={item.id || item._id}
                   image={productImages}
                   name={item.name}
+                  arName={item.arName}
                   price={item.price}
                   finalPrice={item.finalPrice}
                   discountPrecentage={item.discountPrecentage}
