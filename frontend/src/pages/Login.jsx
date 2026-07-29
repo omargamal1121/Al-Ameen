@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import authService from "../services/authService";
+import { useTranslation } from "react-i18next";
+import { claimGuestOrder, getGuestOrderNumber, clearGuestOrderNumber } from "../services/guestOrderService";
 
 const Login = () => {
+  const { t } = useTranslation();
   const { setToken, backendUrl, setUser } = useContext(ShopContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -61,6 +64,19 @@ const Login = () => {
           // ✅ Update context
           setToken(tokenData.token);
           setUser(userData);
+
+          // 🔀 Claim guest order if exists
+          const guestOrderNumber = getGuestOrderNumber();
+          if (guestOrderNumber) {
+            try {
+              await claimGuestOrder(guestOrderNumber, tokenData.token);
+              clearGuestOrderNumber();
+              console.log("Guest order claimed successfully");
+            } catch (error) {
+              console.error("Failed to claim guest order:", error);
+              // Don't block login on claim failure
+            }
+          }
 
           // 🔀 Role-based redirect
           const rawRoles = userData.roles || userData.role || userData.userRoles || [];

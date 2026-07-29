@@ -5,6 +5,7 @@ import { ShopContext } from "../context/ShopContext";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { createGuestOrder, saveGuestOrderNumber, clearGuestOrderNumber } from "../services/guestOrderService";
 
 const PlaceOrder = () => {
   const {
@@ -28,6 +29,18 @@ const PlaceOrder = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [walletPhoneNumber, setWalletPhoneNumber] = useState("");
   const [paymentNotes, setPaymentNotes] = useState("");
+
+  // Guest order form state
+  const [guestFormData, setGuestFormData] = useState({
+    customerName: "",
+    phoneNumber: "",
+    email: "",
+    governorate: "",
+    city: "",
+    street: "",
+    building: "",
+    notes: ""
+  });
 
   const [addressFormData, setAddressFormData] = useState({
     phoneNumber: "",
@@ -186,6 +199,24 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
+    // Check if user has items in cart
+    const cartCount = getCartCount();
+
+    if (cartCount === 0) {
+      console.log("Cart is empty - showing error");
+      toast.error("Your cart is empty. Please add items before placing an order.");
+      setIsLoading(false);
+      return;
+    }
+
+    // Handle guest order (no token)
+    if (!token) {
+      await handleGuestOrder();
+      return;
+    }
+
+    // Handle logged-in user order
     if (!selectedAddressId) {
       toast.error("Please select a delivery address");
       return;
@@ -195,20 +226,92 @@ const PlaceOrder = () => {
       return;
     }
 
-    // Check if user has items in cart
-    const cartCount = getCartCount();
-    console.log("Cart count:", cartCount);
-    console.log("Cart items:", cartItems);
-    console.log("Cart items keys:", Object.keys(cartItems));
-    console.log("Cart items values:", Object.values(cartItems));
+    await handleLoggedInOrder();
+  };
 
-    if (cartCount === 0) {
-      console.log("Cart is empty - showing error");
-      toast.error("Your cart is empty. Please add items before placing an order.");
-      setIsLoading(false);
+  const handleGuestOrder = async () => {
+    // Validate guest form
+    if (!guestFormData.customerName || !guestFormData.phoneNumber || !guestFormData.city || !guestFormData.street) {
+      toast.error("Please fill in all required fields");
       return;
     }
 
+    if (!selectedPaymentMethod) {
+      toast.error("Please select a payment method");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Prepare order items from cart
+      const orderItems = [];
+      for (const [productId, variants] of Object.entries(cartItems)) {
+        for (const [variantKey, quantity] of Object.entries(variants)) {
+          const [size, color] = variantKey.split('_');
+          
+          // Find variant ID from products
+          const product = products.find(p => p.id == productId || p._id == productId);
+          if (product) {
+            // Try to find matching variant
+            const variant = product.variants?.find(v => 
+              v.size === size && v.color === color
+            );
+            
+            if (variant) {
+              orderItems.push({
+                productId: parseInt(productId),
+                productVariantId: variant.id,
+                quantity: quantity
+              });
+            }
+          }
+        }
+      }
+
+      if (orderItems.length === 0) {
+        toast.error("Unable to process order items. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Create guest order
+      const guestOrderPayload = {
+        customerName: guestFormData.customerName,
+        phoneNumber: guestFormData.phoneNumber,
+        email: guestFormData.email || null,
+        governorate: guestFormData.governorate || null,
+        city: guestFormData.city,
+        street: guestFormData.street,
+        building: guestFormData.building || null,
+        notes: guestFormData.notes || null,
+        items: orderItems
+      };
+
+      const orderResponse = await createGuestOrder(guestOrderPayload);
+      const orderNumber = orderResponse?.orderNumber;
+
+      if (orderNumber) {
+        saveGuestOrderNumber(orderNumber);
+        toast.success("Order placed successfully!");
+        
+        // Clear cart
+        setCartItems({});
+        localStorage.removeItem('cartItems');
+        
+        // Redirect to orders page
+        navigate('/orders');
+      } else {
+        throw new Error("Order number not received");
+      }
+    } catch (error) {
+      console.error("Error placing guest order:", error);
+      toast.error(error.response?.data?.responseBody?.message || error.message || "Failed to place order. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoggedInOrder = async () => {
     // Resolve method value from already-loaded list – no second network call needed
     const methodValue = Number(selectedPaymentMethod);
     if (!Number.isFinite(methodValue)) {
@@ -328,11 +431,13 @@ const PlaceOrder = () => {
   return (
     <div className="mt-[80px] mb-5 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       <div className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] overflow-hidden">
-        {/* Left - Address */}
+        {/* Left - Address or Guest Form */}
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={formVariants} className="flex flex-col gap-4 w-full sm:max-w-[480px]">
-          <motion.div variants={sectionVariants} className="text-xl sm:text-2xl my-3">
-            <Title text1={"DELIVERY"} text2={"ADDRESS"} />
-          </motion.div>
+          {token ? (
+            <>
+              <motion.div variants={sectionVariants} className="text-xl sm:text-2xl my-3">
+                <Title text1={"DELIVERY"} text2={"ADDRESS"} />
+              </motion.div>
 
           <motion.div variants={containerVariants} className="flex flex-col gap-4">
             <motion.div variants={itemVariants}>
@@ -456,6 +561,79 @@ const PlaceOrder = () => {
               </motion.div>
             )}
           </motion.div>
+            </>
+          ) : (
+            <>
+              <motion.div variants={sectionVariants} className="text-xl sm:text-2xl my-3">
+                <Title text1={"GUEST"} text2={"CHECKOUT"} />
+              </motion.div>
+              <motion.div variants={containerVariants} className="border border-gray-200 rounded-md p-4 bg-gray-50">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Delivery Information</h3>
+                <div className="space-y-3">
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="text"
+                    placeholder="Full Name *"
+                    value={guestFormData.customerName}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, customerName: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="tel"
+                    placeholder="Phone Number *"
+                    value={guestFormData.phoneNumber}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, phoneNumber: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="email"
+                    placeholder="Email (Optional)"
+                    value={guestFormData.email}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, email: e.target.value })}
+                  />
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="text"
+                    placeholder="Governorate (Optional)"
+                    value={guestFormData.governorate}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, governorate: e.target.value })}
+                  />
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="text"
+                    placeholder="City *"
+                    value={guestFormData.city}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, city: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="text"
+                    placeholder="Street Address *"
+                    value={guestFormData.street}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, street: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    type="text"
+                    placeholder="Building Number (Optional)"
+                    value={guestFormData.building}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, building: e.target.value })}
+                  />
+                  <textarea
+                    className="border border-gray-300 rounded-md px-3.5 py-1.5 w-full"
+                    placeholder="Order Notes (Optional)"
+                    value={guestFormData.notes}
+                    onChange={(e) => setGuestFormData({ ...guestFormData, notes: e.target.value })}
+                    rows="2"
+                  />
+                </div>
+              </motion.div>
+            </>
+          )}
         </motion.div>
 
         {/* Right - Order Summary */}
@@ -527,15 +705,15 @@ const PlaceOrder = () => {
             <motion.div variants={itemVariants} className="w-full text-end mt-8">
               <motion.button
                 type="button"
-                whileHover={{ scale: selectedAddressId ? 1.01 : 1 }}
-                whileTap={{ scale: selectedAddressId ? 0.95 : 1 }}
+                whileHover={{ scale: (token ? selectedAddressId : true) && selectedPaymentMethod && !isLoading ? 1.01 : 1 }}
+                whileTap={{ scale: (token ? selectedAddressId : true) && selectedPaymentMethod && !isLoading ? 0.95 : 1 }}
                 onClick={onSubmitHandler}
-                disabled={!selectedAddressId || !selectedPaymentMethod || isLoading}
-                className={`px-16 py-3 uppercase font-medium transition-all duration-300 ${selectedAddressId && selectedPaymentMethod && !isLoading ? "bg-black text-white cursor-pointer hover:bg-white hover:text-black border border-black" : "bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300"}`}
+                disabled={token ? (!selectedAddressId || !selectedPaymentMethod || isLoading) : (!selectedPaymentMethod || isLoading)}
+                className={`px-16 py-3 uppercase font-medium transition-all duration-300 ${(token ? selectedAddressId : true) && selectedPaymentMethod && !isLoading ? "bg-black text-white cursor-pointer hover:bg-white hover:text-black border border-black" : "bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300"}`}
               >
-                {isLoading ? "Processing..." : "Place Order & Pay"}
+                {isLoading ? "Processing..." : (token ? "Place Order & Pay" : "Place Order")}
               </motion.button>
-              {!selectedAddressId && <p className="text-red-500 text-sm mt-2">Please select a delivery address</p>}
+              {token && !selectedAddressId && <p className="text-red-500 text-sm mt-2">Please select a delivery address</p>}
               {!selectedPaymentMethod && <p className="text-red-500 text-sm mt-2">Please select a payment method</p>}
             </motion.div>
           </motion.div>
