@@ -87,23 +87,35 @@ const BestSeller = () => {
           variants={containerVariants}
           className="grid grid-cols-2 sm:grid-cols-4 gap-8 perspective-1000"
         >
-          {bestSeller.map((item) => (
-            <motion.div
-              key={item._id}
-              variants={productBoxVariants}
-              className="card-luxury"
-            >
-              <ProductItem
-                id={item._id}
-                image={item.image}
-                name={item.name}
-                price={item.price}
-                finalPrice={item.finalPrice}
-                discountPrecentage={item.discountPrecentage}
-                discountName={item.discountName}
-              />
-            </motion.div>
-          ))}
+          {bestSeller.map((item) => {
+            const productImages = Array.isArray(item.images)
+              ? item.images.map(img => img.url || img.imageUrl).filter(Boolean)
+              : Array.isArray(item.image)
+                ? item.image
+                : item.image
+                  ? [item.image]
+                  : item.mainImageUrl
+                    ? [item.mainImageUrl]
+                    : [];
+
+            return (
+              <motion.div
+                key={item.id || item._id}
+                variants={productBoxVariants}
+                className="card-luxury"
+              >
+                <ProductItem
+                  id={item.id || item._id}
+                  image={productImages}
+                  name={item.name}
+                  price={item.price}
+                  finalPrice={item.finalPrice}
+                  discountPrecentage={item.discountPrecentage}
+                  discountName={item.discountName}
+                />
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         <motion.div

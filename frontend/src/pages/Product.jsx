@@ -69,14 +69,31 @@ const Product = () => {
   }
 
   useEffect(() => {
-    if (products.length > 0) {
-      const found = products.find(p => p._id === productId || p.id === productId);
-      if (found) {
-        setProductData(found);
-        setActiveImage(found.image?.[0] || found.mainImageUrl);
+    const fetchProduct = async () => {
+      if (!productId) return;
+      try {
+        const res = await axios.get(`${backendUrl}/api/Products/${productId}?isActive=true&includeDeleted=false`);
+        if (res.data?.responseBody?.data) {
+          const product = res.data.responseBody.data;
+          setProductData(product);
+          const productImages = Array.isArray(product.images)
+            ? product.images.map(img => img.url || img.imageUrl).filter(Boolean)
+            : Array.isArray(product.image)
+              ? product.image
+              : product.image
+                ? [product.image]
+                : product.mainImageUrl
+                  ? [product.mainImageUrl]
+                  : [];
+          setActiveImage(productImages[0] || '');
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
       }
-    }
-  }, [products, productId]);
+    };
+
+    fetchProduct();
+  }, [productId, backendUrl]);
 
   useEffect(() => {
     const fetchVariants = async () => {

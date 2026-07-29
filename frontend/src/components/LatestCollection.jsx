@@ -94,20 +94,32 @@ const LatestCollection = () => {
         variants={containerVariants}
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-x-6 gap-y-12"
       >
-        {latestProducts.map((item, index) => (
-          <motion.div key={index} variants={itemVariants} className="card-luxury relative group">
-            <ProductItem
-              id={item._id}
-              image={item.image}
-              name={item.name}
-              price={item.price}
-              finalPrice={item.finalPrice}
-              discountPrecentage={item.discountPrecentage}
-              discountName={item.discountName}
-            />
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#1a6b2e] to-[#c9a227] rounded-lg opacity-0 group-hover:opacity-15 transition-opacity -z-10 bg-luxury"></div>
-          </motion.div>
-        ))}
+        {latestProducts.map((item, index) => {
+          const productImages = Array.isArray(item.images)
+            ? item.images.map(img => img.url || img.imageUrl).filter(Boolean)
+            : Array.isArray(item.image)
+              ? item.image
+              : item.image
+                ? [item.image]
+                : item.mainImageUrl
+                  ? [item.mainImageUrl]
+                  : [];
+
+          return (
+            <motion.div key={index} variants={itemVariants} className="card-luxury relative group">
+              <ProductItem
+                id={item.id || item._id}
+                image={productImages}
+                name={item.name}
+                price={item.price}
+                finalPrice={item.finalPrice}
+                discountPrecentage={item.discountPrecentage}
+                discountName={item.discountName}
+              />
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#1a6b2e] to-[#c9a227] rounded-lg opacity-0 group-hover:opacity-15 transition-opacity -z-10 bg-luxury"></div>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </div>
   );

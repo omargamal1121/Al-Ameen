@@ -24,7 +24,7 @@ const TypeProduct = () => {
       .sort((a, b) => (b.discountPercentage || b.discountPrecentage || 0) - (a.discountPercentage || a.discountPrecentage || 0))
       .slice(0, 2);
 
-    setTopDiscountedProducts(discounted.length > 0 ? discounted : (products || []).slice(0, 2));
+    setTopDiscountedProducts(discounted);
     setLoading(false);
   }, [products]);
 
@@ -75,15 +75,7 @@ const TypeProduct = () => {
   }
 
   if (!loading && topDiscountedProducts.length === 0) {
-    return (
-      <div className="my-10 overflow-hidden px-4 sm:px-[2vw] md:px-[2vw] lg:px-[3vw]">
-        <div className="text-center py-8">
-          <p className="text-gray-600">
-            No discounted products available at the moment.
-          </p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
