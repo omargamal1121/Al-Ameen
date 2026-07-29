@@ -144,10 +144,6 @@ const CategoryManager = ({ token }) => {
     navigate(`/category/view/${cat.id}`);
   };
 
-  // ✅ When a subcategory is selected in ViewCategory, go to subcategory details page
-  const handleSelectIdFromView = (id) => {
-    navigate(`/subcategories/${id}`);
-  };
 
   return (
     <div className="flex flex-col gap-6 w-full mx-auto animate-in fade-in duration-500">
@@ -186,75 +182,36 @@ const CategoryManager = ({ token }) => {
             ))}
           </div>
 
-          <button
-            onClick={() => navigate('/sub-category')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-          >
-            Sub-Category Manager →
-          </button>
         </div>
       </div>
 
       {/* Quick Access Search Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 group focus-within:border-blue-300 transition-colors">
-          <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-focus-within:bg-blue-600 group-focus-within:text-white transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <input
-            type="number"
-            placeholder="Quick search by Category ID..."
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-sm font-medium"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && searchId) navigate(`/category/view/${searchId}`);
-            }}
-          />
-          <button
-            onClick={() => {
-              if (!searchId) return toast.error("Enter category ID");
-              setActiveTab("category");
-              navigate(`/category/view/${searchId}`);
-            }}
-            className="px-4 py-1.5 bg-gray-900 border border-gray-900 text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Find
-          </button>
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 group focus-within:border-blue-300 transition-colors">
+        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-focus-within:bg-blue-600 group-focus-within:text-white transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+          </svg>
         </div>
-
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 group focus-within:border-purple-300 transition-colors">
-          <div className="p-2 bg-purple-50 text-purple-600 rounded-lg group-focus-within:bg-purple-600 group-focus-within:text-white transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-            </svg>
-          </div>
-          <input
-            type="number"
-            placeholder="Jump to SubCategory ID..."
-            className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-sm font-medium"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                const val = e.currentTarget.value;
-                if (!val) return toast.error("Enter subcategory ID");
-                navigate(`/subcategories/${val}`);
-              }
-            }}
-          />
-          <button
-            onClick={(e) => {
-              const input = (e.currentTarget.previousElementSibling);
-              const val = input && 'value' in input ? input.value : '';
-              if (!val) return toast.error("Enter subcategory ID");
-              navigate(`/subcategories/${val}`);
-            }}
-            className="px-4 py-1.5 bg-gray-900 border border-gray-900 text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Go
-          </button>
-        </div>
+        <input
+          type="number"
+          placeholder="Quick search by Category ID..."
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-sm font-medium"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && searchId) navigate(`/category/view/${searchId}`);
+          }}
+        />
+        <button
+          onClick={() => {
+            if (!searchId) return toast.error("Enter category ID");
+            setActiveTab("category");
+            navigate(`/category/view/${searchId}`);
+          }}
+          className="px-4 py-1.5 bg-gray-900 border border-gray-900 text-white text-xs font-bold rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          Find
+        </button>
       </div>
 
       {/* Main Content Area */}
@@ -321,7 +278,6 @@ const CategoryManager = ({ token }) => {
                   searchDeleted === "true" ? true : searchDeleted === "false" ? false : null
                 }
                 onUpdateCategory={handleEditCategory}
-                onSelectId={handleSelectIdFromView}
               />
             </div>
           )}
