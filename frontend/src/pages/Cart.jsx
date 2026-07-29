@@ -366,8 +366,8 @@ const Cart = () => {
               onClick={async () => {
                 // 🆕 Check if user is logged in first
                 if (!token) {
-                  toast.info(t('PLEASE_LOGIN_CHECKOUT'));
-                  navigate("/login");
+                  // Redirect to guest checkout for non-authenticated users
+                  navigate("/guest-checkout");
                   return;
                 }
 

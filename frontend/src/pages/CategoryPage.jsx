@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Title from "../components/Title";
 import { FaChevronDown, FaTimes, FaFilter, FaThLarge, FaList } from "react-icons/fa";
 import { useLocalization } from "../utils/localization";
+import ProductItem from "../components/ProductItem";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
@@ -12,6 +13,7 @@ const CategoryPage = () => {
   const { getLocalizedName, getLocalizedDescription } = useLocalization();
   const [category, setCategory] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sortOption, setSortOption] = useState("featured");
@@ -19,31 +21,45 @@ const CategoryPage = () => {
   const [inStock, setInStock] = useState(false);
 
   useEffect(() => {
-    const fetchCategoryAndSubcategories = async () => {
+    const fetchCategoryAndProducts = async () => {
       try {
         setLoading(true);
         setError("");
-        const response = await fetch(`${backendUrl}/api/categories/${categoryId}?isActive=true&includeDeleted=false`);
-        const data = await response.json();
+        
+        // Fetch category data
+        const categoryResponse = await fetch(`${backendUrl}/api/categories/${categoryId}?isActive=true&includeDeleted=false`);
+        const categoryData = await categoryResponse.json();
 
-        if (response.ok && data.responseBody) {
-          setCategory(data.responseBody.data);
-          if (data.responseBody.data.subCategories) {
-            setSubcategories(data.responseBody.data.subCategories.filter(sub => sub.isActive));
+        if (categoryResponse.ok && categoryData.responseBody) {
+          setCategory(categoryData.responseBody.data);
+          if (categoryData.responseBody.data.subCategories) {
+            setSubcategories(categoryData.responseBody.data.subCategories.filter(sub => sub.isActive));
           } else {
             setSubcategories([]);
           }
         } else {
-          setError(data.message || "Failed to load category");
+          setError(categoryData.message || "Failed to load category");
+        }
+
+        // Fetch products by category ID
+        const productsResponse = await fetch(`${backendUrl}/api/Products/category/${categoryId}?isActive=true&includeDeleted=false`);
+        const productsData = await productsResponse.json();
+
+        if (productsResponse.ok && productsData.responseBody) {
+          setProducts(productsData.responseBody.data || []);
+        } else {
+          console.error("Failed to fetch products:", productsData);
+          setProducts([]);
         }
       } catch (err) {
         setError("Network error. Please try again.");
+        console.error("Error fetching category/products:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (categoryId) fetchCategoryAndSubcategories();
+    if (categoryId) fetchCategoryAndProducts();
   }, [categoryId, backendUrl]);
 
   const sortedSubcategories = [...subcategories]
@@ -123,49 +139,86 @@ const CategoryPage = () => {
           </div>
         </div>
 
-        {/* Subcategories Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12"
-        >
-          {sortedSubcategories.map((sub) => (
-            <motion.div key={sub.id} variants={itemVariants} className="group">
-              <Link to={`/subcategory/${sub.id}`} className="block relative">
-                <div className="aspect-[3/4] overflow-hidden rounded-3xl bg-gray-50 relative">
-                  {sub.images?.[0] ? (
-                    <img
-                      src={sub.images[0].url}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      alt={getLocalizedName(sub)}
+        {/* Products Grid */}
+        {products.length > 0 && (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="mb-12"
+          >
+            <h2 className="text-2xl font-black tracking-tighter text-gray-900 mb-8">Products</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {products.map((product) => {
+                const productImages = Array.isArray(product.images)
+                  ? product.images.map(img => img.url || img.imageUrl).filter(Boolean)
+                  : product.image
+                    ? [product.image]
+                    : [];
+
+                return (
+                  <motion.div key={product.id} variants={itemVariants}>
+                    <ProductItem
+                      id={product.id}
+                      image={productImages}
+                      name={product.name}
+                      arName={product.arName}
+                      price={product.price}
+                      finalPrice={product.finalPrice}
+                      discountPrecentage={product.discountPrecentage}
                     />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center font-black text-xs text-gray-300">NO VISUAL</div>
-                  )}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500"></div>
-                  <div className="absolute inset-x-4 bottom-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <button className="w-full py-3 bg-white text-black font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-2xl">
-                      Explore Sub-Selection
-                    </button>
-                  </div>
-                </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
 
-                <div className="mt-6 px-2">
-                  <div className="flex justify-between items-start mb-1">
-                    <h3 className="text-lg font-black tracking-tighter text-gray-900 leading-none">{getLocalizedName(sub)}</h3>
-                    <span className="text-[10px] font-bold text-gray-300 uppercase">Featured</span>
+        {/* Subcategories Grid */}
+        {sortedSubcategories.length > 0 && (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12"
+          >
+            {sortedSubcategories.map((sub) => (
+              <motion.div key={sub.id} variants={itemVariants} className="group">
+                <Link to={`/subcategory/${sub.id}`} className="block relative">
+                  <div className="aspect-[3/4] overflow-hidden rounded-3xl bg-gray-50 relative">
+                    {sub.images?.[0] ? (
+                      <img
+                        src={sub.images[0].url}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        alt={getLocalizedName(sub)}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center font-black text-xs text-gray-300">NO VISUAL</div>
+                    )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500"></div>
+                    <div className="absolute inset-x-4 bottom-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                      <button className="w-full py-3 bg-white text-black font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-2xl">
+                        Explore Sub-Selection
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-400 font-medium line-clamp-1 italic">{getLocalizedDescription(sub) || "Discover high-end curated items"}</p>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
 
-        {sortedSubcategories.length === 0 && (
+                  <div className="mt-6 px-2">
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-lg font-black tracking-tighter text-gray-900 leading-none">{getLocalizedName(sub)}</h3>
+                      <span className="text-[10px] font-bold text-gray-300 uppercase">Featured</span>
+                    </div>
+                    <p className="text-xs text-gray-400 font-medium line-clamp-1 italic">{getLocalizedDescription(sub) || "Discover high-end curated items"}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+
+        {products.length === 0 && sortedSubcategories.length === 0 && (
           <div className="py-32 text-center border-2 border-dashed border-gray-100 rounded-[3rem]">
-            <p className="text-xs font-black uppercase tracking-[0.5em] text-gray-300">Collection Empty</p>
+            <p className="text-xs font-black uppercase tracking-[0.5em] text-gray-300">No products or subcategories found</p>
           </div>
         )}
       </div>

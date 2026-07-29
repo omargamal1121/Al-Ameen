@@ -32,7 +32,13 @@ const GuestCheckoutForm = ({ onSubmit, loading }) => {
         const response = await fetch(`${backendUrl}/api/Enums/PaymentMethods`);
         const data = await response.json();
         const methods = data.data || data.responseBody?.data || data;
-        setPaymentMethods(Array.isArray(methods) ? methods : []);
+        
+        // Handle different API response formats - extract payment method names
+        const processedMethods = Array.isArray(methods) 
+          ? methods.map(m => typeof m === 'object' ? (m.name || m.value || m.id || JSON.stringify(m)) : m)
+          : [];
+        
+        setPaymentMethods(processedMethods);
       } catch (error) {
         console.error('Error fetching payment methods:', error);
         // Fallback to default payment methods if API fails
@@ -354,9 +360,9 @@ const GuestCheckoutForm = ({ onSubmit, loading }) => {
         
         <div className="space-y-3">
           {paymentMethods.length > 0 ? (
-            paymentMethods.map((method) => (
+            paymentMethods.map((method, index) => (
               <label
-                key={method}
+                key={`payment-${index}-${typeof method === 'object' ? JSON.stringify(method) : method}`}
                 className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
                   formData.paymentMethod === method
                     ? 'border-black bg-gray-50'
@@ -376,9 +382,9 @@ const GuestCheckoutForm = ({ onSubmit, loading }) => {
             ))
           ) : (
             // Fallback payment methods if API fails
-            ['COD', 'Card', 'MobileWallet'].map((method) => (
+            ['COD', 'Card', 'MobileWallet'].map((method, index) => (
               <label
-                key={method}
+                key={`fallback-payment-${index}`}
                 className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
                   formData.paymentMethod === method
                     ? 'border-black bg-gray-50'

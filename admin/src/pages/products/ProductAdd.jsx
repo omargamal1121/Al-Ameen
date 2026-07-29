@@ -121,7 +121,13 @@ const ProductAdd = ({ token }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const productPayload = { ...formData, categoryId: Number(formData.categoryId), price: Number(formData.price) };
+      const productPayload = {
+        ...formData,
+        categoryId: Number(formData.categoryId),
+        price: Number(formData.price),
+        arName: formData.arName || null,
+        arDescription: formData.arDescription || null
+      };
 
       let productId = editId;
       if (editId) {

@@ -191,9 +191,18 @@ const GuestCheckout = () => {
   const getOrderSummaryItems = () => {
     const items = [];
     
+    console.log('Cart items:', cartItems);
+    console.log('Products available:', products);
+    console.log('Products loaded:', productsLoaded);
+    
     for (const productId in cartItems) {
       const product = products.find(p => p.id === Number(productId));
-      if (!product) continue;
+      console.log(`Looking for product ID ${productId}, found:`, product);
+      
+      if (!product) {
+        console.warn(`Product with ID ${productId} not found in products array`);
+        continue;
+      }
 
       for (const itemKey in cartItems[productId]) {
         const quantity = cartItems[productId][itemKey];
@@ -208,11 +217,24 @@ const GuestCheckout = () => {
       }
     }
     
+    console.log('Order summary items:', items);
     return items;
   };
 
   const orderSummaryItems = getOrderSummaryItems();
   const deliveryFee = 10; // EGP
+
+  // Show loading state if products are not loaded yet
+  if (!productsLoaded) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate total
   const calculateSubtotal = () => {
@@ -267,37 +289,50 @@ const GuestCheckout = () => {
             ) : (
               <>
                 <div className="space-y-4 mb-6">
-                  {orderSummaryItems.map((item, index) => (
-                    <motion.div
-                      key={`${item.product.id}-${item.size}-${item.color}-${index}`}
-                      variants={fadeUp}
-                      className="flex items-center space-x-4 pb-4 border-b border-gray-100 last:border-0 last:pb-0"
-                    >
-                      <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                        {item.product.image && (
-                          <img
-                            src={item.product.image}
-                            alt={item.product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 truncate">
-                          {item.product.name}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Size: {item.size} {item.color && `• Color: ${item.color}`}
-                        </p>
-                        <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-gray-900">
-                          {backendUrl ? 'EGP ' : ''}{(item.product.price * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {orderSummaryItems.map((item, index) => {
+                    const productImage = Array.isArray(item.product.images) 
+                      ? item.product.images[0]?.url 
+                      : item.product.image;
+                    
+                    const sizeStr = typeof item.size === 'object' ? JSON.stringify(item.size) : item.size;
+                    const colorStr = typeof item.color === 'object' ? JSON.stringify(item.color) : item.color;
+                    
+                    return (
+                      <motion.div
+                        key={`${item.product.id}-${sizeStr}-${colorStr}-${index}`}
+                        variants={fadeUp}
+                        className="flex items-center space-x-4 pb-4 border-b border-gray-100 last:border-0 last:pb-0"
+                      >
+                        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                          {productImage ? (
+                            <img
+                              src={productImage}
+                              alt={item.product.name || 'Product'}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                              No Image
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-gray-900 truncate">
+                            {item.product.name || 'Product'}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            Size: {sizeStr || 'N/A'} {colorStr && `• Color: ${colorStr}`}
+                          </p>
+                          <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">
+                            {backendUrl ? 'EGP ' : ''}{(item.product.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
                 <div className="space-y-3 pt-4 border-t border-gray-200">
