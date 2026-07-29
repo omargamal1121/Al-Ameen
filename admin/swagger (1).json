@@ -281,10 +281,34 @@
       }
     },
     "/api/Account/refresh-token": {
-      "get": {
+      "post": {
         "tags": [
           "Account"
         ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -8807,8 +8831,16 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -9154,8 +9186,16 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -9293,8 +9333,16 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -9471,7 +9519,15 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -9572,7 +9628,15 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -9746,7 +9810,15 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -9972,10 +10044,18 @@
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\s\\-,]*[a-zA-Z0-9]$",
             "type": "string"
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "maxLength": 50,
             "minLength": 10,
             "type": "string"
+          },
+          "arDescription": {
+            "type": "string",
+            "nullable": true
           },
           "categoryId": {
             "type": "integer",
@@ -11762,7 +11842,15 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -11880,8 +11968,16 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -12376,6 +12472,19 @@
         },
         "additionalProperties": false
       },
+      "RefreshTokenRequestDto": {
+        "required": [
+          "refreshToken"
+        ],
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "RegisterDto": {
         "required": [
           "age",
@@ -12678,6 +12787,10 @@
             "type": "string",
             "nullable": true
           },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          },
           "roles": {
             "type": "array",
             "items": {
@@ -12778,11 +12891,19 @@
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\s\\-,]*[a-zA-Z0-9]$",
             "type": "string"
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "maxLength": 50,
             "minLength": 10,
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
             "type": "string"
+          },
+          "arDescription": {
+            "type": "string",
+            "nullable": true
           },
           "displayOrder": {
             "type": "integer",
@@ -12799,7 +12920,15 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },
@@ -12934,10 +13063,18 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "maxLength": 50,
             "minLength": 10,
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           },

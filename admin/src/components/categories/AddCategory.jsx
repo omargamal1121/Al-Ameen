@@ -252,24 +252,26 @@ const AddCategory = ({
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name (Optional)</label>
+              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name</label>
               <input
                 value={arName}
                 onChange={(e) => setArName(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-bold text-gray-700"
                 placeholder="e.g. الإلكترونيات"
                 dir="rtl"
+                required
               />
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description (Optional)</label>
+              <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description</label>
               <textarea
                 value={arDescription}
                 onChange={(e) => setArDescription(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-medium text-gray-600 min-h-[120px]"
                 placeholder="وصف القسم باللغة العربية..."
                 dir="rtl"
+                required
               />
             </div>
           </div>

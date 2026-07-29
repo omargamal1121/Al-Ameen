@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
-import { staticProducts } from "../assets/frontend_assets/staticData";
 import Title from "./Title";
 import ProductItem from "./ProductItem";
 import { motion } from "framer-motion";
@@ -8,13 +7,32 @@ import { useTranslation } from 'react-i18next';
 
 const MostWanted = () => {
     const { t } = useTranslation();
+    const { backendUrl } = useContext(ShopContext);
     const [mostWantedProducts, setMostWantedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setMostWantedProducts(staticProducts);
-        setLoading(false);
-    }, []);
+        const fetchBestSellers = async () => {
+            try {
+                const response = await fetch(`${backendUrl}/api/Products/bestsellers?isActive=true&includeDeleted=false`);
+                const data = await response.json();
+
+                if (response.ok && data.responseBody) {
+                    setMostWantedProducts(data.responseBody.data || []);
+                } else {
+                    console.error("Failed to fetch bestsellers:", data);
+                    setMostWantedProducts([]);
+                }
+            } catch (error) {
+                console.error("Error fetching bestsellers:", error);
+                setMostWantedProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBestSellers();
+    }, [backendUrl]);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -101,6 +119,7 @@ const MostWanted = () => {
                                 id={item.productId || item.id || item._id}
                                 image={productImages}
                                 name={item.productName || item.name}
+                                arName={item.arName}
                                 price={item.price}
                                 finalPrice={item.finalPrice}
                                 discountPrecentage={item.discountPrecentage}

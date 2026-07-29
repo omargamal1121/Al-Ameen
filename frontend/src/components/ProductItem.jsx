@@ -11,6 +11,7 @@ const ProductItem = ({
   productId: propProductId,
   image,
   name,
+  arName,
   price,
   finalPrice,
   discountPrecentage,
@@ -114,7 +115,7 @@ const ProductItem = ({
       {/* 🏷️ Product Info */}
       <div className="pt-4 px-1">
         <p className="text-xs uppercase tracking-widest text-gray-400 mb-1">New Arrival</p>
-        <p className="text-sm font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-1">{getLocalizedName({ name, arName: null })}</p>
+        <p className="text-sm font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-1">{getLocalizedName({ name, arName })}</p>
 
         {/* 💰 Price Display (Conditional) */}
         {!hidePrice && (

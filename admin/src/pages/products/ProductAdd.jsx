@@ -12,7 +12,7 @@ const ProductAdd = ({ token }) => {
   const [categories, setCategories] = useState([]);
 
   const [formData, setFormData] = useState({
-    name: "", description: "", categoryId: "", price: "",
+    name: "", arName: "", description: "", arDescription: "", categoryId: "", price: "",
     isActive: true, inStock: true, onSale: false, material: "", careInstructions: "", shippingInfo: ""
   });
 
@@ -37,15 +37,17 @@ const ProductAdd = ({ token }) => {
         const p = res?.responseBody?.data;
         if (p) {
           setFormData({
-            name: p.name || "", 
-            description: p.description || "", 
+            name: p.name || "",
+            arName: p.arName || "",
+            description: p.description || "",
+            arDescription: p.arDescription || "",
             categoryId: p.categoryId?.toString() || "",
             price: p.price?.toString() || "",
-            isActive: p.isActive ?? true, 
-            inStock: p.inStock ?? true, 
+            isActive: p.isActive ?? true,
+            inStock: p.inStock ?? true,
             onSale: p.onSale ?? false,
-            material: p.material || "", 
-            careInstructions: p.careInstructions || "", 
+            material: p.material || "",
+            careInstructions: p.careInstructions || "",
             shippingInfo: p.shippingInfo || ""
           });
 
@@ -183,11 +185,31 @@ const ProductAdd = ({ token }) => {
               </div>
 
               <div className="flex flex-col gap-2 md:col-span-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name</label>
+                <input
+                  name="arName" value={formData.arName} onChange={handleInputChange} required
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold text-lg"
+                  placeholder="اسم المنتج"
+                  dir="rtl"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 md:col-span-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
                 <textarea
                   name="description" value={formData.description} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
                   placeholder="Enter product description..."
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 md:col-span-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description</label>
+                <textarea
+                  name="arDescription" value={formData.arDescription} onChange={handleInputChange} required
+                  className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
+                  placeholder="وصف المنتج..."
+                  dir="rtl"
                 />
               </div>
 

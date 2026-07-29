@@ -6,7 +6,6 @@ import { fetchWithTokenRefresh, getAuthHeaders, safeParseJson } from "../utils/a
 import wishlistService from "../services/wishlistService";
 import discountService from "../services/discountService";
 import authService from "../services/authService";
-import { staticProducts } from "../assets/frontend_assets/staticData";
 import { clearAllGuestData } from "../utils/guestSession";
 export const ShopContext = createContext();
 
@@ -294,9 +293,24 @@ const ShopContextProvider = (props) => {
   };
 
   const getProducts = async () => {
-    // Strictly use static products as requested for now
-    setProducts(staticProducts);
-    setProductsLoaded(true);
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/Products?isActive=true&includeDeleted=false`
+      );
+      const data = await response.json();
+
+      if (response.ok && data.responseBody) {
+        setProducts(data.responseBody.data || []);
+      } else {
+        console.error("Failed to fetch products:", data);
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+    } finally {
+      setProductsLoaded(true);
+    }
   };
 
   const fetchUserCart = async () => {

@@ -4,7 +4,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { staticCategories } from "../assets/frontend_assets/staticData";
 
 const NavbarPage = () => {
   const {
@@ -60,14 +59,27 @@ const NavbarPage = () => {
   };
 
   const [categories, setCategories] = useState([]);
-  const [categorySubcategories, setCategorySubcategories] = useState({});
 
   useEffect(() => {
-    setCategories(staticCategories);
-    const subcats = {};
-    staticCategories.forEach(cat => { subcats[cat.id] = cat.subCategorySimples; });
-    setCategorySubcategories(subcats);
-  }, []);
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/api/categories?isActive=true&includeDeleted=false`);
+        const data = await response.json();
+
+        if (response.ok && data.responseBody) {
+          setCategories(data.responseBody.data || []);
+        } else {
+          console.error("Failed to fetch categories:", data);
+          setCategories([]);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setCategories([]);
+      }
+    };
+
+    fetchCategories();
+  }, [backendUrl]);
 
   // Removed N+1 fetchCategoriesWithSubcategories using new subCategorySimples array
 
@@ -110,7 +122,7 @@ const NavbarPage = () => {
             to="/collection"
             className="flex items-center gap-1 focus:outline-none uppercase tracking-widest"
           >
-            {t("CATEGORY")} <span className={`${i18n.language === 'ar' ? 'mr-1' : 'ml-1'} text-[10px]`}>{i18n.language === 'ar' ? '&#9652;' : '&#9662;'}</span>
+            {t("CATEGORY")}
           </NavLink>
 
           {/* Main Categories Dropdown */}
@@ -118,46 +130,13 @@ const NavbarPage = () => {
             <ul className="flex flex-col py-3">
               {Array.isArray(categories) && categories.length > 0 ? (
                 categories.map((cat) => (
-                  <li
-                    key={cat.id}
-                    className="relative px-3 group/sub"
-                  >
+                  <li key={cat.id} className="px-3">
                     <Link
                       to={`/category/${cat.id}`}
                       className="flex justify-between items-center px-4 py-3.5 hover:bg-black hover:text-white rounded-xl cursor-pointer text-gray-800 font-black transition-all duration-200"
                     >
                       <span className="text-sm tracking-tight">{cat.name}</span>
-                      {Array.isArray(categorySubcategories[cat.id]) &&
-                        categorySubcategories[cat.id].length > 0 && (
-                          <span className={`text-[10px] ${i18n.language === 'ar' ? 'mr-2' : 'ml-2'} font-black transition-transform ${i18n.language === 'ar' ? 'group-hover/sub:-translate-x-1' : 'group-hover/sub:translate-x-1'}`}>❯</span>
-                        )}
                     </Link>
-
-                    {/* Nested Subcategories Popout - Using Hidden/Block for Reliability */}
-                    {Array.isArray(categorySubcategories[cat.id]) &&
-                      categorySubcategories[cat.id].length > 0 && (
-                        <div
-                          className={`absolute top-0 ${i18n.language === 'ar' ? 'pr-4' : 'pl-4'} hidden group-hover/sub:block z-[110] ${i18n.language === 'ar' ? 'right-[calc(100%-10px)]' : 'left-[calc(100%-10px)]'}`}
-                        >
-                          <ul className="w-64 bg-white shadow-2xl border border-gray-100 rounded-2xl py-3 transform transition-all duration-300">
-                            <li className="px-5 py-2 border-b border-gray-50 mb-2">
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                                Explore {cat.name}
-                              </span>
-                            </li>
-                            {categorySubcategories[cat.id].map((sub) => (
-                              <li key={sub.id} className="px-3">
-                                <Link
-                                  to={`/subcategory/${sub.id}`}
-                                  className={`block px-4 py-2.5 hover:bg-gray-50 ${i18n.language === 'ar' ? 'hover:pr-6' : 'hover:pl-6'} rounded-xl cursor-pointer text-gray-600 text-xs font-bold transition-all duration-200`}
-                                >
-                                  {sub.name}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
                   </li>
                 ))
               ) : (
@@ -283,10 +262,9 @@ const NavbarPage = () => {
         <div className="flex flex-col text-gray-600">
           <div
             onClick={() => setvisible(false)}
-            className={`flex items-center gap-4 p-3 cursor-pointer ${i18n.language === 'ar' ? 'flex-row-reverse' : ''}`}
+            className="flex items-center gap-4 p-3 cursor-pointer"
           >
-            <img src={assets.dropdown_icon} className={`h-4 ${i18n.language === 'ar' ? '' : 'rotate-180'}`} alt="" />
-            <p>{t('BACK')}</p>
+            <img src={assets.dropdown_icon} className="h-4 rotate-180" alt="" />
           </div>
           <NavLink
             onClick={() => setvisible(false)}

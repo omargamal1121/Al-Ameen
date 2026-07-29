@@ -1,28 +1,48 @@
 import React, { useState, useEffect, useContext } from "react";
 import { assets } from "../assets/frontend_assets/assets";
-import { staticCategories } from "../assets/frontend_assets/staticData";
 import { Link } from "react-router-dom";
 import Title from "./Title";
 import { useTranslation } from "react-i18next";
 import { ShopContext } from "../context/ShopContext";
+import { useLocalization } from "../utils/localization";
 
 const TypeCollection = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { backendUrl } = useContext(ShopContext);
+  const { getLocalizedName, getLocalizedDescription } = useLocalization();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setCategories(staticCategories.map(cat => ({
-      id: cat.id,
-      name: i18n.language === 'ar' ? cat.nameAr : cat.name,
-      image: cat.image,
-      link: `/category/${cat.id}`,
-      description: cat.description
-    })));
-    setLoading(false);
-  }, [i18n.language]);
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/api/categories?isActive=true&includeDeleted=false`);
+        const data = await response.json();
+
+        if (response.ok && data.responseBody) {
+          const categoriesData = data.responseBody.data || [];
+          setCategories(categoriesData.map(cat => ({
+            id: cat.id,
+            name: getLocalizedName(cat),
+            image: cat.images?.[0]?.url || assets.eniem,
+            link: `/category/${cat.id}`,
+            description: getLocalizedDescription(cat)
+          })));
+        } else {
+          console.error("Failed to fetch categories:", data);
+          setError("Failed to load categories");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setError("Error loading categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [backendUrl, getLocalizedName, getLocalizedDescription]);
 
   // If loading, show nothing or a spinner
   if (loading) {

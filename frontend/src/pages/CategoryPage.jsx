@@ -80,7 +80,7 @@ const CategoryPage = () => {
       <section className="relative h-[40vh] md:h-[60vh] overflow-hidden flex items-center justify-center mt-16 group">
         <div className="absolute inset-0 z-0">
           <img
-            src={category?.images?.[0]?.url || "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=2000"}
+            src={category?.images?.[0]?.url || "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=2000"}
             className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-10000 ease-out"
             alt={getLocalizedName(category)}
           />

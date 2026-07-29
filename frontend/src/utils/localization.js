@@ -7,19 +7,23 @@ import { useTranslation } from 'react-i18next';
 /**
  * Get localized name based on current language
  * Falls back to English if Arabic field is null/undefined
+ * Supports both old (nameAr) and new (arName) field names
  */
 export const getLocalizedName = (item, language) => {
   if (!item) return '';
-  return language === 'ar' && item.nameAr ? item.nameAr : item.name;
+  const arabicName = item.arName || item.nameAr;
+  return language === 'ar' && arabicName ? arabicName : item.name;
 };
 
 /**
  * Get localized description based on current language
  * Falls back to English if Arabic field is null/undefined
+ * Supports both old (descriptionAr) and new (arDescription) field names
  */
 export const getLocalizedDescription = (item, language) => {
   if (!item) return '';
-  return language === 'ar' && item.descriptionAr ? item.descriptionAr : item.description;
+  const arabicDescription = item.arDescription || item.descriptionAr;
+  return language === 'ar' && arabicDescription ? arabicDescription : item.description;
 };
 
 /**
