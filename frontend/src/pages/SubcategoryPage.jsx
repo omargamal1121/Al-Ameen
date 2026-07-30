@@ -106,9 +106,13 @@ const SubcategoryPage = () => {
                 id={p.id || p._id}
                 image={p.images && p.images.length > 0 ? p.images.map(img => img.url) : [p.mainImageUrl]}
                 name={p.name}
+                arName={p.arName}
                 price={p.price}
                 finalPrice={p.finalPrice}
                 discountPrecentage={p.discountPrecentage}
+                discountName={p.discountName}
+                availableQuantity={p.availableQuantity}
+                totalSold={p.totalSold}
               />
             </motion.div>
           ))}

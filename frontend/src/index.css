@@ -157,41 +157,80 @@ a.active hr {
   text-align: right;
 }
 
-[dir="rtl"] .flex {
-  flex-direction: row-reverse;
+[dir="rtl"] body, 
+[dir="rtl"] input, 
+[dir="rtl"] button, 
+[dir="rtl"] select, 
+[dir="rtl"] textarea,
+[dir="rtl"] p,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] span,
+[dir="rtl"] a,
+[dir="rtl"] li,
+[dir="rtl"] label {
+  font-family: 'Tajawal', sans-serif;
 }
 
-[dir="rtl"] .flex-col {
-  flex-direction: column;
+/* === Arabic font size boost — Tajawal needs slightly larger size to visually match Latin === */
+/* Use a clean base-level override instead of em cascade which compounds in nested elements */
+html[dir="rtl"] {
+  font-size: 17px; /* Tailwind default is 16px; bumping 1px lifts all rem-based sizes */
 }
 
-[dir="rtl"] .text-left {
-  text-align: right;
+[dir="rtl"] p,
+[dir="rtl"] span:not(.swiper-pagination-bullet),
+[dir="rtl"] label,
+[dir="rtl"] li,
+[dir="rtl"] td,
+[dir="rtl"] th {
+  line-height: 1.85;
 }
 
-[dir="rtl"] .text-right {
-  text-align: left;
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5 {
+  line-height: 1.4;
+  letter-spacing: 0;
 }
 
-[dir="rtl"] .ml-1 { margin-left: 0; margin-right: 0.25rem; }
-[dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.5rem; }
-[dir="rtl"] .ml-3 { margin-left: 0; margin-right: 0.75rem; }
-[dir="rtl"] .ml-4 { margin-left: 0; margin-right: 1rem; }
-[dir="rtl"] .mr-1 { margin-right: 0; margin-left: 0.25rem; }
-[dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
-[dir="rtl"] .mr-3 { margin-right: 0; margin-left: 0.75rem; }
-[dir="rtl"] .mr-4 { margin-right: 0; margin-left: 1rem; }
+/* === Protect Swiper & media from RTL layout shifts === */
+[dir="rtl"] .swiper {
+  direction: ltr;
+}
+[dir="rtl"] .swiper .swiper-wrapper {
+  direction: ltr;
+}
+[dir="rtl"] .swiper-slide img,
+[dir="rtl"] .swiper-slide video {
+  direction: ltr;
+}
+/* Hero text inside swiper should still show RTL text correctly */
+[dir="rtl"] .swiper-slide .text-white,
+[dir="rtl"] .swiper-slide [class*="text-"] {
+  direction: rtl;
+  text-align: center;
+}
 
-[dir="rtl"] .pl-1 { padding-left: 0; padding-right: 0.25rem; }
-[dir="rtl"] .pl-2 { padding-left: 0; padding-right: 0.5rem; }
-[dir="rtl"] .pl-3 { padding-left: 0; padding-right: 0.75rem; }
-[dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
-[dir="rtl"] .pr-1 { padding-right: 0; padding-left: 0.25rem; }
-[dir="rtl"] .pr-2 { padding-right: 0; padding-left: 0.5rem; }
-[dir="rtl"] .pr-3 { padding-right: 0; padding-left: 0.75rem; }
-[dir="rtl"] .pr-4 { padding-right: 0; padding-left: 1rem; }
+/* Glassmorphism & Gold accents */
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #c9a227 0%, #f0c040 100%);
+}
 
-[dir="rtl"] .left-0 { left: auto; right: 0; }
-[dir="rtl"] .right-0 { right: auto; left: 0; }
+.bg-dark-green-gradient {
+  background: linear-gradient(135deg, #0a1e0f 0%, #0f3d1a 50%, #1a6b2e 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 
 

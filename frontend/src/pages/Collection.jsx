@@ -190,14 +190,18 @@ const Collection = () => {
                 {filteredProducts.length > 0 ? (
                     filteredProducts.map(product => (
                         <ProductItem
-                            key={product._id}
-                            id={product._id}
+                            key={product._id || product.id}
+                            id={product._id || product.id}
                             name={product.name}
+                            arName={product.arName}
                             price={product.price}
                             finalPrice={product.finalPrice}
-                            image={product.image}
+                            image={product.image || product.images}
+                            images={product.images}
                             discountPrecentage={product.discountPrecentage}
                             discountName={product.discountName}
+                            availableQuantity={product.availableQuantity}
+                            totalSold={product.totalSold}
                         />
                     ))
                 ) : (

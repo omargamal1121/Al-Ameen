@@ -8,81 +8,59 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import WishlistButton from "../components/WishlistButton";
 import MostWanted from "../components/MostWanted";
-import { FaChevronLeft, FaChevronRight, FaPlus, FaMinus, FaRulerCombined, FaTruck, FaShieldAlt, FaUndo, FaTimes } from "react-icons/fa";
+import {
+  FaPlus,
+  FaMinus,
+  FaTruck,
+  FaShieldAlt,
+  FaUndo,
+  FaTimes,
+  FaWhatsapp,
+  FaFileDownload,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaBolt,
+  FaBuilding,
+} from "react-icons/fa";
 import { useLocalization } from "../utils/localization";
 
 const Product = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isAr = i18n.language === "ar";
   const { getLocalizedName } = useLocalization();
   const { productId } = useParams();
-  const { products, addToCart, backendUrl, currency } = useContext(ShopContext);
+  const { addToCart, backendUrl, currency } = useContext(ShopContext);
 
   const [productData, setProductData] = useState(null);
   const [activeImage, setActiveImage] = useState("");
-  const [size, setSize] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [activeTab, setActiveTab] = useState("specs"); // 'specs', 'description', 'shipping'
 
   const [variants, setVariants] = useState([]);
   const [selectedVariant, setSelectedVariant] = useState(null);
-  const [variantImages, setVariantImages] = useState({});
-  const [localStock, setLocalStock] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Intersection observer for related products
-  const { ref: relatedProductsRef, inView: isRelatedInView } = useInView({ threshold: 0.2, triggerOnce: true });
-
-  const mapSizeToLabel = (value) => {
-    if (!value) return "N/A";
-    const val = String(value).toLowerCase();
-    const map = {
-      "30": "S", "31": "S", "32": "S",
-      "33": "M", "34": "M", "35": "M",
-      "36": "L", "37": "L", "38": "L",
-      "39": "XL", "40": "XL", "41": "XL",
-      "42": "XXL", "43": "XXL", "44": "XXL"
-    };
-    return map[val] || value;
-  };
-
-  const updateLocalStock = (variantId, qty) => {
-    if (variantId) {
-      setLocalStock(prev => ({ ...prev, [variantId]: Math.max(0, (prev[variantId] || 0) + qty) }));
-    }
-  };
-
-  const getCurrentStock = (variant) => {
-    if (!variant) return 10;
-    const localQty = localStock[variant.id] || 0;
-    return Math.max(0, (variant.quantity || 10) - localQty);
-  };
-
-  const fetchVariantDetails = async (variantId) => {
-    try {
-      const res = await axios.get(`${backendUrl}/api/Products/${productId}/Variants/${variantId}?isActive=true&includeDeleted=false`);
-      return res.data?.responseBody?.data;
-    } catch (err) {
-      console.error("Error fetching variant details", err);
-      return null;
-    }
-  }
+  const { ref: relatedProductsRef, inView: isRelatedInView } = useInView({
+    threshold: 0.2,
+    triggerOnce: true,
+  });
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!productId) {
-        console.error("Product ID is undefined");
-        return;
-      }
+      if (!productId) return;
       try {
-        const res = await axios.get(`${backendUrl}/api/Products/${productId}?isActive=true&includeDeleted=false`);
+        const res = await axios.get(
+          `${backendUrl}/api/Products/${productId}?isActive=true&includeDeleted=false`
+        );
         if (res.data?.responseBody?.data) {
           const product = res.data.responseBody.data;
           setProductData(product);
+
           const productImages = Array.isArray(product.images)
-            ? product.images.map(img => img.url).filter(Boolean)
+            ? product.images.map((img) => (typeof img === "object" ? img.url : img)).filter(Boolean)
             : [];
-          setActiveImage(productImages[0] || '');
+          setActiveImage(productImages[0] || "");
         }
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -96,20 +74,15 @@ const Product = () => {
     const fetchVariants = async () => {
       if (!productId) return;
       try {
-        const res = await axios.get(`${backendUrl}/api/Products/${productId}/Variants?isActive=true&includeDeleted=false`);
+        const res = await axios.get(
+          `${backendUrl}/api/Products/${productId}/Variants?isActive=true&includeDeleted=false`
+        );
         if (res.data?.responseBody?.data) {
           const vData = res.data.responseBody.data;
           setVariants(vData);
-
-          const imagesMap = {};
-          // Only fetch images for unique colors to save requests
-          const uniqueColors = [...new Set(vData.map(v => v.color))].filter(Boolean);
-          for (const color of uniqueColors) {
-            const firstVarOfColor = vData.find(v => v.color === color);
-            const detail = await fetchVariantDetails(firstVarOfColor.id);
-            imagesMap[color] = detail?.images || [];
+          if (vData.length > 0) {
+            setSelectedVariant(vData[0]);
           }
-          setVariantImages(imagesMap);
         }
       } catch (err) {
         console.error("Error fetching variants", err);
@@ -119,192 +92,326 @@ const Product = () => {
   }, [productId, backendUrl]);
 
   const handleAddToCart = async () => {
-    if (!size || !selectedVariant) {
-      toast.warning(t("SELECT_SIZE_COLOR"));
-      return;
-    }
-    if (getCurrentStock(selectedVariant) < quantity) {
-      toast.error(t("OUT_OF_STOCK"));
-      return;
-    }
-
+    if (!productData) return;
     setIsSubmitting(true);
     try {
-      // addToCart already shows success/error messages, no need to duplicate
-      await addToCart(productData._id || productData.id, size, selectedVariant.color, quantity);
-      updateLocalStock(selectedVariant.id, quantity);
+      const sizeParam = selectedVariant?.color || selectedVariant?.size || "default";
+      const colorParam = selectedVariant?.color || "standard";
+      await addToCart(
+        productData._id || productData.id,
+        sizeParam,
+        colorParam,
+        quantity
+      );
+    } catch (err) {
+      console.error("Add to cart error:", err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!productData) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-gray-100 border-t-black rounded-full animate-spin"></div>
-    </div>
+  if (!productData) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4">
+        <div className="w-12 h-12 border-4 border-[#0f3d1a] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-500 font-medium">
+          {isAr ? "جاري تحميل تفاصيل المنتج..." : "Loading cable specifications..."}
+        </p>
+      </div>
+    );
+  }
+
+  const displayName = getLocalizedName(productData) || (isAr ? "كابل كهربائي" : "Electrical Cable");
+  const displayDescription =
+    (isAr ? productData.arDescription || productData.description : productData.description || productData.arDescription) ||
+    (isAr
+      ? "كابلات وأسلاك ذات موصفات صناعية عالية الجودة مصنعة وفق المعايير الدولية IEC 60502 ومطابقة للمواصفات القياسية المصرية. مناسبة للتمديدات السكنية والتجارية والصناعية."
+      : "Industrial-grade electrical cable manufactured to IEC 60502 standards. Designed for high durability, safety, and optimal conductivity across residential and commercial installations.");
+
+  const originalPrice = selectedVariant?.price || productData.price || 0;
+  const effectivePrice =
+    selectedVariant?.finalPrice || productData.finalPrice || originalPrice;
+  const hasDiscount = originalPrice > 0 && effectivePrice < originalPrice;
+  const discountPercentage =
+    productData.discountPrecentage ||
+    (hasDiscount ? Math.round(((originalPrice - effectivePrice) / originalPrice) * 100) : 0);
+
+  const imagesList = Array.isArray(productData.images)
+    ? productData.images.map((img) => (typeof img === "object" ? img.url : img)).filter(Boolean)
+    : [];
+
+  const whatsappMessage = encodeURIComponent(
+    isAr
+      ? `مرحباً، أود الاستفسار عن توريد كميات بالجملة للمنتج: ${displayName} (كود: #${productData.id})`
+      : `Hello, I would like to inquire about bulk ordering for: ${displayName} (ID: #${productData.id})`
   );
 
-  const colors = [...new Set(variants.map(v => v.color))].filter(Boolean);
-  const availableSizes = [...new Set(variants.map(v => mapSizeToLabel(v.size)))].filter(Boolean);
-
   return (
-    <div className="bg-white min-h-screen pt-24 pb-20">
+    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pt-28 pb-20">
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-12">
-          <Link to="/" className="hover:text-black transition-colors">{t('HOME')}</Link>
+        <nav className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-8 overflow-x-auto whitespace-nowrap py-1">
+          <Link to="/" className="hover:text-[#0f3d1a] transition-colors">
+            {t("HOME")}
+          </Link>
           <span>/</span>
-          <Link to="/collection" className="hover:text-black transition-colors">{t('COLLECTIONS_BREADCRUMB')}</Link>
+          <Link to="/collection" className="hover:text-[#0f3d1a] transition-colors">
+            {isAr ? "المنتجات والمجموعات" : "Cable Catalog"}
+          </Link>
           <span>/</span>
-          <span className="text-black">{getLocalizedName(productData)}</span>
+          <span className="text-[#0f3d1a] font-extrabold truncate max-w-xs">{displayName}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* LEFT: Image Gallery */}
-          <div className="lg:col-span-7 grid grid-cols-12 gap-4">
-            <div className="col-span-2 space-y-4">
-              {(variantImages[selectedVariant?.color]?.length > 0 ? variantImages[selectedVariant.color] : productData.image || []).map((img, i) => (
-                <div
-                  key={i}
-                  onClick={() => setActiveImage(img.url || img)}
-                  className={`aspect-[3/4] rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${activeImage === (img.url || img) ? 'border-black' : 'border-transparent shadow-sm'}`}
-                >
-                  <img src={img.url || img} className="w-full h-full object-cover" />
-                </div>
-              ))}
-            </div>
+          <div className="lg:col-span-6 grid grid-cols-12 gap-4">
+            {/* Thumbnails */}
+            {imagesList.length > 1 && (
+              <div className="col-span-2 flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1">
+                {imagesList.map((img, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setActiveImage(img)}
+                    className={`aspect-square rounded-2xl overflow-hidden cursor-pointer border-2 transition-all p-1 bg-white ${
+                      activeImage === img ? "border-[#0f3d1a] shadow-md scale-95" : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <img src={img} alt={`Preview ${i}`} className="w-full h-full object-contain" />
+                  </div>
+                ))}
+              </div>
+            )}
 
-            <div className="col-span-10 relative group bg-gray-50 rounded-3xl overflow-hidden shadow-2xl">
+            {/* Main Stage */}
+            <div className={`${imagesList.length > 1 ? "col-span-10" : "col-span-12"} relative group bg-white border border-gray-200 rounded-3xl p-6 shadow-xl flex items-center justify-center min-h-[420px]`}>
               <motion.img
                 key={activeImage}
-                initial={{ opacity: 0, scale: 1.1 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                src={activeImage}
-                className="w-full h-auto object-cover aspect-[3/4] cursor-zoom-in"
+                src={activeImage || imagesList[0]}
+                alt={displayName}
+                className="max-h-[460px] w-auto object-contain cursor-zoom-in"
                 onClick={() => setIsZoomOpen(true)}
               />
-              <div className="absolute top-6 right-6">
+
+              {/* Top Action Buttons */}
+              <div className="absolute top-6 right-6 z-10 flex gap-2">
                 <WishlistButton productId={productData._id || productData.id} variant="floating" size="lg" />
               </div>
 
-              {/* Badges */}
-              {productData.finalPrice < productData.price && (
-                <div className="absolute top-6 left-6 bg-black text-white text-[10px] font-black py-2 px-6 rounded-full uppercase tracking-widest shadow-xl">
-                  {t('EXCLUSIVE_SALE')}
+              {/* Discount Tag */}
+              {hasDiscount && (
+                <div className="absolute top-6 left-6 z-10 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-xs py-1.5 px-4 rounded-full shadow-lg tracking-wider flex items-center gap-1.5">
+                  <FaBolt />
+                  <span>{isAr ? `خصم ${discountPercentage}%` : `SAVE ${discountPercentage}%`}</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* RIGHT: Product Info (Sticky) */}
-          <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-10">
+          {/* RIGHT: Technical Product Details Panel */}
+          <div className="lg:col-span-6 bg-white border border-gray-200 rounded-3xl p-8 shadow-xl space-y-8">
+            {/* Header / Title */}
             <div>
-              <div className="flex justify-between items-start mb-4">
-                <span className="text-xs font-black uppercase tracking-[0.3em] text-[#c9a227]">{t('AL_AMEEN_EDITION')}</span>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map(s => <div key={s} className="w-1 h-1 rounded-full bg-black/10" />)}
-                </div>
-              </div>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-[0.85] mb-6">{getLocalizedName(productData)}</h1>
+              <div className="flex items-center justify-between gap-4 mb-3">
+                <span className="inline-flex items-center gap-1.5 text-xs font-black text-[#c9a227] bg-[#0f3d1a] px-3 py-1 rounded-full uppercase tracking-wider">
+                  <FaShieldAlt /> {isAr ? "معتمد IEC 60502" : "IEC 60502 Certified"}
+                </span>
 
-              <div className="flex items-center gap-4">
-                <span className="text-4xl font-black">{currency}{selectedVariant?.finalPrice || productData.finalPrice || productData.price}</span>
-                {(selectedVariant?.finalPrice || productData.finalPrice) < (selectedVariant?.price || productData.price) && (
-                  <span className="text-xl text-gray-300 line-through font-bold">{currency}{selectedVariant?.price || productData.price}</span>
+                {typeof productData.availableQuantity === "number" && (
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full flex items-center gap-1">
+                    <FaCheckCircle /> {isAr ? `متوفر بالمخزن (${productData.availableQuantity})` : `In Stock (${productData.availableQuantity})`}
+                  </span>
+                )}
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-black text-[#0f3d1a] leading-tight mb-4">
+                {displayName}
+              </h1>
+
+              {/* Price & Savings Block */}
+              <div className="flex items-baseline gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <span className="text-3xl sm:text-4xl font-black text-[#0f3d1a]">
+                  {currency} {effectivePrice.toLocaleString()}
+                </span>
+                {hasDiscount && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg text-gray-400 line-through font-bold">
+                      {currency} {originalPrice.toLocaleString()}
+                    </span>
+                    <span className="text-xs font-black text-red-600 bg-red-100 px-2 py-0.5 rounded-md">
+                      {isAr ? `توفير ${currency}${(originalPrice - effectivePrice).toLocaleString()}` : `Save ${currency}${(originalPrice - effectivePrice).toLocaleString()}`}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
 
-            <div className="h-px bg-gray-100 w-full"></div>
-
-            {/* Selection - Color */}
-            {colors.length > 0 && (
+            {/* Color / Variant Options if available */}
+            {variants.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400 mb-4">{t('COLOR_PALETTE')}</h4>
-                <div className="flex flex-wrap gap-4">
-                  {colors.map((c, i) => (
+                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
+                  {isAr ? "اختيار المواصفة / اللون" : "Specification / Color Variant"}
+                </h4>
+                <div className="flex flex-wrap gap-3">
+                  {variants.map((v, i) => (
                     <button
                       key={i}
-                      onClick={() => {
-                        const v = variants.find(v => v.color === c);
-                        setSelectedVariant(v);
-                        if (variantImages[c]?.[0]) setActiveImage(variantImages[c][0].url || variantImages[c][0]);
-                      }}
-                      className={`w-12 h-12 rounded-full border-2 transition-all p-1 ${selectedVariant?.color === c ? 'border-black' : 'border-transparent'}`}
-                      title={c}
+                      onClick={() => setSelectedVariant(v)}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border-2 flex items-center gap-2 cursor-pointer ${
+                        selectedVariant?.id === v.id
+                          ? "border-[#0f3d1a] bg-[#0f3d1a] text-white shadow-md"
+                          : "border-gray-200 bg-white text-gray-700 hover:border-gray-400"
+                      }`}
                     >
-                      <div className="w-full h-full rounded-full shadow-inner" style={{ backgroundColor: c.startsWith('#') ? c : (/^[0-9A-Fa-f]{3,8}$/.test(c) ? `#${c}` : c.toLowerCase()) }} />
+                      {v.color && (
+                        <span
+                          className="w-3.5 h-3.5 rounded-full border border-white/40 shadow-xs"
+                          style={{ backgroundColor: v.color.toLowerCase() }}
+                        />
+                      )}
+                      <span>{v.color || v.size || `Variant #${v.id}`}</span>
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Selection - Size */}
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">{t('SELECT_PROPORTIONS')}</h4>
-                <button onClick={() => setShowSizeGuide(true)} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
-                  <FaRulerCombined /> {t('SIZING_MAP')}
+            {/* Quantity Selector & Main Action Buttons */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+                {/* Quantity Controls */}
+                <div className="flex items-center justify-between bg-gray-100 rounded-2xl px-4 py-3 min-w-[140px]">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-8 h-8 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-xs hover:bg-gray-200 transition-colors cursor-pointer"
+                  >
+                    <FaMinus size={10} />
+                  </button>
+                  <span className="font-extrabold text-lg text-gray-900 px-4">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-8 h-8 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-xs hover:bg-gray-200 transition-colors cursor-pointer"
+                  >
+                    <FaPlus size={10} />
+                  </button>
+                </div>
+
+                {/* Add to Cart */}
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isSubmitting}
+                  className="flex-1 py-4 px-8 bg-gradient-to-r from-[#0f3d1a] to-[#1a6b2e] text-white font-extrabold rounded-2xl shadow-xl hover:from-[#1a6b2e] hover:to-[#0f3d1a] transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 text-sm tracking-wide"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      {isAr ? "جاري الإضافة..." : "Adding to Cart..."}
+                    </>
+                  ) : (
+                    <>
+                      <span>🛒</span>
+                      <span>{isAr ? "أضف إلى عربة التسوق" : "Add to Cart"}</span>
+                    </>
+                  )}
                 </button>
               </div>
-              <div className="grid grid-cols-4 gap-3">
-                {availableSizes.map((s, i) => {
-                  const isAvailable = variants.some(v => mapSizeToLabel(v.size) === s && v.color === selectedVariant?.color);
-                  return (
-                    <button
-                      key={i}
-                      disabled={!isAvailable}
-                      onClick={() => setSize(s)}
-                      className={`py-4 rounded-2xl text-xs font-black transition-all border-2 ${size === s ? 'bg-black text-white border-black shadow-xl' : 'bg-white text-black border-gray-100 hover:border-black'} disabled:opacity-20 disabled:cursor-not-allowed`}
-                    >
-                      {s}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
 
-            {/* Quantity & Actions */}
-            <div className="flex gap-4">
-              <div className="flex items-center bg-gray-50 rounded-full px-6 py-2 gap-6">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="text-gray-400 hover:text-black transition-colors"><FaMinus size={10} /></button>
-                <span className="font-black text-lg w-6 text-center">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="text-gray-400 hover:text-black transition-colors"><FaPlus size={10} /></button>
-              </div>
-              <button
-                onClick={handleAddToCart}
-                disabled={isSubmitting}
-                className="flex-1 bg-black text-white py-5 rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+              {/* Bulk WhatsApp Order Button */}
+              <a
+                href={`https://wa.me/201000000000?text=${whatsappMessage}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-3.5 px-6 border-2 border-emerald-600 text-emerald-800 bg-emerald-50/60 hover:bg-emerald-600 hover:text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 text-sm cursor-pointer shadow-xs"
               >
-                {isSubmitting ? t('AUTHENTICATING') : t('ADD_TO_PRIVATE_COLLECTION')}
-              </button>
+                <FaWhatsapp className="text-lg" />
+                <span>{isAr ? "طلب أسعار بالجملة والمشاريع الكبرى" : "Request Bulk Order Quote (WhatsApp)"}</span>
+              </a>
             </div>
 
-            {/* Details & Specs */}
-            <div className="grid grid-cols-1 gap-4 pt-10">
-              <div className="p-6 rounded-3xl bg-gray-50/50 border border-gray-100">
-                <h5 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-black">{t('MASTER_NARRATIVE')}</h5>
-                <p className="text-sm text-gray-500 font-medium leading-relaxed">{getLocalizedName(productData)}</p>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { icon: <FaTruck />, label: t('PRIME_HUB') },
-                  { icon: <FaShieldAlt />, label: 'Guaranteed' },
-                  { icon: <FaUndo />, label: t('ELITE_RETURNS') }
-                ].map((item, i) => (
-                  <div key={i} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-gray-50/30 border border-gray-50">
-                    <div className="text-black mb-2">{item.icon}</div>
-                    <span className="text-[8px] font-black uppercase tracking-tighter text-gray-400">{item.label}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Guarantee Pills */}
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100">
+              {[
+                { icon: <FaTruck className="text-[#c9a227]" />, title: isAr ? "توصيل سريع" : "Fast Delivery", desc: isAr ? "لكافة المحافظات" : "Nationwide shipping" },
+                { icon: <FaShieldAlt className="text-[#c9a227]" />, title: isAr ? "ضمان مصنعي" : "Factory Warranty", desc: isAr ? "معايير دولية" : "ISO Certified" },
+                { icon: <FaBuilding className="text-[#c9a227]" />, title: isAr ? "توريد مشاريع" : "Project Ready", desc: isAr ? "شهادات اختبار" : "Spec Sheets" },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center text-center p-3 rounded-2xl bg-gray-50 border border-gray-100">
+                  <div className="text-lg mb-1">{item.icon}</div>
+                  <span className="text-xs font-bold text-gray-900">{item.title}</span>
+                  <span className="text-[10px] text-gray-400 mt-0.5">{item.desc}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
+        {/* MIDDLE TABS: Specs & Full Description */}
+        <div className="mt-16 bg-white border border-gray-200 rounded-3xl p-8 shadow-lg">
+          <div className="flex border-b border-gray-200 gap-8 mb-8 overflow-x-auto">
+            {[
+              { id: "specs", label: isAr ? "المواصفات الفنية" : "Technical Specifications" },
+              { id: "description", label: isAr ? "الوصف والتفاصيل" : "Detailed Description" },
+              { id: "shipping", label: isAr ? "الشحن والتسليم" : "Shipping & Project Logistics" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`pb-4 text-sm font-extrabold uppercase tracking-wider transition-all border-b-2 cursor-pointer whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? "border-[#0f3d1a] text-[#0f3d1a]"
+                    : "border-transparent text-gray-400 hover:text-gray-700"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {activeTab === "specs" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { label: isAr ? "المعيار القياسي" : "Standard Compliance", val: "IEC 60502-1 / EOS 2978" },
+                  { label: isAr ? "مادة الموصل" : "Conductor Material", val: isAr ? "نحاس نقي 99.9% مكرر كهربائياً" : "99.9% Pure Electrolytic Copper" },
+                  { label: isAr ? "درجة الجهد" : "Voltage Rating", val: "0.6 / 1 kV (600/1000V)" },
+                  { label: isAr ? "نوع العزل" : "Insulation Type", val: "XLPE / PVC Heavy Duty" },
+                  { label: isAr ? "درجة حرارة التشغيل" : "Operating Temp", val: "-15°C to +90°C" },
+                  { label: isAr ? "الدرع والوقاية" : "Armouring / Shielding", val: isAr ? "أسلاك فولاذية مجلفنة SWA" : "Galvanized Steel Wire Armoured" },
+                ].map((spec, i) => (
+                  <div key={i} className="flex justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 text-sm">
+                    <span className="font-bold text-gray-500">{spec.label}</span>
+                    <span className="font-extrabold text-[#0f3d1a]">{spec.val}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "description" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="prose max-w-none text-gray-600 leading-relaxed space-y-4">
+              <p className="text-base font-medium">{displayDescription}</p>
+            </motion.div>
+          )}
+
+          {activeTab === "shipping" && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 text-sm text-gray-600">
+              <p className="font-bold text-[#0f3d1a]">
+                {isAr
+                  ? "نوفر أسطول نقل مخصص لشحن بكرات وأحمال الكابلات لجميع المحافظات والمواقع الصناعية."
+                  : "We operate dedicated transport logistics for bulk cable spools directly to project sites nationwide."}
+              </p>
+              <ul className="list-disc list-inside space-y-2 font-medium">
+                <li>{isAr ? "التسليم داخل القاهرة الكبرى خلال 24 - 48 ساعة" : "Greater Cairo delivery within 24-48 hours"}</li>
+                <li>{isAr ? "التوصيل للمحافظات والمناطق الصناعية خلال 3-4 أيام عمل" : "Industrial zone deliveries within 3-4 business days"}</li>
+                <li>{isAr ? "إمكانية استلام المشتريات مباشرة من مستودع المصنع بالمدينة العاشرة من رمضان" : "Direct factory warehouse pickup available at 10th of Ramadan City"}</li>
+              </ul>
+            </motion.div>
+          )}
+        </div>
+
         {/* RELATED PRODUCTS */}
-        <section ref={relatedProductsRef} className="mt-40 border-t border-gray-100 pt-24">
+        <section ref={relatedProductsRef} className="mt-20 border-t border-gray-200 pt-16">
           {isRelatedInView && <MostWanted />}
         </section>
       </div>
@@ -316,50 +423,24 @@ const Product = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-black p-10 flex items-center justify-center overflow-auto"
+            className="fixed inset-0 z-[200] bg-black/90 p-6 flex items-center justify-center backdrop-blur-md"
           >
-            <button onClick={() => setIsZoomOpen(false)} className="absolute top-10 right-10 text-white hover:rotate-90 transition-transform duration-500"><FaTimes size={30} /></button>
+            <button
+              onClick={() => setIsZoomOpen(false)}
+              className="absolute top-8 right-8 text-white hover:text-[#c9a227] transition-all cursor-pointer"
+            >
+              <FaTimes size={28} />
+            </button>
             <motion.img
-              initial={{ scale: 0.8, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
-              src={activeImage}
-              className="max-w-full max-h-screen object-contain shadow-[0_0_100px_rgba(255,255,255,0.1)]"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              src={activeImage || imagesList[0]}
+              alt="Zoom view"
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
             />
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* SIZE GUIDE MODAL */}
-      <AnimatePresence>
-        {showSizeGuide && (
-          <motion.div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => setShowSizeGuide(false)} className="absolute inset-0 bg-black/80 backdrop-blur-md" />
-            <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="relative bg-white w-full max-w-2xl rounded-[3rem] p-12 shadow-2xl">
-              <h2 className="text-4xl font-black tracking-tighter mb-8 uppercase">{t('AESTHETIC_MAP')}</h2>
-              <div className="overflow-hidden rounded-3xl border border-gray-100">
-                <table className="w-full text-xs">
-                  <thead className="bg-black text-white px-4">
-                    <tr><th className="py-5 px-6 text-left font-black uppercase tracking-widest">{t('GLOBAL_SIZE')}</th><th className="py-5 px-6 text-left font-black uppercase tracking-widest">{t('DIMENSION_INFO')}</th></tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 font-bold">
-                    <tr><td className="py-5 px-6">{t('SMALL')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 30-32)</td></tr>
-                    <tr><td className="py-5 px-6">{t('MEDIUM')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 33-35)</td></tr>
-                    <tr><td className="py-5 px-6">{t('LARGE')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 36-38)</td></tr>
-                    <tr><td className="py-5 px-6">{t('X_LARGE')}</td><td className="py-5 px-6 text-gray-400 font-medium">{t('STANDARD_FIT')} (EU 39-41)</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <button onClick={() => setShowSizeGuide(false)} className="w-full mt-8 py-5 bg-black text-white rounded-[2rem] font-black uppercase text-xs tracking-widest shadow-xl">{t('DISMISS_GALLERY')}</button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <style>{`
-         .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-         .custom-scrollbar::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
-      `}</style>
     </div>
   );
 };

@@ -1,171 +1,64 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { ShopContext } from '../context/ShopContext';
 
-const ScrollSection = ({ scroll1, scroll2 }) => {
-    const { t } = useTranslation();
-    const scrollRef = useRef(null);
-    const autoScrollRef = useRef();
-    const resumeTimeout = useRef();
-
-    useEffect(() => {
-        const scrollContainer = scrollRef.current;
-        if (!scrollContainer) return;
-        let animationFrame;
-        const speed = 3; // pixels per frame (increased for faster scroll)
-        let paused = false;
-
-        function autoScroll() {
-            if (!paused) {
-                if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-                    scrollContainer.scrollLeft = 0;
-                } else {
-                    scrollContainer.scrollLeft += speed;
-                }
-            }
-            animationFrame = requestAnimationFrame(autoScroll);
-        }
-        autoScrollRef.current = () => {
-            paused = false;
-        };
-        animationFrame = requestAnimationFrame(autoScroll);
-
-        // Pause auto-scroll on user interaction, resume after 2s
-        const pauseScroll = () => {
-            paused = true;
-            clearTimeout(resumeTimeout.current);
-            resumeTimeout.current = setTimeout(() => {
-                paused = false;
-            });
-        };
-        scrollContainer.addEventListener('mousedown', pauseScroll);
-        scrollContainer.addEventListener('touchstart', pauseScroll);
-        scrollContainer.addEventListener('wheel', pauseScroll);
-        scrollContainer.addEventListener('scroll', pauseScroll);
-
-        return () => {
-            cancelAnimationFrame(animationFrame);
-            scrollContainer.removeEventListener('mousedown', pauseScroll);
-            scrollContainer.removeEventListener('touchstart', pauseScroll);
-            scrollContainer.removeEventListener('wheel', pauseScroll);
-            scrollContainer.removeEventListener('scroll', pauseScroll);
-            clearTimeout(resumeTimeout.current);
-        };
-    }, []);
-
-    // Responsive text and image sizes
-    const textClass = 'font-bold text-center text-4xl sm:text-6xl md:text-7xl lg:text-8xl';
-    const imgClass = 'object-cover w-20 h-28 sm:w-24 sm:h-36 md:w-[100px] md:h-[150px]';
-
-    // Duplicate content enough times for seamless infinite scroll
-    const { products } = React.useContext(ShopContext || {});
-
-    // Dynamic scroll items from products
-    const dynamicItems = React.useMemo(() => {
-        if (products && products.length > 0) {
-            // Get random products or first N products
-            const shuffled = [...products].sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 6);
-
-            // Map to scroll items
-            return selected.map((p, i) => ({
-                img: p.image && p.image[0] ? p.image[0] : (i % 2 === 0 ? scroll1 : scroll2),
-                text: i % 2 === 0 ? t('DRIP_IN_STYLE') : t('OWN_THE_STREETS')
-            }));
-        }
-
-        // Fallback to static
-        return [
-            { img: scroll1, text: t('DRIP_IN_STYLE') },
-            { img: scroll2, text: t('OWN_THE_STREETS') },
-            { img: scroll1, text: t('DRIP_IN_STYLE') },
-            { img: scroll2, text: t('OWN_THE_STREETS') },
-            { img: scroll1, text: t('DRIP_IN_STYLE') },
-            { img: scroll2, text: t('OWN_THE_STREETS') },
-        ];
-    }, [products, scroll1, scroll2, t]);
-
-    const items = dynamicItems;
-
-    // Animation variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.2,
-                delayChildren: 0.1,
-            },
-        },
-    };
-
-    const itemVariants = {
-        hidden: {
-            opacity: 0,
-            y: 50,
-            scale: 0.8
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            transition: {
-                duration: 0.6,
-                ease: "easeOut"
-            }
-        },
-    };
-
-    const hoverVariants = {
-        hover: {
-            scale: 1.05,
-            transition: {
-                duration: 0.3,
-                ease: "easeInOut"
-            }
-        }
-    };
+const ScrollSection = () => {
+    const { i18n } = useTranslation();
+    const isAr = i18n.language === 'ar';
 
     return (
-        <motion.div
-            className='my-10 py-10 border-t border-b border-gray-200 overflow-x-auto whitespace-nowrap'
-            ref={scrollRef}
-            style={{ scrollBehavior: 'smooth' }}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-        >
-            {items.map((item, idx) => (
-                <motion.div
-                    className='inline-flex items-center'
-                    key={idx}
-                    variants={{ ...itemVariants, ...hoverVariants }}
-                    whileHover="hover"
-                >
-                    <motion.img
-                        src={item.img}
-                        alt={item.text + idx}
-                        className={imgClass}
-                        whileHover={{
-                            rotate: [0, -5, 5, 0],
-                            transition: { duration: 0.5 }
-                        }}
-                    />
-                    <motion.p
-                        className={textClass}
-                        whileHover={{
-                            color: "#c9a227",
-                            transition: { duration: 0.3 }
-                        }}
-                    >
-                        {item.text}
-                    </motion.p>
-                </motion.div>
-            ))}
-        </motion.div>
-    )
-}
+        <div className="my-16 py-16 px-6 bg-gradient-to-r from-[#0f3d1a] via-[#1a6b2e] to-[#0f3d1a] text-white rounded-3xl shadow-2xl relative overflow-hidden text-center border border-[#c9a227]/30">
+            {/* Subtle background ambient glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#c9a227]/10 rounded-full blur-3xl pointer-events-none" />
 
-export default ScrollSection
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="max-w-4xl mx-auto space-y-6 relative z-10"
+            >
+                {/* Brand Tagline Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#c9a227]/20 border border-[#c9a227]/50 text-[#c9a227] text-xs font-black uppercase tracking-[0.25em]">
+                    ⚡ {isAr ? "الأمين للكابلات والأسلاك" : "Al-Ameen Wires & Cables"}
+                </div>
+
+                {/* Main Headline */}
+                <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight text-white drop-shadow-md">
+                    {isAr ? "وصل عالمك بالطاقة والجهد المعتمد" : "Wire Your World With Certified Power & Precision"}
+                </h2>
+
+                {/* Supporting Statement */}
+                <p className="text-gray-200 text-sm sm:text-base md:text-lg font-medium leading-relaxed max-w-2xl mx-auto">
+                    {isAr
+                        ? "نضمن أعلى مستويات السلامة الكهربائية والكفاءة العالية بكابلات مطابقة لمعايير ISO و IEC لتغطية كافة المجمعات الصناعية والمشاريع القومية."
+                        : "Delivering industrial-grade conductivity, zero-defect insulation, and international IEC compliance for major engineering and infrastructure developments nationwide."}
+                </p>
+
+                {/* Stat Highlights Row */}
+                <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-white/10 max-w-xl mx-auto">
+                    <div>
+                        <span className="block text-2xl sm:text-3xl font-black text-[#c9a227]">100%</span>
+                        <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">
+                            {isAr ? "اختبار الجودة" : "Quality Tested"}
+                        </span>
+                    </div>
+                    <div>
+                        <span className="block text-2xl sm:text-3xl font-black text-[#c9a227]">IEC / ISO</span>
+                        <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">
+                            {isAr ? "معايير معتمدة" : "Certified Standard"}
+                        </span>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                        <span className="block text-2xl sm:text-3xl font-black text-[#c9a227]">24 / 7</span>
+                        <span className="text-xs text-gray-300 font-bold uppercase tracking-wider">
+                            {isAr ? "دعم المشاريع" : "Project Support"}
+                        </span>
+                    </div>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
+
+export default ScrollSection;

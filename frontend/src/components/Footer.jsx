@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { assets } from "../assets/frontend_assets/assets";
 import { useTranslation } from "react-i18next";
 
@@ -27,7 +27,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-5">
-              Egypt's trusted supplier of IEC & ISO certified electrical cables and wires for residential, industrial, and infrastructure projects.
+              {t('FOOTER_DESC')}
             </p>
             {/* Contact info */}
             <ul className="space-y-2 text-sm text-gray-300">
@@ -41,7 +41,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📍</span>
-                <span className="text-gray-400">Cairo, Egypt — Industrial Zone</span>
+                <span className="text-gray-400">{t('STORE_ADDRESS').replace('<br />', ' ')}</span>
               </li>
             </ul>
           </div>
@@ -50,11 +50,11 @@ const Footer = () => {
           <div>
             <p className="uppercase tracking-widest text-xs text-[#c9a227] font-bold mb-5">{t('QUICK_LINKS')}</p>
             <ul className="space-y-3 text-sm text-gray-300">
-              <li><a onClick={() => { setShowSearch(true); navigate("/collection"); }} className="hover:text-[#c9a227] transition-colors cursor-pointer">🔍 {t('SEARCH_PRODUCTS')}</a></li>
-              <li><a href="/collection" className="hover:text-[#c9a227] transition-colors cursor-pointer">📦 {t('ALL_CABLES')}</a></li>
-              <li><a href="/about" className="hover:text-[#c9a227] transition-colors cursor-pointer">🏭 {t('ABOUT_US')}</a></li>
-              <li><a href="/contact" className="hover:text-[#c9a227] transition-colors cursor-pointer">📞 {t('CONTACT')}</a></li>
-              <li><a href="/policy" className="hover:text-[#c9a227] transition-colors cursor-pointer">📋 {t('RETURN_POLICY')}</a></li>
+              <li><button onClick={() => { if (setShowSearch) setShowSearch(true); navigate("/collection"); }} className="hover:text-[#c9a227] transition-colors cursor-pointer flex items-center gap-2">🔍 {t('SEARCH_PRODUCTS')}</button></li>
+              <li><Link to="/collection" className="hover:text-[#c9a227] transition-colors cursor-pointer block">📦 {t('ALL_CABLES')}</Link></li>
+              <li><Link to="/about" className="hover:text-[#c9a227] transition-colors cursor-pointer block">🏭 {t('ABOUT_US')}</Link></li>
+              <li><Link to="/contact" className="hover:text-[#c9a227] transition-colors cursor-pointer block">📞 {t('CONTACT')}</Link></li>
+              <li><Link to="/policy" className="hover:text-[#c9a227] transition-colors cursor-pointer block">📋 {t('RETURN_POLICY')}</Link></li>
             </ul>
           </div>
 

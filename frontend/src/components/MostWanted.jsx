@@ -123,7 +123,9 @@ const MostWanted = () => {
                                 price={item.price}
                                 finalPrice={item.finalPrice}
                                 discountPrecentage={item.discountPrecentage}
-                                hidePrice={true}
+                                discountName={item.discountName}
+                                totalSold={item.totalSold}
+                                hidePrice={false}
                             />
                         </motion.div>
                     );

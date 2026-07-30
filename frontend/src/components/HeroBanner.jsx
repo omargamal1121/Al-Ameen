@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from 'react-i18next';
 
 const HeroBanner = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { backendUrl } = useContext(ShopContext);
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,17 +27,18 @@ const HeroBanner = () => {
   }, []);
 
   const slidesData = useMemo(() => {
+    const isAr = i18n.language === 'ar';
     return viewMode === 'collections' ? collections : [
-      { name: "الأمين للكابلات",  subtitleKey: 'PREMIUM_CABLES',  image: assets.brand_hero_main, link: "/collection" },
-      { name: "جودة معتمدة",       subtitleKey: 'IEC_ISO_CERTIFIED',      image: assets.brand_hero_2,    link: "/collection" },
-      { name: "Power Cables",     subtitleKey: 'HIGH_VOLTAGE',          image: assets.brand_img1, link: "/collection" },
-      { name: "Control Wires",    subtitleKey: 'INDUSTRIAL_CONTROL',          image: assets.brand_img2, link: "/collection" },
-      { name: "Coaxial Series",   subtitleKey: 'SIGNAL_COMMUNICATION',       image: assets.brand_img3, link: "/collection" },
-      { name: "Cable Spools",     subtitleKey: 'BULK_CUSTOM',               image: assets.brand_img4, link: "/collection" },
-      { name: "Al-Ameen Wires",   subtitleKey: 'EGYPT_TRUSTED',           image: assets.brand_img5, link: "/collection" },
-      { name: "Armoured Range",   subtitleKey: 'HEAVY_DUTY',       image: assets.brand_img6, link: "/collection" },
+      { name: isAr ? "الأمين للكابلات والأسلاك" : "Al-Ameen Wires & Cables", subtitleKey: 'PREMIUM_CABLES', image: assets.brand_hero_main, link: "/collection" },
+      { name: isAr ? "جودة عالمية معتمدة" : "ISO & IEC Certified Quality", subtitleKey: 'IEC_ISO_CERTIFIED', image: assets.brand_hero_2, link: "/collection" },
+      { name: isAr ? "كابلات الطاقة والتوزيع" : "Power & Transmission Cables", subtitleKey: 'HIGH_VOLTAGE', image: assets.brand_img1, link: "/collection" },
+      { name: isAr ? "أسلاك التحكم الصناعي" : "Industrial Control Wires", subtitleKey: 'INDUSTRIAL_CONTROL', image: assets.brand_img2, link: "/collection" },
+      { name: isAr ? "كابلات الاتصالات والمحورية" : "Coaxial & Communication Series", subtitleKey: 'SIGNAL_COMMUNICATION', image: assets.brand_img3, link: "/collection" },
+      { name: isAr ? "بكرات أسلاك وأطوال خاصة" : "Bulk Wire Spools & Custom Lengths", subtitleKey: 'BULK_CUSTOM', image: assets.brand_img4, link: "/collection" },
+      { name: isAr ? "المورد الموثوق في كافة المحافظات" : "Egypt's Premier Electrical Supplier", subtitleKey: 'EGYPT_TRUSTED', image: assets.brand_img5, link: "/collection" },
+      { name: isAr ? "كابلات مدرعة للاستخدام الثقيل" : "Heavy-Duty Armoured Cable Series", subtitleKey: 'HEAVY_DUTY', image: assets.brand_img6, link: "/collection" },
     ];
-  }, [viewMode, collections, t]);
+  }, [viewMode, collections, i18n.language, t]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,7 +67,7 @@ const HeroBanner = () => {
   }
 
   return (
-    <div className="w-full h-[65vh] md:h-[85vh] relative overflow-hidden bg-[#0f3d1a]">
+    <div className="w-full h-[65vh] md:h-[85vh] relative overflow-hidden bg-[#0f3d1a]" dir="ltr">
       <Swiper
         modules={[Autoplay, Pagination, Navigation, EffectCoverflow]}
         effect="coverflow"
@@ -92,7 +93,11 @@ const HeroBanner = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a2a10] via-black/30 to-transparent opacity-85"></div>
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
+                {/* Text overlay: restore RTL direction for Arabic text */}
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4"
+                  dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+                >
                   <AnimatePresence mode="wait">
                     {activeIndex === index && (
                       <motion.div
@@ -104,7 +109,11 @@ const HeroBanner = () => {
                         <motion.span variants={textVariants} className="text-sm uppercase tracking-[0.5em] mb-6 font-bold text-white/70">
                           {item.subtitleKey ? t(item.subtitleKey) : t('FEATURED_SELECTION')}
                         </motion.span>
-                        <motion.h2 variants={textVariants} className="text-5xl md:text-8xl font-black mb-12 tracking-tighter drop-shadow-2xl">
+                        <motion.h2
+                          variants={textVariants}
+                          className="text-5xl md:text-8xl font-black mb-12 drop-shadow-2xl"
+                          style={{ letterSpacing: i18n.language === 'ar' ? '0' : '-0.02em' }}
+                        >
                           {item.name}
                         </motion.h2>
                         <motion.div variants={textVariants}>

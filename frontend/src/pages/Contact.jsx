@@ -34,50 +34,86 @@ const Contact = () => {
   };
 
   return (
-    <div className="mt-[80px] mb-5 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="mt-[100px] mb-12 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       {/* Contact Title */}
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={sectionVariants}
-        className='text-2xl text-center pt-10 border-t border-gray-200'>
+        className='text-2xl sm:text-3xl text-center pt-8 border-t border-gray-200 font-bold'>
         <Title text1={t('CONTACT')} text2={t('US')} />
       </motion.div>
 
       {/* Contact Content */}
-      <div className='my-10 flex flex-col md:flex-row gap-10 mb-28 justify-center'>
-        <motion.img
+      <div className='my-12 flex flex-col md:flex-row gap-12 mb-20 items-stretch justify-center'>
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={imageVariants}
-          src={assets.contact_img}
-          alt=""
-          className='w-full md:max-w-[450px]'
-        />
+          className="w-full md:w-1/2 relative rounded-3xl overflow-hidden shadow-xl border border-gray-100 min-h-[350px]"
+        >
+          <img
+            src={assets.contact_img || assets.brand_hero_2}
+            alt="Al-Ameen Contact"
+            className='w-full h-full object-cover'
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0f3d1a]/90 via-[#0f3d1a]/40 to-transparent p-8 flex flex-col justify-end text-white">
+            <span className="text-[#c9a227] text-xs font-black uppercase tracking-widest mb-1">HQ & Main Showroom</span>
+            <h3 className="text-2xl font-black mb-2">Industrial Zone, 10th of Ramadan</h3>
+            <p className="text-gray-200 text-sm">Cairo, Egypt — Serving all governorates with fast cable delivery.</p>
+          </div>
+        </motion.div>
+
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={contactInfoVariants}
-          className='flex flex-col gap-6 items-start justify-center'>
-          <motion.div
-            variants={containerVariants}
-            className='flex flex-col gap-6'>
-            <motion.p variants={itemVariants} className='font-semibold text-xl text-gray-600'>{t('OUR_STORE')}</motion.p>
-            <motion.p variants={itemVariants} className='text-gray-500'>{t('STORE_ADDRESS')}</motion.p>
-            <motion.p variants={itemVariants} className='text-gray-500'>{t('STORE_CONTACT')}</motion.p>
-            <motion.p variants={itemVariants} className='font-semibold text-xl text-gray-600'>{t('CAREERS')}</motion.p>
-            <motion.p variants={itemVariants} className='text-gray-500'>{t('CAREERS_DESC')}</motion.p>
-            <motion.button
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className='bg-white text-black px-8 py-4 text-sm border hover:bg-black hover:text-white border-black transition-all duration-300 cursor-pointer'>
-              {t('EXPLORE_JOBS')}
-            </motion.button>
-          </motion.div>
+          className='w-full md:w-1/2 flex flex-col justify-between gap-6'>
+          <div className="p-8 rounded-3xl bg-gray-50 border border-gray-100 flex flex-col gap-6 shadow-sm">
+            <div>
+              <p className='font-black text-xl text-gray-900 mb-2 flex items-center gap-2'>
+                <span>🏢</span> {t('OUR_STORE')}
+              </p>
+              <p className='text-gray-600 text-sm leading-relaxed' dangerouslySetInnerHTML={{ __html: t('STORE_ADDRESS') }} />
+            </div>
+
+            <div className="h-px bg-gray-200" />
+
+            <div>
+              <p className='font-black text-xl text-gray-900 mb-2 flex items-center gap-2'>
+                <span>📞</span> Direct Contact
+              </p>
+              <p className='text-gray-600 text-sm leading-relaxed' dangerouslySetInnerHTML={{ __html: t('STORE_CONTACT') }} />
+            </div>
+
+            <div className="h-px bg-gray-200" />
+
+            <div>
+              <p className='font-black text-xl text-gray-900 mb-1 flex items-center gap-2'>
+                <span>💼</span> {t('CAREERS')}
+              </p>
+              <p className='text-gray-600 text-sm mb-4 leading-relaxed'>{t('CAREERS_DESC')}</p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="https://wa.me/201234567890"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3 bg-[#25D366] text-white font-bold text-xs rounded-full hover:bg-green-600 transition-all flex items-center gap-2 shadow-md"
+                >
+                  💬 Chat on WhatsApp
+                </a>
+                <a
+                  href="mailto:info@alameenwires.com"
+                  className="px-6 py-3 bg-[#0f3d1a] text-white font-bold text-xs rounded-full hover:bg-[#1a6b2e] transition-all flex items-center gap-2 shadow-md"
+                >
+                  ✉️ Email Sales Team
+                </a>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
 

@@ -166,6 +166,9 @@ const CategoryPage = () => {
                       price={product.price}
                       finalPrice={product.finalPrice}
                       discountPrecentage={product.discountPrecentage}
+                      discountName={product.discountName}
+                      availableQuantity={product.availableQuantity}
+                      totalSold={product.totalSold}
                     />
                   </motion.div>
                 );

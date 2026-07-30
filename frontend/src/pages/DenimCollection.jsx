@@ -3,9 +3,12 @@ import { ShopContext } from "../context/ShopContext";
 import ProductItem from "../components/ProductItem";
 import { Link } from "react-router-dom";
 import TypeCollection from "../components/TypeCollection";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const DenimCollection = () => {
+  const { t, i18n } = useTranslation();
+  const isAr = i18n.language === 'ar';
   const { products } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("featured");
@@ -13,10 +16,13 @@ const DenimCollection = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [inStock, setInStock] = useState(false);
 
-  // Filter only denim products
-  let denimProducts = products.filter(
-    (item) => item.category && item.category.toLowerCase() === "denim"
+  // Filter armoured/denim series cables or show active products
+  let denimProducts = (products || []).filter(
+    (item) => item.category && (item.category.toLowerCase().includes("armour") || item.category.toLowerCase().includes("denim") || item.category.toLowerCase().includes("power"))
   );
+  if (denimProducts.length === 0 && products) {
+    denimProducts = products.slice(0, 8);
+  }
 
   // Apply filters
   if (inStock) {
@@ -38,11 +44,9 @@ const DenimCollection = () => {
     denimProducts = [...denimProducts].sort((a, b) => a.name.localeCompare(b.name));
   } else if (sortOption === "za") {
     denimProducts = [...denimProducts].sort((a, b) => b.name.localeCompare(a.name));
-  } else if (sortOption === "date-old-new") {
-    denimProducts = [...denimProducts].sort((a, b) => a.date - b.date);
-  } else if (sortOption === "date-new-old") {
-    denimProducts = [...denimProducts].sort((a, b) => b.date - a.date);
   }
+
+  const pageTitle = isAr ? "تشكيلة الكابلات المدرعة" : "Armoured Cable Series";
 
   return (
     <motion.div
@@ -53,13 +57,13 @@ const DenimCollection = () => {
     >
       {/* Breadcrumbs */}
       <div className="text-xs text-gray-500 mb-4 flex gap-2">
-        <Link to="/" className="hover:underline">Home</Link> /
-        <Link to="/collection" className="hover:underline">Shop</Link> /
-        <span className="text-black">Denim</span>
+        <Link to="/" className="hover:underline">{t("HOME")}</Link> /
+        <Link to="/collection" className="hover:underline">{t("SHOP")}</Link> /
+        <span className="text-black font-bold">{pageTitle}</span>
       </div>
 
       {/* Title */}
-      <h1 className="text-4xl font-bold text-center my-20 tracking-widest">DENIM</h1>
+      <h1 className="text-3xl sm:text-5xl font-black text-center my-12 tracking-widest text-[#0f3d1a] uppercase">{pageTitle}</h1>
 
 
       {/* Filter/Sort Row */}

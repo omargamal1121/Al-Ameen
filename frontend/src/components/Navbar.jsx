@@ -207,12 +207,14 @@ const Navbar = () => {
 
         {/* --- أيقونات يمين --- */}
         <div className="flex items-center gap-6 flex-1 justify-end">
-          {/* Language Switcher */}
+          {/* Language Switcher Badge */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1 text-sm font-bold text-white hover:text-yellow-300 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1 bg-white/10 hover:bg-[#c9a227] hover:text-[#0f3d1a] border border-white/20 text-xs font-bold text-white rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+            title="Switch Language / تغيير اللغة"
           >
-            {i18n.language === "en" ? "AR" : "EN"}
+            <span className="text-sm">🌐</span>
+            <span>{i18n.language === "en" ? "العربية" : "English"}</span>
           </button>
 
           {/* البحث */}
@@ -322,54 +324,60 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Sidebar menu for small screen */}
+        {/* Sidebar menu for small screen — uses translateX so RTL doesn't bleed */}
         <div
-          className={`absolute top-0 right-0 bottom-0 bg-gradient-to-b from-green-900 to-green-800 h-screen transition-all ${visible ? "w-full" : "w-0"
-            }`}
+          className={`fixed top-0 left-0 w-full h-screen bg-gradient-to-b from-green-900 to-green-800 transition-transform duration-300 ease-in-out z-[200] ${
+            visible ? "translate-x-0" : "-translate-x-full"
+          }`}
+          style={{ direction: 'ltr' }}
         >
-          <div className="flex flex-col text-white">
+          <div className="flex flex-col text-white h-full overflow-y-auto">
+            {/* Close button row */}
             <div
               onClick={() => setvisible(false)}
-              className="flex items-center gap-4 p-3 cursor-pointer border-b border-green-700"
+              className="flex items-center gap-4 p-4 cursor-pointer border-b border-green-700"
             >
               <img
                 src={assets.dropdown_icon}
                 className="h-4 rotate-180 invert"
-                alt=""
+                alt="close"
               />
+              <span className="text-xs font-bold tracking-widest text-yellow-400 uppercase">
+                {i18n.language === 'ar' ? 'إغلاق القائمة' : 'Close Menu'}
+              </span>
             </div>
             <NavLink
               onClick={() => setvisible(false)}
               to="/"
-              className="py-2 pl-6 border-b-2"
+              className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
             >
               {t("HOME")}
             </NavLink>
             <NavLink
               onClick={() => setvisible(false)}
               to="/collection"
-              className="py-2 pl-6 border-b-2"
+              className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
             >
               {t("COLLECTION")}
             </NavLink>
             <NavLink
               onClick={() => setvisible(false)}
               to="/about"
-              className="py-2 pl-6 border-b-2"
+              className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
             >
               {t("ABOUT")}
             </NavLink>
             <NavLink
               onClick={() => setvisible(false)}
               to="/contact"
-              className="py-2 pl-6 border-b-2"
+              className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
             >
               {t("CONTACT")}
             </NavLink>
             <NavLink
               onClick={() => setvisible(false)}
               to="/policy"
-              className="py-2 pl-6 border-b-2"
+              className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
             >
               {t("POLICY")}
             </NavLink>
@@ -377,7 +385,7 @@ const Navbar = () => {
               <NavLink
                 onClick={() => setvisible(false)}
                 to="/orders"
-                className="py-2 pl-6 border-b-2"
+                className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
               >
                 {t("ORDERS")}
               </NavLink>
@@ -385,12 +393,19 @@ const Navbar = () => {
             <NavLink
               onClick={() => setvisible(false)}
               to="/wishlist"
-              className="py-2 pl-6 border-b-2"
+              className="py-3 px-6 border-b border-green-700/50 hover:bg-green-700/40 transition-colors"
             >
               {t("WISHLIST")}
             </NavLink>
           </div>
         </div>
+        {/* Backdrop overlay when sidebar is open */}
+        {visible && (
+          <div
+            className="fixed inset-0 bg-black/40 z-[199] sm:hidden"
+            onClick={() => setvisible(false)}
+          />
+        )}
       </motion.div>
     </div>
   );

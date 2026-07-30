@@ -18,6 +18,7 @@ import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import SignUp from "./pages/SignUp";
 import VerifyEmail from "./pages/VerifyEmail";
+import ConfirmEmail from "./pages/ConfirmEmail";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import DenimCollection from "./pages/DenimCollection";
@@ -142,6 +143,7 @@ const App = () => {
         <Route path="/checkout/success" element={<GuestOrderSuccess />} />
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/confirm-email" element={<ConfirmEmail />} />
         <Route path="/request-password" element={<RequestPasswordReset />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />

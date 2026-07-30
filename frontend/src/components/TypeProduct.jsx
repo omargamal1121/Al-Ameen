@@ -37,13 +37,13 @@ const TypeProduct = () => {
     if (product && product.image && product.image.length > 0) {
       return product.image[0];
     }
-    return index === 0 ? assets.baggey4 : assets.baggey3;
+    return index === 0 ? assets.brand_img1 : assets.brand_img2;
   };
 
   const getProductName = (product) =>
     product ? product.name : t("NEWEST_DROP");
   const getProductDescription = (product) =>
-    product ? product.description || t("BALLON_FIT") : t("BALLON_FIT");
+    product ? product.description || t("INDUSTRIAL_GRADE") : t("INDUSTRIAL_GRADE");
 
   const getProductId = (product, index) => {
     if (product?.id) return product.id;

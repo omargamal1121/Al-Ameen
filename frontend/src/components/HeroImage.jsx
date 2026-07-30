@@ -72,7 +72,7 @@ const HeroImage = ({ height }) => {
   }
 
   return (
-    <section className={`relative w-full overflow-hidden m-0 p-0`} style={{ height: `${height}vh` }}>
+    <section className={`relative w-full overflow-hidden m-0 p-0`} style={{ height: `${height}vh` }} dir="ltr">
       <Swiper
         modules={[Autoplay, Pagination, Navigation, EffectFade]}
         effect="fade"
