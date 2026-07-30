@@ -2,8 +2,10 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const WebsiteClosed = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { getProducts } = useContext(ShopContext);
   const [retrying, setRetrying] = useState(false);
@@ -40,12 +42,11 @@ const WebsiteClosed = () => {
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-extralight tracking-widest text-white uppercase mb-6 prata-regular">
-          Store is Closed
+          {t('STORE_CLOSED')}
         </h1>
-        
+
         <p className="text-neutral-400 font-light leading-relaxed mb-10 text-sm sm:text-base max-w-md mx-auto">
-          We are currently upgrading our collections and performing scheduled backend maintenance. 
-          Please return shortly to explore our new arrivals.
+          {t('STORE_CLOSED_MESSAGE')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -54,20 +55,20 @@ const WebsiteClosed = () => {
             disabled={retrying}
             className="w-full sm:w-auto bg-white text-black px-8 py-3 rounded-none font-medium hover:bg-neutral-200 transition duration-300 disabled:opacity-60 uppercase text-xs tracking-widest"
           >
-            {retrying ? "Reconnecting..." : "Check Status"}
+            {retrying ? t('RECONNECTING') : t('CHECK_STATUS')}
           </button>
 
           <a
             href="mailto:info@alameenwires.com"
             className="w-full sm:w-auto border border-neutral-800 text-neutral-300 px-8 py-3 rounded-none font-medium hover:bg-white hover:text-black hover:border-white transition duration-300 uppercase text-xs tracking-widest text-center"
           >
-            Contact Support
+            {t('CONTACT_SUPPORT')}
           </a>
         </div>
 
         {/* Footer Info */}
         <div className="mt-16 text-[10px] tracking-[0.2em] text-neutral-600 uppercase font-light">
-          <p>© {new Date().getFullYear()} Al-Ameen Wires. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Al-Ameen Wires. {t('ALL_RIGHTS_RESERVED')}</p>
         </div>
       </motion.div>
     </div>
