@@ -453,8 +453,9 @@ const ShopContextProvider = (props) => {
       fetchUserCart();
       fetchWishlist();
     } else {
-      console.log("No token, clearing cart & wishlist");
-      setCartItems({});
+      console.log("No token, using local cart from localStorage");
+      // Don't clear cart for guest users - it's already loaded from localStorage
+      // Just clear wishlist since that's server-side only
       setWishlistItems([]);
     }
   }, [token]);
@@ -691,6 +692,7 @@ const ShopContextProvider = (props) => {
     getProducts,
     getCategories,
     categories,
+    productsLoaded,
     token,
     setToken,
     refreshToken,
