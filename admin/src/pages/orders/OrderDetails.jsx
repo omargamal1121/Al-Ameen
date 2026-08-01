@@ -144,42 +144,19 @@ const OrderDetails = ({ token }) => {
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Sidebar: Customer & Pricing */}
-        <div className="lg:col-span-4 flex flex-col gap-10">
-          
-          {/* Pricing Summary */}
-          <div className="bg-gray-900 p-10 rounded-[56px] text-white flex flex-col gap-8 shadow-2xl shadow-blue-900/20 border border-blue-900/30">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 text-center">Payment Summary</h4>
-            <div className="flex flex-col gap-6">
-              <div className="flex justify-between items-center border-b border-white/5 pb-6">
-                <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Subtotal</span>
-                <span className="text-sm font-black text-white">{currency} {order.subtotal?.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-white/5 pb-6">
-                <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Shipping</span>
-                <span className="text-sm font-black text-white">{currency} {order.shippingCost?.toFixed(2)}</span>
-              </div>
-              {order.discountAmount > 0 && (
-                <div className="flex justify-between items-center border-b border-white/5 pb-6">
-                  <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Discount</span>
-                  <span className="text-sm font-black text-emerald-400">-{currency} {order.discountAmount?.toFixed(2)}</span>
-                </div>
-              )}
-              <div className="flex justify-between items-center pt-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Grand Total</span>
-                  <span className="text-4xl font-black tracking-tighter text-white">{currency} {order.total?.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Payment Transactions */}
           {order.payment && Array.isArray(order.payment) && order.payment.length > 0 && (
             <div className="bg-blue-50 p-10 rounded-[56px] border border-blue-100 shadow-sm flex flex-col gap-8">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">Payment Transactions</h4>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-2 h-10 bg-blue-500 rounded-full" />
+                  <h3 className="text-xl font-black uppercase tracking-tighter">Payment Transactions</h3>
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-100 px-6 py-2 rounded-full">
+                  {order.payment.length} Transactions
+                </span>
+              </div>
               <div className="flex flex-col gap-4">
                 {order.payment.map((payment, idx) => (
                   <div key={idx} className="bg-white p-6 rounded-[32px] border border-blue-200 shadow-sm">
@@ -218,6 +195,37 @@ const OrderDetails = ({ token }) => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Sidebar: Customer & Pricing */}
+        <div className="lg:col-span-4 flex flex-col gap-10">
+          
+          {/* Pricing Summary */}
+          <div className="bg-gray-900 p-10 rounded-[56px] text-white flex flex-col gap-8 shadow-2xl shadow-blue-900/20 border border-blue-900/30">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 text-center">Payment Summary</h4>
+            <div className="flex flex-col gap-6">
+              <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Subtotal</span>
+                <span className="text-sm font-black text-white">{currency} {order.subtotal?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Shipping</span>
+                <span className="text-sm font-black text-white">{currency} {order.shippingCost?.toFixed(2)}</span>
+              </div>
+              {order.discountAmount > 0 && (
+                <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                  <span className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Discount</span>
+                  <span className="text-sm font-black text-emerald-400">-{currency} {order.discountAmount?.toFixed(2)}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center pt-2">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Grand Total</span>
+                  <span className="text-4xl font-black tracking-tighter text-white">{currency} {order.total?.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Customer Details */}
           <div className="bg-white p-10 rounded-[56px] border border-gray-100 shadow-sm flex flex-col gap-8">
