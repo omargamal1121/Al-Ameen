@@ -44,31 +44,39 @@ const Cart = () => {
       console.log("Using server cart data:", cartItemsList);
       const tempData = cartItemsList.map(item => {
         const product = item.product || {};
+        const normalizeUrl = (url) => {
+          if (!url) return "";
+          return url.startsWith("http") ? url : `${backendUrl}/${url}`;
+        };
         return {
           _id: item.productId || product.id || null,
           quantity: item.quantity,
           size: item.productVariant?.size || product.productVariantForCartDto?.size || item.size || 'Unknown',
           color: item.productVariant?.color || product.productVariantForCartDto?.color || item.color || 'Unknown',
-          variantId: item.productVariantId || item.productVariant?.id || product.productVariantForCartDto?.id, // Store variant ID for actions
-          productData: product, // Store full product data
-          price: item.currentPrice || product.finalPrice || product.price,
-          priceAtAddTime: item.priceAtAddTime || product.price || product.finalPrice,
-          isPriceChanged: item.isPriceChanged || false,
-          image: product.mainImageUrl || item.productVariant?.images?.[0]?.url || product.image?.[0]
+          variantId: item.productVariantId || item.productVariant?.id || product.productVariantForCartDto?.id,
+          productData: product,
+          price: item.totalCurrentPrice || item.currentPrice || product.finalPrice || product.price,
+          priceAtAddTime: item.totalPriceAtAddTime || item.priceAtAddTime || product.price || product.finalPrice,
+          isPriceChanged: item.hasPriceChanged || item.isPriceChanged || false,
+          image: normalizeUrl(product.mainImageUrl || item.productVariant?.images?.[0]?.url || product.image?.[0])
         };
-      }).filter(item => item._id); // Filter out invalid items
+      }).filter(item => item._id);
 
       setCartData(tempData);
     } else {
       // 🔄 Fallback to local cart reconstruction
       const tempData = [];
+      const normalizeUrl = (url) => {
+        if (!url) return "";
+        return url.startsWith("http") ? url : `${backendUrl}/${url}`;
+      };
       for (const items in cartItems) {
         for (const item in cartItems[items]) {
           if (cartItems[items][item] > 0) {
             // Parse size and color from the item key (format: "size_color" or just "size")
             const parts = item.split('_');
             const size = parts[0];
-            const color = parts[1] || 'Unknown'; // Default to 'Unknown' if no color
+            const color = parts[1] || 'Unknown';
 
             // Look up productData from loaded products state if possible
             const productData = products.find(p => String(p._id) === String(items)) || {};
@@ -81,7 +89,7 @@ const Cart = () => {
               productData: productData,
               price: productData.finalPrice || productData.price || 0,
               priceAtAddTime: productData.price || productData.finalPrice || 0,
-              image: productData.image?.[0] || ""
+              image: normalizeUrl(productData.image?.[0] || productData.mainImageUrl || "")
             });
           }
         }

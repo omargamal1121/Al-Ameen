@@ -9,7 +9,7 @@ import { clearAllGuestData } from '../utils/guestSession';
 
 const GuestCheckout = () => {
   const navigate = useNavigate();
-  const { token, cartItems, products, resolveVariantId, backendUrl } = useContext(ShopContext);
+  const { token, cartItems, products, productsLoaded, resolveVariantId, backendUrl } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
   const [paymentMethods, setPaymentMethods] = useState([]);
 
