@@ -200,6 +200,7 @@ const Collection = () => {
                             images={product.images}
                             discountPrecentage={product.discountPrecentage}
                             discountName={product.discountName}
+                            arDiscountName={product.discount?.arName || product.arDiscountName}
                             availableQuantity={product.availableQuantity}
                             totalSold={product.totalSold}
                         />

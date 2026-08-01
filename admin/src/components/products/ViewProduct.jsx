@@ -291,9 +291,19 @@ const ViewProduct = ({ token, productId }) => {
             <h1 className={`text-5xl font-black leading-[0.9] uppercase tracking-tighter ${isDeleted ? "text-rose-500 line-through" : "text-gray-900"}`}>
               {product.name}
             </h1>
+            {product.arName && (
+              <p className={`text-2xl font-bold leading-relaxed mt-2 text-purple-600 ${isDeleted ? "text-rose-400" : ""}`} dir="rtl">
+                {product.arName}
+              </p>
+            )}
             <p className={`font-medium text-lg leading-relaxed mt-4 ${isDeleted ? "text-rose-400" : "text-gray-500"}`}>
               {product.description}
             </p>
+            {product.arDescription && (
+              <p className={`font-medium text-lg leading-relaxed mt-2 ${isDeleted ? "text-rose-400" : "text-gray-500"}`} dir="rtl">
+                {product.arDescription}
+              </p>
+            )}
           </div>
 
           {/* Pricing & Inventory */}

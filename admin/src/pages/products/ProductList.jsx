@@ -81,6 +81,9 @@ const ProductCard = React.memo(({ p, navigate, toggleStatus, handleRestore, hand
         <h4 className="text-xl font-black text-gray-900 leading-tight uppercase tracking-tighter mb-4 truncate">
           {p.name}
         </h4>
+        {p.arName && (
+          <p className="text-purple-600 text-xs font-bold leading-tight truncate" dir="rtl">{p.arName}</p>
+        )}
 
         <div className="flex items-center justify-between border-t border-gray-100 pt-6">
           <div className="flex flex-col gap-1">

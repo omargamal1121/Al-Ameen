@@ -119,7 +119,13 @@ const DiscountDetails = ({ token }) => {
                     <span className="w-2 h-8 bg-purple-500 rounded-full" />
                     <h3 className="text-4xl font-black text-gray-900 uppercase tracking-tight">{data.name}</h3>
                   </div>
+                  {data.arName && (
+                    <p className="text-purple-600 font-bold text-lg leading-relaxed max-w-2xl" dir="rtl">{data.arName}</p>
+                  )}
                   <p className="text-gray-500 font-medium text-lg leading-relaxed max-w-2xl">{data.description || "No description provided for this discount."}</p>
+                  {data.arDescription && (
+                    <p className="text-gray-500 font-medium text-lg leading-relaxed max-w-2xl" dir="rtl">{data.arDescription}</p>
+                  )}
                 </div>
                 <div className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border-2 shadow-sm ${data.isActive ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-rose-50 text-rose-600 border-rose-100"}`}>
                   {data.isActive ? "Active" : "Inactive"}

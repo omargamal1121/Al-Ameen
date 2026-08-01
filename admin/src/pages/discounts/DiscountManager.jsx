@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import API from "../../services/api";
 
 // Sub-components
@@ -10,6 +11,7 @@ import BulkDiscountManager from "../../components/products/BulkDiscountManager";
 
 const DiscountManager = ({ token }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("registry"); // registry | forge | bulk
   
   // Helper to convert UTC to Egypt Local (Africa/Cairo) for datetime-local input
@@ -44,7 +46,7 @@ const DiscountManager = ({ token }) => {
   // Form State
   const [editId, setEditId] = useState(null);
   const [formData, setFormData] = useState({
-    name: "", discountPercent: 0, startDate: "", endDate: "", description: ""
+    name: "", discountPercent: 0, startDate: "", endDate: "", description: "", arName: "", arDescription: ""
   });
 
   // Loading state for toggle actions
@@ -101,7 +103,9 @@ const DiscountManager = ({ token }) => {
           discountPercent: d.discountPercent || 0,
           startDate: toCairoLocal(d.startDate),
           endDate: toCairoLocal(d.endDate),
-          description: d.description || ""
+          description: d.description || "",
+          arName: d.arName || "",
+          arDescription: d.arDescription || ""
         });
         setEditId(id);
         setActiveTab("forge");
@@ -177,15 +181,15 @@ const DiscountManager = ({ token }) => {
             🏷️
           </div>
           <div>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tighter uppercase">Discounts</h1>
-            <p className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">Manage and monitor product discounts</p>
+            <h1 className="text-3xl font-black text-gray-900 tracking-tighter uppercase">{t('discountManagement')}</h1>
+            <p className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">{t('discountManagementSubtitle')}</p>
           </div>
         </div>
 
         <div className="flex bg-gray-50 p-2 rounded-[28px] border border-gray-100 shadow-inner">
           {[
-            { id: "registry", label: "Discount List", icon: "📋" },
-            { id: "forge", label: "Create New", icon: "✨" },
+            { id: "registry", label: t('discountList'), icon: "📋" },
+            { id: "forge", label: t('addDiscount'), icon: "✨" },
             { id: "bulk", label: "Bulk Actions", icon: "⚡" }
           ].map((tab) => (
             <button
@@ -274,7 +278,7 @@ const DiscountManager = ({ token }) => {
                   fetchDiscounts();
                 } catch (err) { toast.error("Failed to save"); }
               }}
-              resetForm={() => { setEditId(null); setFormData({ name: "", discountPercent: 0, startDate: "", endDate: "", description: "" }); }}
+              resetForm={() => { setEditId(null); setFormData({ name: "", discountPercent: 0, startDate: "", endDate: "", description: "", arName: "", arDescription: "" }); }}
               editMode={!!editId}
               token={token}
             />

@@ -39,6 +39,26 @@ const DiscountForm = ({
               placeholder="Strategic campaign objectives and parameters..."
             />
           </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name (الاسم بالعربية)</label>
+            <input
+              name="arName" value={formData.arName || ""} onChange={handleInputChange}
+              className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-purple-50 focus:border-purple-300 transition-all font-bold text-lg"
+              placeholder="الاسم بالعربية..."
+              dir="rtl"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description (الوصف بالعربية)</label>
+            <textarea
+              name="arDescription" value={formData.arDescription || ""} onChange={handleInputChange}
+              className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-purple-50 focus:border-purple-300 transition-all font-medium text-gray-600 min-h-[150px]"
+              placeholder="الوصف بالعربية..."
+              dir="rtl"
+            />
+          </div>
         </div>
 
         <div className="md:col-span-4 flex flex-col gap-6">

@@ -97,10 +97,12 @@ const Wishlist = () => {
                       id={item.id || item._id}
                       image={images}
                       name={item.name}
+                      arName={item.arName}
                       price={item.price}
                       finalPrice={finalP}
                       discountPrecentage={item.discountPrecentage || item.discountPercentage}
                       discountName={item.discountName}
+                      arDiscountName={item.discount?.arName || item.arDiscountName}
                     />
                   );
                 })}

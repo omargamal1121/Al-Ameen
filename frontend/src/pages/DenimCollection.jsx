@@ -183,11 +183,13 @@ const DenimCollection = () => {
               key={product._id}
               id={product._id}
               name={product.name}
+              arName={product.arName}
               price={product.price}
               finalPrice={product.finalPrice}
               image={product.image}
               discountPrecentage={product.discountPrecentage}
               discountName={product.discountName}
+              arDiscountName={product.discount?.arName || product.arDiscountName}
             />
           ))
         ) : (

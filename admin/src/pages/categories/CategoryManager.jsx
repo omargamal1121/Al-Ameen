@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { backendUrl } from "../../App";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // Import components
 import AddCategory from "../../components/categories/AddCategory";
@@ -14,6 +15,7 @@ const CategoryManager = ({ token }) => {
   const { categoryId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const searchParams = new URLSearchParams(location.search);
 
   const [activeTab, setActiveTab] = useState("list");
@@ -151,19 +153,19 @@ const CategoryManager = ({ token }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Category Manager
+            {t('categoryManagement')}
           </h1>
           <p className="text-gray-500 mt-1 font-medium">
-            Manage your store's product hierarchy and organization
+            {t('categoryManagementSubtitle')}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="flex bg-gray-100 p-1 rounded-xl">
             {[
-              { id: "list", label: "Categories List", icon: "📋" },
-              { id: "category", label: "View Details", icon: "🔍" },
-              { id: "add", label: editMode ? "Edit Category" : "Add Category", icon: editMode ? "✏️" : "➕" }
+              { id: "list", label: t('categoryList'), icon: "📋" },
+              { id: "category", label: t('view'), icon: "🔍" },
+              { id: "add", label: editMode ? t('edit') : t('addCategory'), icon: editMode ? "✏️" : "➕" }
             ].map((tab) => (
               <button
                 key={tab.id}

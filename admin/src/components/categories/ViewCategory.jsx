@@ -225,6 +225,9 @@ const ViewCategory = ({ token, categoryId, isActive = null, includeDeleted = nul
         <div className="flex flex-col gap-2">
           <p className="text-blue-400 text-xs font-black uppercase tracking-[0.3em] mb-1">Category Deployment</p>
           <h2 className="text-5xl font-black text-white tracking-tighter">{category.name}</h2>
+          {category.arName && (
+            <p className="text-purple-400 text-2xl font-bold tracking-tight" dir="rtl">{category.arName}</p>
+          )}
           <div className="flex items-center gap-4 mt-4">
             <div className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest ${category.isActive ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
               {category.isActive ? "Live" : "Inactive"}
@@ -304,6 +307,9 @@ const ViewCategory = ({ token, categoryId, isActive = null, includeDeleted = nul
             <div className="flex flex-col gap-2">
               <p className="text-xs font-black uppercase tracking-widest text-gray-400">Inventory Narrative</p>
               <p className="text-gray-600 font-medium leading-relaxed text-lg">{category.description || "No description provided."}</p>
+              {category.arDescription && (
+                <p className="text-gray-600 font-medium leading-relaxed text-lg" dir="rtl">{category.arDescription}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-8 pt-10 border-t border-gray-50">

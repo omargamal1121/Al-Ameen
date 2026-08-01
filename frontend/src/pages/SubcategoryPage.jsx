@@ -75,7 +75,7 @@ const SubcategoryPage = () => {
               <span className="text-black">{getLocalizedName(subcategory)}</span>
             </div>
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-4 leading-[0.8]">{getLocalizedName(subcategory)}</h1>
-            <p className="text-gray-400 font-medium italic max-w-xl">{getLocalizedName(subcategory) || "A masterfully curated selection of high-end fashion pieces for the discerning eye."}</p>
+            <p className="text-gray-400 font-medium italic max-w-xl">{getLocalizedDescription(subcategory) || "A masterfully curated selection of high-end fashion pieces for the discerning eye."}</p>
           </motion.div>
 
           <div className="flex flex-col items-end gap-4">

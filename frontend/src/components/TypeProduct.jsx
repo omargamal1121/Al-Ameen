@@ -8,7 +8,8 @@ import WishlistButton from "./WishlistButton";
 import discountService from "../services/discountService";
 
 const TypeProduct = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isAr = i18n.language === "ar";
   const navigate = useNavigate();
   const { products, currency, refreshToken } = useContext(ShopContext);
 
@@ -109,12 +110,12 @@ const TypeProduct = () => {
                 </div>
               )}
 
-              {product && product.discountName && (
+              {product && (product.discountName || product.discount?.arName) && (
                 <div
                   className="absolute top-4 left-4 bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold z-20"
-                  title={product.discountName}
+                  title={isAr ? (product.discount?.arName || product.discountName) : product.discountName}
                 >
-                  {product.discountName}
+                  {isAr ? (product.discount?.arName || product.discountName) : product.discountName}
                 </div>
               )}
 

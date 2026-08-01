@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import axios from 'axios'
 import { backendUrl } from '../../App'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 import ConfirmModal from '../../components/modals/ConfirmModal'
 
 const PAGE_SIZE = 10;
@@ -35,6 +36,7 @@ const RoleBadge = ({ role, onRemove, removing }) => {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 const UserList = ({ token }) => {
+  const { t } = useTranslation()
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -66,10 +68,10 @@ const UserList = ({ token }) => {
 
   // ── Fetch helpers ─────────────────────────────────────────────────────────
   const formatLastVisit = (v) => {
-    if (!v) return 'Never';
-    if (typeof v === 'string' && v.startsWith('0001-01-01')) return 'Never';
+    if (!v) return t('never');
+    if (typeof v === 'string' && v.startsWith('0001-01-01')) return t('never');
     const d = new Date(v);
-    if (isNaN(d)) return 'Never';
+    if (isNaN(d)) return t('never');
     return d.toLocaleString();
   };
 
@@ -349,9 +351,9 @@ const UserList = ({ token }) => {
       {/* ── Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">User Management</h1>
+          <h1 className="text-3xl font-black text-gray-900 tracking-tight">{t('usersManagement')}</h1>
           <p className="text-sm text-gray-400 mt-1 font-medium">
-            {totalCount > 0 ? `${totalCount} user${totalCount !== 1 ? 's' : ''} total` : 'Manage accounts and permissions'}
+            {totalCount > 0 ? `${totalCount} user${totalCount !== 1 ? 's' : ''} total` : t('usersManagementSubtitle')}
           </p>
         </div>
         <button
@@ -375,7 +377,7 @@ const UserList = ({ token }) => {
           </svg>
           <input
             type="text"
-            placeholder="Search by name or email…"
+            placeholder={t('searchPlaceholder')}
             className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition-all"
             value={searchTerm}
             onChange={(e) => handleSearchChange(e.target.value)}
@@ -397,20 +399,20 @@ const UserList = ({ token }) => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4 text-gray-400">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
-            <p className="text-sm font-medium">Loading users…</p>
+            <p className="text-sm font-medium">{t('loadingUsers')}</p>
           </div>
         ) : users.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3 text-gray-400">
             <div className="text-5xl opacity-30">👥</div>
             <p className="text-sm font-semibold uppercase tracking-widest">
-              {searchTerm ? 'No users match your search' : 'No users found'}
+              {searchTerm ? t('noUsersMatchSearch') : t('noUsersFound')}
             </p>
             {searchTerm && (
               <button
                 onClick={() => handleSearchChange('')}
                 className="mt-2 text-xs text-blue-500 hover:underline font-medium"
               >
-                Clear search
+                {t('clearSearch')}
               </button>
             )}
           </div>
@@ -419,7 +421,7 @@ const UserList = ({ token }) => {
             <table className="min-w-[800px] w-full text-left">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-100">
-                  {['Name', 'Email', 'Phone', 'Status', 'Roles', 'Last Visit', 'Actions'].map(h => (
+                  {[t('name'), t('email'), t('phone'), t('status'), t('role'), t('lastVisit'), t('actions')].map(h => (
                     <th key={h} className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-gray-500 whitespace-nowrap">
                       {h}
                     </th>
@@ -435,11 +437,11 @@ const UserList = ({ token }) => {
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                           {(user.name || user.userName || '?')[0].toUpperCase()}
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">{user.name || 'N/A'}</span>
+                        <span className="text-sm font-semibold text-gray-900">{user.name || t('na')}</span>
                       </div>
                     </td>
                     {/* Email */}
-                    <td className="px-5 py-4 text-sm text-gray-500">{user.email || 'N/A'}</td>
+                    <td className="px-5 py-4 text-sm text-gray-500">{user.email || t('na')}</td>
                     {/* Phone */}
                     <td className="px-5 py-4 text-sm text-gray-500">{user.phoneNumber || '—'}</td>
                     {/* Status */}
@@ -447,10 +449,10 @@ const UserList = ({ token }) => {
                       <div className="flex flex-col gap-1">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${user.isActive ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${user.isActive ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                          {user.isActive ? 'Active' : 'Locked'}
+                          {user.isActive ? t('active') : t('locked')}
                         </span>
                         {user.isDeleted && (
-                          <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 border border-gray-200">Deleted</span>
+                          <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 border border-gray-200">{t('deleted')}</span>
                         )}
                       </div>
                     </td>
@@ -459,7 +461,7 @@ const UserList = ({ token }) => {
                       <div className="flex flex-wrap gap-1">
                         {user.roles?.length
                           ? user.roles.map((role, i) => <RoleBadge key={i} role={role} />)
-                          : <span className="text-xs text-gray-400">No roles</span>}
+                          : <span className="text-xs text-gray-400">{t('noRoles')}</span>}
                       </div>
                     </td>
                     {/* Last Visit */}

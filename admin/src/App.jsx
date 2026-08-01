@@ -148,7 +148,7 @@ function App() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4 text-gray-400">
           <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
-          <p className="text-sm font-medium">Checking session…</p>
+          <p className="text-sm font-medium">{t('checkingSession')}</p>
         </div>
       </div>
     );

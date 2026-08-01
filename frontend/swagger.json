@@ -9898,6 +9898,10 @@
             "minLength": 0,
             "type": "string"
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "discountPercent": {
             "maximum": 100,
             "minimum": 1,
@@ -9913,6 +9917,10 @@
             "format": "date-time"
           },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           }
@@ -10372,11 +10380,19 @@
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\s\\-,]*[a-zA-Z0-9]$",
             "type": "string"
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
             "maxLength": 50,
             "minLength": 10,
             "pattern": "^[\\w\\s.,\\-()'\\\"]{0,500}$",
             "type": "string"
+          },
+          "arDescription": {
+            "type": "string",
+            "nullable": true
           },
           "discountPercent": {
             "maximum": 100,
@@ -12492,19 +12508,13 @@
           "email",
           "name",
           "password",
-          "phoneNumber",
-          "userName"
+          "phoneNumber"
         ],
         "type": "object",
         "properties": {
           "name": {
             "minLength": 1,
             "pattern": "^[a-zA-Z](?:[a-zA-Z\\s\\-,]*[a-zA-Z])?$",
-            "type": "string"
-          },
-          "userName": {
-            "minLength": 1,
-            "pattern": "^(?![_\\.])[a-zA-Z0-9._]+(?<![_\\.])$",
             "type": "string"
           },
           "phoneNumber": {
@@ -13029,6 +13039,10 @@
             "type": "string",
             "nullable": true
           },
+          "arName": {
+            "type": "string",
+            "nullable": true
+          },
           "discountPercent": {
             "maximum": 100,
             "minimum": 1,
@@ -13047,6 +13061,10 @@
             "nullable": true
           },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "arDescription": {
             "type": "string",
             "nullable": true
           }

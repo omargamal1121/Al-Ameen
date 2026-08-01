@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../../assets/assets";
+import { useTranslation } from "react-i18next";
 
 // Reusable nav link with consistent styling
 const SideLink = ({ to, icon, iconAlt, label, onClick }) => (
@@ -35,41 +36,43 @@ const SectionLabel = ({ children }) => (
 );
 
 const Sidebar = ({ isOpen = false, onClose = () => {}, deliveryOnly = false }) => {
+  const { t } = useTranslation()
+
   // Build nav sections — shared between desktop and mobile
   const navSections = [
     {
-      label: "Overview",
+      label: t('overview'),
       items: [
-        { to: "/", icon: assets.dashboard_icon, iconAlt: "Dashboard", label: "Dashboard" },
+        { to: "/", icon: assets.dashboard_icon, iconAlt: "Dashboard", label: t('dashboard') },
       ],
     },
     ...(!deliveryOnly
       ? [
           {
-            label: "Catalog",
+            label: t('catalog'),
             items: [
-              { to: "/add",      icon: assets.add_icon,        iconAlt: "Add product",    label: "Add Items" },
-              { to: "/products", icon: assets.collection_icon, iconAlt: "Products list",  label: "Products" },
-              { to: "/discounts",icon: assets.discount_icon,   iconAlt: "Discounts",      label: "Discounts" },
+              { to: "/add",      icon: assets.add_icon,        iconAlt: "Add product",    label: t('addItems') },
+              { to: "/products", icon: assets.collection_icon, iconAlt: "Products list",  label: t('products') },
+              { to: "/discounts",icon: assets.discount_icon,   iconAlt: "Discounts",      label: t('discounts') },
             ],
           },
           {
-            label: "Collections",
+            label: t('collections'),
             items: [
-              { to: "/collections",       icon: assets.collection_icon, iconAlt: "Categories",      label: "Categories" },
-              { to: "/collection-manager",icon: assets.collection_icon, iconAlt: "Collections",     label: "Collections" },
+              { to: "/collections",       icon: assets.collection_icon, iconAlt: "Categories",      label: t('categories') },
+              { to: "/collection-manager",icon: assets.collection_icon, iconAlt: "Collections",     label: t('collections') },
             ],
           },
         ]
       : []),
     {
-      label: "Operations",
+      label: t('operations'),
       items: [
-        { to: "/orders", icon: assets.order_icon, iconAlt: "Orders", label: "Orders" },
+        { to: "/orders", icon: assets.order_icon, iconAlt: "Orders", label: t('orders') },
         ...(!deliveryOnly
           ? [
-              { to: "/users",            icon: assets.users_icon, iconAlt: "Users",            label: "Users" },
-              { to: "/admin-operations", icon: assets.order_icon, iconAlt: "Admin operations", label: "Admin Operations" },
+              { to: "/users",            icon: assets.users_icon, iconAlt: "Users",            label: t('users') },
+              { to: "/admin-operations", icon: assets.order_icon, iconAlt: "Admin operations", label: t('adminOperations') },
             ]
           : []),
       ],
@@ -105,7 +108,7 @@ const Sidebar = ({ isOpen = false, onClose = () => {}, deliveryOnly = false }) =
         {/* Panel */}
         <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-lg border-r border-gray-200 p-3 overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
-            <div className="font-semibold text-sm text-gray-600 px-2">Menu</div>
+            <div className="font-semibold text-sm text-gray-600 px-2">{t('menu')}</div>
             <button
               className="p-2 rounded hover:bg-gray-100"
               onClick={onClose}

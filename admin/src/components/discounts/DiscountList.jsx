@@ -56,7 +56,13 @@ const DiscountList = ({
                     >
                       {d.name}
                     </span>
+                    {d.arName && (
+                      <span className="text-[10px] font-bold text-purple-400 truncate max-w-[200px]" dir="rtl">{d.arName}</span>
+                    )}
                     <span className="text-[10px] font-bold text-gray-400 truncate max-w-[200px]">{d.description || "No description"}</span>
+                    {d.arDescription && (
+                      <span className="text-[10px] font-bold text-gray-400 truncate max-w-[200px]" dir="rtl">{d.arDescription}</span>
+                    )}
                   </div>
                 </td>
                 <td className="px-8 py-6">

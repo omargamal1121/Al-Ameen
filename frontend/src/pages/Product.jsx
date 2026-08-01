@@ -204,6 +204,9 @@ const Product = () => {
                 <div className="absolute top-6 left-6 z-10 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-xs py-1.5 px-4 rounded-full shadow-lg tracking-wider flex items-center gap-1.5">
                   <FaBolt />
                   <span>{isAr ? `خصم ${discountPercentage}%` : `SAVE ${discountPercentage}%`}</span>
+                  {productData.discount?.name && (
+                    <span className="opacity-90 text-[10px]">| {isAr ? (productData.discount?.arName || productData.discount.name) : productData.discount.name}</span>
+                  )}
                 </div>
               )}
             </div>

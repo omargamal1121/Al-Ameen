@@ -305,6 +305,9 @@ const ListCategory = ({
                   </h3>
                   <span className="text-[10px] font-bold text-gray-400">#{cat.id}</span>
                 </div>
+                {cat.arName && (
+                  <p className="text-purple-600 text-xs font-bold line-clamp-1 leading-relaxed" dir="rtl">{cat.arName}</p>
+                )}
                 <p className="text-gray-500 text-xs font-medium line-clamp-2 leading-relaxed h-[32px] mt-1 mb-6">
                   {cat.description || "Establish a new frontier of organization for this category."}
                 </p>

@@ -18,6 +18,7 @@ const ProductItem = ({
   finalPrice,
   discountPrecentage,
   discountName,
+  arDiscountName,
   availableQuantity,
   totalSold,
   hidePrice = false,
@@ -27,6 +28,8 @@ const ProductItem = ({
   const { i18n } = useTranslation();
   const isAr = i18n.language === "ar";
   const productId = id || propProductId || _id;
+
+  const localizedDiscountName = isAr ? arDiscountName : discountName;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -83,7 +86,7 @@ const ProductItem = ({
           {hasDiscount && (
             <div className="absolute top-3 left-3 z-20 bg-gradient-to-r from-red-600 to-amber-600 text-white font-extrabold text-[11px] px-2.5 py-1 rounded-full shadow-md tracking-wider flex items-center gap-1">
               <span>-{discountPercentage}%</span>
-              {discountName && <span className="hidden sm:inline opacity-90 text-[9px]">| {discountName}</span>}
+              {localizedDiscountName && <span className="hidden sm:inline opacity-90 text-[9px]">| {localizedDiscountName}</span>}
             </div>
           )}
 
