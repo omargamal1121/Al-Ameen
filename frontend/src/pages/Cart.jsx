@@ -69,37 +69,62 @@ const Cart = () => {
       console.log("Final cart data:", tempData);
       setCartData(tempData);
     } else {
-      // 🔄 Fallback to local cart reconstruction
-      const tempData = [];
-      const normalizeUrl = (url) => {
-        if (!url) return "";
-        return url.startsWith("http") ? url : `${backendUrl}/${url}`;
-      };
-      for (const items in cartItems) {
-        for (const item in cartItems[items]) {
-          if (cartItems[items][item] > 0) {
-            // Parse size and color from the item key (format: "size_color" or just "size")
-            const parts = item.split('_');
-            const size = parts[0];
-            const color = parts[1] || 'Unknown';
+      // 🔄 Fallback to local cart reconstruction for guest users
+      const fetchMissingProducts = async () => {
+        const tempData = [];
+        const normalizeUrl = (url) => {
+          if (!url) return "";
+          return url.startsWith("http") ? url : `${backendUrl}/${url}`;
+        };
+        
+        for (const items in cartItems) {
+          for (const item in cartItems[items]) {
+            const cartItem = cartItems[items][item];
+            
+            // Handle both old format (just quantity) and new format (object with quantity and variantId)
+            const quantity = typeof cartItem === 'object' ? cartItem.quantity : cartItem;
+            const variantId = typeof cartItem === 'object' ? cartItem.variantId : null;
+            
+            if (quantity > 0) {
+              // Parse size and color from the item key (format: "size_color" or just "size")
+              const parts = item.split('_');
+              const size = parts[0];
+              const color = parts[1] || 'Unknown';
 
-            // Look up productData from loaded products state if possible
-            const productData = products.find(p => String(p._id) === String(items)) || {};
+              // Look up productData from loaded products state
+              let productData = products.find(p => String(p._id) === String(items)) || {};
+              
+              // If product not found in global state, fetch it by ID
+              if (!productData || !productData.name) {
+                try {
+                  const response = await fetch(`${backendUrl}/api/Products/${items}`);
+                  const data = await response.json();
+                  if (response.ok && data.responseBody?.data) {
+                    productData = data.responseBody.data;
+                  }
+                } catch (error) {
+                  console.error(`Failed to fetch product ${items}:`, error);
+                }
+              }
 
-            tempData.push({
-              _id: items,
-              quantity: cartItems[items][item],
-              size: size,
-              color: color,
-              productData: productData,
-              price: productData.finalPrice || productData.price || 0,
-              priceAtAddTime: productData.price || productData.finalPrice || 0,
-              image: normalizeUrl(productData.image?.[0] || productData.mainImageUrl || "")
-            });
+              tempData.push({
+                _id: items,
+                quantity: quantity,
+                size: size,
+                color: color,
+                variantId: variantId,
+                productData: productData,
+                price: productData.finalPrice || productData.price || 0,
+                priceAtAddTime: productData.price || productData.finalPrice || 0,
+                image: normalizeUrl(productData.image?.[0] || productData.mainImageUrl || "")
+              });
+            }
           }
         }
-      }
-      setCartData(tempData);
+        setCartData(tempData);
+      };
+
+      fetchMissingProducts();
     }
   }, [cartItems, serverCart, products]);
 

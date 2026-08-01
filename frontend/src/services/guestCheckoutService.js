@@ -31,16 +31,17 @@ export const placeGuestOrder = async (payload) => {
     // Handle different response formats
     const result = data.data || data.responseBody?.data || data;
     
-    // Save guest token if provided in response
-    if (result.guestToken) {
-      saveGuestToken(result.guestToken);
+    // Save guest token if provided in response (handle both camelCase and PascalCase)
+    const guestToken = result.guestToken || result.GuestToken;
+    if (guestToken) {
+      saveGuestToken(guestToken);
     }
 
     return {
       success: true,
-      orderNumber: result.orderNumber,
-      orderId: result.orderId,
-      guestToken: result.guestToken,
+      orderNumber: result.orderNumber || result.OrderNumber,
+      orderId: result.orderId || result.OrderId,
+      guestToken: guestToken,
       message: result.message || 'Order placed successfully'
     };
   } catch (error) {

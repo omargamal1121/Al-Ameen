@@ -89,17 +89,24 @@ const GuestCheckout = () => {
     
     for (const productId in cartItems) {
       for (const itemKey in cartItems[productId]) {
-        const quantity = cartItems[productId][itemKey];
+        const cartItem = cartItems[productId][itemKey];
+        
+        // Handle both old format (just quantity) and new format (object with quantity and variantId)
+        const quantity = typeof cartItem === 'object' ? cartItem.quantity : cartItem;
+        const variantId = typeof cartItem === 'object' ? cartItem.variantId : null;
         const [size, color] = itemKey.split('_');
         
-        // Resolve variant ID
-        const productVariantId = await resolveVariantId(productId, size);
+        // Use stored variantId if available, otherwise resolve it
+        let productVariantId = variantId;
+        if (!productVariantId) {
+          productVariantId = await resolveVariantId(productId, size);
+        }
         
         if (productVariantId) {
           items.push({
             productId: Number(productId),
             productVariantId: productVariantId,
-            quantity: quantity
+            quantity: typeof quantity === 'object' ? quantity.quantity : quantity
           });
         }
       }

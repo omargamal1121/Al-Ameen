@@ -153,13 +153,23 @@ const ShopContextProvider = (props) => {
       return;
     }
 
-    // Add item to cart
+    // Resolve variant ID for both logged-in and guest users
+    const productVariantId = await resolveVariantId(itemId, size);
+
+    if (!productVariantId) {
+      toast.error(
+        "No variant found for the selected size. Please try a different size."
+      );
+      return;
+    }
+
+    // Add item to cart with variant ID
     let cartData = structuredClone(cartItems);
     if (cartData[itemId]) {
-      cartData[itemId][itemKey] = quantity;
+      cartData[itemId][itemKey] = { quantity, variantId: productVariantId };
     } else {
       cartData[itemId] = {};
-      cartData[itemId][itemKey] = quantity;
+      cartData[itemId][itemKey] = { quantity, variantId: productVariantId };
     }
     setCartItems(cartData);
 
@@ -167,17 +177,6 @@ const ShopContextProvider = (props) => {
     if (token) {
       try {
         console.log("Adding to cart with token:", token);
-        const productVariantId = await resolveVariantId(itemId, size);
-
-        if (!productVariantId) {
-          toast.error(
-            "No variant found for the selected size. Please try a different size."
-          );
-          // Revert local cart changes
-          setCartItems(cartItems);
-          return;
-        }
-
         console.log("Using variant ID:", productVariantId);
         const response = await fetchWithTokenRefresh(
           `${backendUrl}/api/Cart/items`,
@@ -247,13 +246,17 @@ const ShopContextProvider = (props) => {
     let cartData = structuredClone(cartItems);
     // Handle both old format (no color) and new format (with color)
     const itemKey = color ? `${size}_${color}` : size;
-    cartData[itemId][itemKey] = quantity;
+    
+    // Preserve variant ID if it exists in the current cart item
+    const currentCartItem = cartData[itemId]?.[itemKey];
+    const variantId = currentCartItem?.variantId || await resolveVariantId(itemId, size);
+    
+    cartData[itemId][itemKey] = { quantity, variantId };
     setCartItems(cartData);
 
     // Update cart in backend if user is logged in
     if (token) {
       try {
-        const variantId = await resolveVariantId(itemId, size);
         if (!variantId) {
           console.log("Variant not found for size; skipping backend update");
           return;
