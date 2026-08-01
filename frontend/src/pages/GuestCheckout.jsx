@@ -159,8 +159,8 @@ const GuestCheckout = () => {
       // Store order number in localStorage before payment redirect
       localStorage.setItem('pendingGuestOrderNumber', orderNumber);
 
-      // Clear guest cart
-      clearAllGuestData();
+      // Clear guest cart but preserve guest token for future orders
+      localStorage.removeItem('cartItems');
 
       // Handle payment based on method
       if (formData.paymentMethod === 'COD') {
