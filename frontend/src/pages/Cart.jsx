@@ -39,6 +39,8 @@ const Cart = () => {
       ? serverCart
       : (serverCart?.items || []);
 
+    console.log("Cart data debug:", { serverCart, cartItemsList, cartItems, products });
+
     if (cartItemsList.length > 0) {
       // 🆕 Use server cart data directly if available
       console.log("Using server cart data:", cartItemsList);
@@ -48,7 +50,7 @@ const Cart = () => {
           if (!url) return "";
           return url.startsWith("http") ? url : `${backendUrl}/${url}`;
         };
-        return {
+        const mappedItem = {
           _id: item.productId || product.id || null,
           quantity: item.quantity,
           size: item.productVariant?.size || product.productVariantForCartDto?.size || item.size || 'Unknown',
@@ -60,8 +62,11 @@ const Cart = () => {
           isPriceChanged: item.hasPriceChanged || item.isPriceChanged || false,
           image: normalizeUrl(product.mainImageUrl || item.productVariant?.images?.[0]?.url || product.image?.[0])
         };
+        console.log("Mapped cart item:", mappedItem);
+        return mappedItem;
       }).filter(item => item._id);
 
+      console.log("Final cart data:", tempData);
       setCartData(tempData);
     } else {
       // 🔄 Fallback to local cart reconstruction

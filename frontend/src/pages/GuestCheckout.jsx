@@ -196,7 +196,7 @@ const GuestCheckout = () => {
     console.log('Products loaded:', productsLoaded);
     
     for (const productId in cartItems) {
-      const product = products.find(p => p.id === Number(productId));
+      const product = products.find(p => String(p.id) === String(productId) || String(p._id) === String(productId));
       console.log(`Looking for product ID ${productId}, found:`, product);
       
       if (!product) {
@@ -224,13 +224,30 @@ const GuestCheckout = () => {
   const orderSummaryItems = getOrderSummaryItems();
   const deliveryFee = 10; // EGP
 
-  // Show loading state if products are not loaded yet
-  if (!productsLoaded) {
+  // Show loading state if products are not loaded yet AND we have cart items
+  if (!productsLoaded && Object.keys(cartItems).length > 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty cart message if no items
+  if (Object.keys(cartItems).length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Your cart is empty</p>
+          <button
+            onClick={() => navigate('/')}
+            className="px-6 py-2 bg-black text-white rounded-lg"
+          >
+            Continue Shopping
+          </button>
         </div>
       </div>
     );

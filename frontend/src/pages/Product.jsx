@@ -35,7 +35,7 @@ const Product = () => {
   const [activeImage, setActiveImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("specs"); // 'specs', 'description', 'shipping'
+  const [activeTab, setActiveTab] = useState("description"); // 'description', 'shipping'
 
   const [variants, setVariants] = useState([]);
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -353,7 +353,6 @@ const Product = () => {
         <div className="mt-16 bg-white border border-gray-200 rounded-3xl p-8 shadow-lg">
           <div className="flex border-b border-gray-200 gap-8 mb-8 overflow-x-auto">
             {[
-              { id: "specs", label: isAr ? "المواصفات الفنية" : "Technical Specifications" },
               { id: "description", label: isAr ? "الوصف والتفاصيل" : "Detailed Description" },
               { id: "shipping", label: isAr ? "الشحن والتسليم" : "Shipping & Project Logistics" },
             ].map((tab) => (
@@ -370,26 +369,6 @@ const Product = () => {
               </button>
             ))}
           </div>
-
-          {activeTab === "specs" && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { label: isAr ? "المعيار القياسي" : "Standard Compliance", val: "IEC 60502-1 / EOS 2978" },
-                  { label: isAr ? "مادة الموصل" : "Conductor Material", val: isAr ? "نحاس نقي 99.9% مكرر كهربائياً" : "99.9% Pure Electrolytic Copper" },
-                  { label: isAr ? "درجة الجهد" : "Voltage Rating", val: "0.6 / 1 kV (600/1000V)" },
-                  { label: isAr ? "نوع العزل" : "Insulation Type", val: "XLPE / PVC Heavy Duty" },
-                  { label: isAr ? "درجة حرارة التشغيل" : "Operating Temp", val: "-15°C to +90°C" },
-                  { label: isAr ? "الدرع والوقاية" : "Armouring / Shielding", val: isAr ? "أسلاك فولاذية مجلفنة SWA" : "Galvanized Steel Wire Armoured" },
-                ].map((spec, i) => (
-                  <div key={i} className="flex justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 text-sm">
-                    <span className="font-bold text-gray-500">{spec.label}</span>
-                    <span className="font-extrabold text-[#0f3d1a]">{spec.val}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
 
           {activeTab === "description" && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="prose max-w-none text-gray-600 leading-relaxed space-y-4">
