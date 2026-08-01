@@ -60,7 +60,6 @@ const Sidebar = ({ isOpen = false, onClose = () => {}, deliveryOnly = false }) =
             label: t('collections'),
             items: [
               { to: "/collections",       icon: assets.collection_icon, iconAlt: "Categories",      label: t('categories') },
-              { to: "/collection-manager",icon: assets.collection_icon, iconAlt: "Collections",     label: t('collections') },
             ],
           },
         ]
