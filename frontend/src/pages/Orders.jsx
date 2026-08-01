@@ -176,7 +176,13 @@ const Orders = () => {
       setLoading(true);
       
       const guestToken = getGuestToken();
-      if (!token && !guestToken) return null;
+      console.log('Loading orders - token:', !!token, 'guestToken:', !!guestToken);
+      
+      if (!token && !guestToken) {
+        console.log('No token or guest token available');
+        setOrderData([]);
+        return;
+      }
 
       let queryParams = 'page=1&pageSize=40';
       if (status !== 'All') queryParams += `&status=${status}`;
@@ -188,6 +194,9 @@ const Orders = () => {
         headers['X-Guest-Token'] = guestToken;
       }
 
+      console.log('Fetching orders from:', `${backendUrl}/api/Order/my?${queryParams}`);
+      console.log('Headers:', headers);
+
       const res = await fetchWithTokenRefresh(
         `${backendUrl}/api/Order/my?${queryParams}`,
         {
@@ -195,6 +204,8 @@ const Orders = () => {
         },
         refreshToken
       );
+
+      console.log('Response status:', res.status);
 
       if (!res.ok) {
         if (res.status === 401) {
@@ -209,7 +220,10 @@ const Orders = () => {
       }
 
       const data = await safeParseJson(res);
+      console.log('Response data:', data);
+      
       const ordersInResponse = data?.responseBody?.data || [];
+      console.log('Orders in response:', ordersInResponse.length);
 
       // 🚀 NO MORE N+1! We use the summary data directly from the list response.
       const mappedOrders = ordersInResponse.map(order => {
