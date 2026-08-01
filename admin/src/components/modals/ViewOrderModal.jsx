@@ -30,6 +30,9 @@ const ViewOrderModal = ({ selectedOrder, setShowViewModal }) => {
     total: selectedOrder.total || selectedOrder.totalAmount || 0
   };
 
+  const payments = Array.isArray(selectedOrder.payment) ? selectedOrder.payment : [];
+  const paymentMethod = selectedOrder.paymentMethod || selectedOrder.paymentMethodName || (payments.length > 0 ? payments[0].methodName : "N/A");
+
   const STATUS_LABELS = {
     0: 'Pending',
     1: 'Confirmed',
@@ -210,10 +213,48 @@ const ViewOrderModal = ({ selectedOrder, setShowViewModal }) => {
                   </div>
                   <div className="flex flex-col gap-1 text-right">
                     <span className="text-[10px] font-bold text-gray-400 uppercase">Protocol</span>
-                    <p className="text-xs font-black text-gray-900 uppercase">{selectedOrder.paymentMethodName || "CREDIT_DEFAULT"}</p>
+                    <p className="text-xs font-black text-gray-900 uppercase">{paymentMethod}</p>
                   </div>
                 </div>
               </div>
+
+              {/* Payment Information */}
+              {payments.length > 0 && (
+                <div className="bg-blue-50 p-8 rounded-[40px] border border-blue-100 flex flex-col gap-6">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">Payment Transactions</h4>
+                  <div className="flex flex-col gap-4">
+                    {payments.map((payment, idx) => (
+                      <div key={idx} className="bg-white p-4 rounded-[20px] border border-blue-200">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs font-bold text-gray-700 uppercase">{payment.methodName || payment.paymentMethod || "Payment"}</span>
+                          <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-full ${
+                            payment.status === 'Success' || payment.status === 'Paid' 
+                              ? 'bg-green-100 text-green-700' 
+                              : payment.status === 'Failed' || payment.status === 'Failed'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {payment.status || payment.paymentStatus || "Pending"}
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          <span className="font-bold">Amount:</span> {currency} {(payment.amount || payment.totalAmount || 0).toFixed(2)}
+                        </div>
+                        {payment.transactionId && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            <span className="font-bold">Transaction ID:</span> {payment.transactionId}
+                          </div>
+                        )}
+                        {payment.createdAt && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            <span className="font-bold">Date:</span> {new Date(payment.createdAt).toLocaleString()}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

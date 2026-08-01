@@ -49,6 +49,9 @@ const OrderTable = ({
         <thead>
           <tr>
             <th className="py-3 px-4 border-b text-left font-semibold text-gray-700">
+              Order Number
+            </th>
+            <th className="py-3 px-4 border-b text-left font-semibold text-gray-700">
               Order Items
             </th>
             <th className="py-3 px-4 border-b text-left font-semibold text-gray-700">
@@ -61,6 +64,9 @@ const OrderTable = ({
               Amount
             </th>
             <th className="py-3 px-4 border-b text-left font-semibold text-gray-700">
+              Payments
+            </th>
+            <th className="py-3 px-4 border-b text-left font-semibold text-gray-700">
               Status
             </th>
             <th className="py-3 px-4 border-b text-left font-semibold text-gray-700">
@@ -71,7 +77,7 @@ const OrderTable = ({
         <tbody className="divide-y divide-gray-200">
           {filteredOrders.length === 0 ? (
             <tr>
-              <td colSpan="6" className="py-4 px-4 text-center text-gray-500">
+              <td colSpan="8" className="py-4 px-4 text-center text-gray-500">
                 No orders found
               </td>
             </tr>
@@ -79,14 +85,15 @@ const OrderTable = ({
             currentOrders.map((order, index) => {
               // Normalize fields to support both detailed and summary shapes
               const orderId = order._id || order.id;
+              const orderNumber = order.orderNumber || "N/A";
               const items = Array.isArray(order.items) ? order.items : [];
               const itemsCount =
                 (Array.isArray(items) ? items.length : 0) ||
                 Number(order.itemsCount || order.totalItems || 0);
               const customerName = order.address?.firstName
                 ? `${order.address?.firstName} ${order.address?.lastName || ""}`.trim()
-                : order.customerName || "Customer";
-              const phone = order.address?.phone || "";
+                : order.customerName || order.customer?.fullName || "Customer";
+              const phone = order.address?.phone || order.customer?.phoneNumber || "";
               const paymentMethod =
                 order.paymentMethod ||
                 order.paymentMethodName ||
@@ -97,9 +104,20 @@ const OrderTable = ({
               const amount = typeof order.amount === "number" ? order.amount : (order.total ?? 0);
               const status = order.status;
               const isNumericStatus = typeof status === "number";
+              
+              // Get payment information
+              const payments = Array.isArray(order.payment) ? order.payment : [];
+              const paymentStatus = payments.length > 0 
+                ? payments[0].status || payments[0].paymentStatus || "N/A"
+                : "No Payment";
 
               return (
                 <tr key={index} className="hover:bg-gray-50">
+                  <td className="py-3 px-4">
+                    <div className="text-sm font-medium">
+                      #{orderNumber}
+                    </div>
+                  </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center">
                       <img
@@ -119,7 +137,7 @@ const OrderTable = ({
                             </span>
                           )) : (
                             <span>
-                              Order #{order.orderNumber || orderId}
+                              Order #{orderNumber}
                             </span>
                           )}
                         </div>
@@ -145,6 +163,14 @@ const OrderTable = ({
                     </div>
                   </td>
                   <td className="py-3 px-4">
+                    <div className="text-sm">
+                      {paymentMethod}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {paymentStatus}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       <select
                         className="p-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all"
@@ -165,9 +191,9 @@ const OrderTable = ({
                   <td className="py-3 px-4">
                     <button
                       onClick={() => {
-                        const num = order.orderNumber || orderId;
+                        const num = orderNumber || orderId;
                         console.log("Order number:", num);
-                        handleViewOrder(orderId, order.orderNumber);
+                        handleViewOrder(orderId, orderNumber);
                       }}
                       className="text-blue-600 hover:text-blue-800 transition-all"
                     >

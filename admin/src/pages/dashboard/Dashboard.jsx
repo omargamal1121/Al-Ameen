@@ -58,9 +58,12 @@ const Dashboard = ({ token }) => {
       const fetchRevenue = async () => {
         try {
           const res = await axios.get(`${backendUrl}/api/Order/revenue`, { headers: { Authorization: `Bearer ${token}` } });
-          return res.data?.responseBody?.data ?? 0;
+          const revenue = res.data?.responseBody?.data ?? 0;
+          console.log('Revenue fetched:', revenue);
+          return revenue;
         } catch (err) {
           if (err.response?.status === 404) return 0;
+          console.error('Error fetching revenue:', err);
           throw err;
         }
       };
