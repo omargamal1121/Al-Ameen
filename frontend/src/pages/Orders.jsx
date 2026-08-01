@@ -260,13 +260,29 @@ const Orders = () => {
     try {
       setModalLoading(true);
       setShowModal(true);
-      const response = await axios.get(`${backendUrl}/api/Order/number/${orderNumber}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      
+      const guestToken = getGuestToken();
+      const headers = {};
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (guestToken) {
+        headers['X-Guest-Token'] = guestToken;
+      }
+      
+      const endpoint = token 
+        ? `${backendUrl}/api/Order/number/${orderNumber}`
+        : `${backendUrl}/api/Order/guest/number/${orderNumber}`;
+      
+      const response = await axios.get(endpoint, { headers });
       setSelectedOrderDetails(response.data?.responseBody?.data);
     } catch (error) {
       if (error.response?.status === 401) {
-        navigate('/login');
+        if (token) {
+          navigate('/login');
+        } else {
+          toast.error('Guest session expired');
+        }
         return;
       }
       toast.error('Failed to load details');

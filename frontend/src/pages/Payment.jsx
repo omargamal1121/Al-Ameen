@@ -4,6 +4,7 @@ import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { getGuestToken } from '../utils/guestSession';
 
 const Payment = () => {
     const { orderNumber } = useParams();
@@ -18,9 +19,10 @@ const Payment = () => {
     const [paymentNotes, setPaymentNotes] = useState("");
     const [processingPayment, setProcessingPayment] = useState(false);
 
-    // Auth guard – redirect unauthenticated users to login
+    // Auth guard – redirect unauthenticated users to login (but allow guests)
     useEffect(() => {
-        if (!token) {
+        const guestToken = getGuestToken();
+        if (!token && !guestToken) {
             navigate('/login', { replace: true });
         }
     }, [token, navigate]);
@@ -29,9 +31,21 @@ const Payment = () => {
     const fetchOrderDetails = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${backendUrl}/api/Order/number/${orderNumber}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            
+            const guestToken = getGuestToken();
+            const headers = {};
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            } else if (guestToken) {
+                headers['X-Guest-Token'] = guestToken;
+            }
+            
+            const endpoint = token 
+                ? `${backendUrl}/api/Order/number/${orderNumber}`
+                : `${backendUrl}/api/Order/guest/number/${orderNumber}`;
+            
+            const response = await axios.get(endpoint, { headers });
             if (response.data.statuscode === 200) {
                 setOrderData(response.data.responseBody.data);
             } else {
@@ -63,7 +77,8 @@ const Payment = () => {
     };
 
     useEffect(() => {
-        if (token && orderNumber) {
+        const guestToken = getGuestToken();
+        if ((token || guestToken) && orderNumber) {
             fetchOrderDetails();
             fetchPaymentMethods();
         }
@@ -84,8 +99,18 @@ const Payment = () => {
 
         setProcessingPayment(true);
         try {
+            const guestToken = getGuestToken();
+            const headers = {
+                "Content-Type": "application/json",
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            } else if (guestToken) {
+                headers['X-Guest-Token'] = guestToken;
+            }
+
             const paymentData = {
-                orderId: orderData?.id,
                 orderNumber: orderNumber,
                 paymentDetails: {
                     walletPhoneNumber: walletPhoneNumber || "",
@@ -98,12 +123,7 @@ const Payment = () => {
             const paymentResponse = await axios.post(
                 `${backendUrl}/api/Payment`,
                 paymentData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
+                { headers }
             );
 
             if (paymentResponse.data.statuscode === 200) {
@@ -161,10 +181,19 @@ const Payment = () => {
 
         setProcessingPayment(true);
         try {
+            const guestToken = getGuestToken();
+            const headers = {};
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            } else if (guestToken) {
+                headers['X-Guest-Token'] = guestToken;
+            }
+
             const response = await axios.put(
                 `${backendUrl}/api/Order/${orderId}/status?status=5`,
                 {},
-                { headers: { 'Authorization': `Bearer ${token}` } }
+                { headers }
             );
 
             if (response.data?.success || response.status === 200) {
@@ -182,7 +211,8 @@ const Payment = () => {
         }
     };
 
-    if (!token) return null; // Rendering nothing while redirect fires
+    const guestToken = getGuestToken();
+    if (!token && !guestToken) return null; // Rendering nothing while redirect fires
 
     if (loading) {
         return (
