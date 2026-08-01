@@ -129,7 +129,7 @@ const Cart = () => {
                 productData: productData,
                 price: productData.finalPrice || productData.price || 0,
                 priceAtAddTime: productData.price || productData.finalPrice || 0,
-                image: normalizeUrl(productData.image?.[0] || productData.mainImageUrl || "")
+                image: normalizeUrl(productData.images?.[0]?.url || productData.mainImageUrl || "")
               });
             }
           }

@@ -212,7 +212,10 @@ const GuestCheckout = () => {
       }
 
       for (const itemKey in cartItems[productId]) {
-        const quantity = cartItems[productId][itemKey];
+        const cartItem = cartItems[productId][itemKey];
+        
+        // Handle both old format (just quantity) and new format (object with quantity and variantId)
+        const quantity = typeof cartItem === 'object' ? cartItem.quantity : cartItem;
         const [size, color] = itemKey.split('_');
         
         items.push({
