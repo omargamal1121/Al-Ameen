@@ -5,8 +5,9 @@ import axios from "axios";
 import API from "../../services/api";
 import { currency, backendUrl } from "../../App";
 import ConfirmModal from "../../components/modals/ConfirmModal";
+import { useTranslation } from "react-i18next";
 
-const ProductCard = React.memo(({ p, navigate, toggleStatus, handleRestore, handleDelete, handleRemoveDiscount, currency }) => {
+const ProductCard = React.memo(({ p, navigate, toggleStatus, handleRestore, handleDelete, handleRemoveDiscount, currency, t }) => {
   const discountPercent = Number(p.discountPrecentage ?? p.discountPercentage ?? p.discount?.discountPercent ?? 0);
   const hasDiscount = discountPercent > 0;
   const finalPrice = p.finalPrice ?? p.price;
@@ -147,6 +148,7 @@ const ProductCard = React.memo(({ p, navigate, toggleStatus, handleRestore, hand
 
 const ProductList = ({ token }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const categoryIdFromUrl = searchParams.get("category") || searchParams.get("categoryId");
   const collectionIdFromUrl = searchParams.get("collection") || searchParams.get("collectionId");
@@ -487,6 +489,7 @@ const ProductList = ({ token }) => {
               handleDelete={handleDelete}
               handleRemoveDiscount={handleRemoveDiscount}
               currency={currency}
+              t={t}
             />
           ))
         )}

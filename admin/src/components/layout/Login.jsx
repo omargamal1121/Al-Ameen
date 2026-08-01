@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { backendUrl } from "../../App";
+import { useTranslation } from "react-i18next";
 
 const Login = ({ setToken }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

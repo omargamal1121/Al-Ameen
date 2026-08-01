@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { backendUrl } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const AddCategory = ({
   token,
@@ -12,6 +13,7 @@ const AddCategory = ({
   setCategories,
   setActiveTab,
 }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [arName, setArName] = useState("");

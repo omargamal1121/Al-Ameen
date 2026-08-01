@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const DiscountForm = ({
   formData,
@@ -8,6 +9,7 @@ const DiscountForm = ({
   editMode,
   discountLoading,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white p-10 rounded-[48px] border border-gray-100 shadow-sm flex flex-col gap-10">
       <div className="flex items-center justify-between">

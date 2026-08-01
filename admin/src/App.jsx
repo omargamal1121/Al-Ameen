@@ -60,7 +60,7 @@ const decodeJwtRoles = (jwt) => {
 };
 
 function App() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Migrate any leftover token from localStorage → sessionStorage (one-time)
   useEffect(() => {
