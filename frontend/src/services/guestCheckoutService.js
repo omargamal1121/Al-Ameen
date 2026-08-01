@@ -21,7 +21,7 @@ export const placeGuestOrder = async (payload) => {
     }
 
     const response = await axios.post(
-      `${backendUrl}/api/order/guest`,
+      `${backendUrl}/api/Order/guest`,
       payload,
       { headers }
     );

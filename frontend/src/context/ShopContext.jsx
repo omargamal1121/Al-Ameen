@@ -21,6 +21,9 @@ const ShopContextProvider = (props) => {
   });
   const [products, setProducts] = useState([]);
   const [productsLoaded, setProductsLoaded] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesFetched, setCategoriesFetched] = useState(false);
   const [token, setToken] = useState(() => {
     const storedToken = localStorage.getItem("token");
     console.log("Token from localStorage:", storedToken);
@@ -310,6 +313,31 @@ const ShopContextProvider = (props) => {
       setProducts([]);
     } finally {
       setProductsLoaded(true);
+    }
+  };
+
+  const getCategories = async () => {
+    if (categoriesLoading || categoriesFetched) return;
+    
+    setCategoriesLoading(true);
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/categories?isActive=true&includeDeleted=false`
+      );
+      const data = await response.json();
+
+      if (response.ok && data.responseBody) {
+        setCategories(data.responseBody.data || []);
+        setCategoriesFetched(true);
+      } else {
+        console.error("Failed to fetch categories:", data);
+        setCategories([]);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      setCategories([]);
+    } finally {
+      setCategoriesLoading(false);
     }
   };
 
@@ -657,10 +685,12 @@ const ShopContextProvider = (props) => {
     getCartAmount,
     getCartOriginalAmount,
     clearCart,
-    checkout, //
+    checkout,
     navigate,
     backendUrl,
     getProducts,
+    getCategories,
+    categories,
     token,
     setToken,
     refreshToken,

@@ -15,7 +15,9 @@ const Navbar = () => {
     setToken,
     setShowSearch,
     getCartCount,
-    getWishlistCount
+    getWishlistCount,
+    getCategories,
+    categories
   } = useContext(ShopContext);
   const [visible, setvisible] = useState(false);
   const navigate = useNavigate();
@@ -62,28 +64,9 @@ const Navbar = () => {
     i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
   };
 
-  const [categories, setCategories] = useState([]);
-
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`${backendUrl}/api/categories?isActive=true&includeDeleted=false`);
-        const data = await response.json();
-
-        if (response.ok && data.responseBody) {
-          setCategories(data.responseBody.data || []);
-        } else {
-          console.error("Failed to fetch categories:", data);
-          setCategories([]);
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setCategories([]);
-      }
-    };
-
-    fetchCategories();
-  }, [backendUrl]);
+    getCategories();
+  }, [getCategories]);
 
   // Removed N+1 fetchCategoriesWithSubcategories using new subCategorySimples array
 
