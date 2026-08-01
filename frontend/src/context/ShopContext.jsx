@@ -231,8 +231,11 @@ const ShopContextProvider = (props) => {
     for (const items in cartItems) {
       for (const item in cartItems[items]) {
         try {
-          if (cartItems[items][item] > 0) {
-            total += cartItems[items][item];
+          const cartItem = cartItems[items][item];
+          // Handle both old format (just quantity) and new format (object with quantity and variantId)
+          const quantity = typeof cartItem === 'object' ? cartItem.quantity : cartItem;
+          if (quantity > 0) {
+            total += quantity;
           }
         } catch (error) {
           console.log(error);
@@ -288,7 +291,25 @@ const ShopContextProvider = (props) => {
     if (serverCart && typeof serverCart.totalPrice === 'number') {
       return serverCart.totalPrice;
     }
-    return 0;
+    
+    // 🆕 Fallback: calculate from local cart items for guest users
+    let total = 0;
+    for (const productId in cartItems) {
+      for (const itemKey in cartItems[productId]) {
+        const cartItem = cartItems[productId][itemKey];
+        const quantity = typeof cartItem === 'object' ? cartItem.quantity : cartItem;
+        
+        if (quantity > 0) {
+          // Find product in products array
+          const product = products.find(p => String(p.id) === String(productId) || String(p._id) === String(productId));
+          if (product) {
+            const price = product.finalPrice || product.price || 0;
+            total += price * quantity;
+          }
+        }
+      }
+    }
+    return total;
   };
 
   const getCartOriginalAmount = () => {

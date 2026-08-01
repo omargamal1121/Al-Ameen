@@ -6,6 +6,7 @@ import { fetchWithTokenRefresh, safeParseJson } from '../utils/apiUtils'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getGuestToken } from '../utils/guestSession'
 
 const Orders = () => {
   const { backendUrl, token, currency, refreshToken } = useContext(ShopContext);
@@ -173,22 +174,35 @@ const Orders = () => {
   const loadOrderData = async (status = statusFilter) => {
     try {
       setLoading(true);
-      if (!token) return null;
+      
+      const guestToken = getGuestToken();
+      if (!token && !guestToken) return null;
 
       let queryParams = 'page=1&pageSize=40';
       if (status !== 'All') queryParams += `&status=${status}`;
 
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else if (guestToken) {
+        headers['X-Guest-Token'] = guestToken;
+      }
+
       const res = await fetchWithTokenRefresh(
-        `${backendUrl}/api/Order?${queryParams}`,
+        `${backendUrl}/api/Order/my?${queryParams}`,
         {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: headers
         },
         refreshToken
       );
 
       if (!res.ok) {
         if (res.status === 401) {
-          navigate('/login');
+          if (token) {
+            navigate('/login');
+          } else {
+            toast.error('Guest session expired');
+          }
           return;
         }
         throw new Error(`Request failed with status ${res.status}`);
@@ -295,7 +309,10 @@ const Orders = () => {
   }, []);
 
   useEffect(() => {
-    loadOrderData();
+    const guestToken = getGuestToken();
+    if (token || guestToken) {
+      loadOrderData();
+    }
   }, [token]);
 
   useEffect(() => {
