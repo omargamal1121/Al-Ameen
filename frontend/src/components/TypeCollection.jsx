@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { assets } from "../assets/frontend_assets/assets";
 import { Link } from "react-router-dom";
 import Title from "./Title";
@@ -8,38 +8,8 @@ import { useLocalization } from "../utils/localization";
 
 const TypeCollection = () => {
   const { t } = useTranslation();
-  const { backendUrl, getCategories, categories } = useContext(ShopContext);
+  const { backendUrl, categories } = useContext(ShopContext);
   const { getLocalizedName, getLocalizedDescription } = useLocalization();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      if (loading) return;
-      
-      setLoading(true);
-      try {
-        await getCategories();
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setError("Error loading categories");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, [getCategories]);
-
-  // If loading, show nothing or a spinner
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        <span className="ml-3 text-gray-600">{t("LOADING")}...</span>
-      </div>
-    );
-  }
 
   // Map categories to display format
   const displayCategories = categories.map(cat => ({
@@ -60,13 +30,6 @@ const TypeCollection = () => {
       <div className="text-center text-2xl py-6 mb-6">
         <Title text1={t("OUR")} text2={t("CATEGORIES")} />
       </div>
-
-      {/* ❌ حالة الخطأ */}
-      {error && (
-        <div className="text-center py-8">
-          <p className="text-red-500 mb-4">{t("ERROR_LOADING_CATEGORIES")}</p>
-        </div>
-      )}
 
       {/* ✅ عرض البيانات */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

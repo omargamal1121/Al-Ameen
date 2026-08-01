@@ -162,18 +162,16 @@ const Navbar = () => {
             <span className="w-2/4 h-[2px] transition-all duration-300 bg-yellow-400 group-hover:w-full group-hover:bg-yellow-300 group-hover:opacity-100 opacity-0"></span>
           </NavLink>
 
-          {user && (
-            <NavLink
-              to="/orders"
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-1 group ${isActive ? "font-bold" : ""
-                }`
-              }
-            >
-              <p>{t("ORDERS")}</p>
-              <span className="w-2/4 h-[2px] transition-all duration-300 bg-gray-700 group-hover:w-full group-hover:bg-gray-300 group-hover:opacity-100 opacity-0"></span>
-            </NavLink>
-          )}
+          <NavLink
+            to="/orders"
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-1 group ${isActive ? "font-bold" : ""
+              }`
+            }
+          >
+            <p>{t("ORDERS")}</p>
+            <span className="w-2/4 h-[2px] transition-all duration-300 bg-gray-700 group-hover:w-full group-hover:bg-gray-300 group-hover:opacity-100 opacity-0"></span>
+          </NavLink>
         </ul>
 
         {/* --- اللوجو --- */}
