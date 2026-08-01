@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { backendUrl } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ListCollection = ({
   token,
@@ -10,6 +11,7 @@ const ListCollection = ({
   handleEditCollection,
   handleViewCollection,
 }) => {
+  const { t } = useTranslation();
   const [collections, setCollections] = useState([]);
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -149,7 +151,7 @@ const ListCollection = ({
         <div className="relative w-full lg:max-w-md group">
           <input
             type="text"
-            placeholder="Search by name or ID..."
+            placeholder={t('searchByNameOrId')}
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-2xl focus:ring-4 focus:ring-rose-50/50 focus:border-rose-400 outline-none transition-all text-sm font-medium shadow-sm"

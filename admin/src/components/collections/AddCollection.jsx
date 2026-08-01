@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { backendUrl } from "../../App";
+import { useTranslation } from "react-i18next";
 
 const AddCollection = ({
   token,
@@ -10,6 +11,7 @@ const AddCollection = ({
   fetchCollections,
   setActiveTab,
 }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [arName, setArName] = useState("");
@@ -209,7 +211,7 @@ const AddCollection = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-rose-50 focus:border-rose-400 transition-all font-bold text-gray-700"
-                  placeholder="e.g. Winter Nexus 2024"
+                  placeholder={t('collectionName')}
                   required
                 />
               </div>
@@ -232,7 +234,7 @@ const AddCollection = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-rose-50 focus:border-rose-400 transition-all font-medium text-gray-600 min-h-[120px]"
-                placeholder="Describe the specialized nature of this grouping..."
+                placeholder={t('collectionDescription')}
                 required
               />
             </div>

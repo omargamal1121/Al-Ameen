@@ -1,6 +1,7 @@
 import React from 'react';
 import { currency } from '../../App';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 const AddOrderForm = ({
   newOrder,
@@ -14,6 +15,7 @@ const AddOrderForm = ({
   loading,
   setShowAddModal
 }) => {
+  const { t } = useTranslation();
   // Calculate total order amount
   const orderTotal = newOrder.products.reduce(
     (total, product) => total + product.price * product.quantity,
@@ -24,7 +26,7 @@ const AddOrderForm = ({
     <form onSubmit={handleAddOrder} className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Delivery Address *
+          {t('deliveryAddress')} *
         </label>
         <select
           name="addressId"
@@ -33,7 +35,7 @@ const AddOrderForm = ({
           className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all"
           required
         >
-          <option value="">Select a delivery address</option>
+          <option value="">{t('selectDeliveryAddress')}</option>
           {addresses.map((address) => (
             <option key={address.id} value={address.id}>
               {address.firstName} {address.lastName} - {address.addressLine}, {address.city}, {address.state} {address.postalCode}
@@ -44,20 +46,20 @@ const AddOrderForm = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Order Notes
+          {t('orderNotes')}
         </label>
         <textarea
           name="notes"
           value={newOrder.notes}
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all"
-          placeholder="Add any special instructions or notes"
+          placeholder={t('addSpecialInstructions')}
           rows="2"
         ></textarea>
       </div>
 
       <div className="border-t pt-4">
-        <h3 className="text-lg font-medium mb-3">Add Products</h3>
+        <h3 className="text-lg font-medium mb-3">{t('addProducts')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">

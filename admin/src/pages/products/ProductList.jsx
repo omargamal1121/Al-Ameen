@@ -270,7 +270,7 @@ const ProductList = ({ token }) => {
         setProducts([]);
         setTotalCount(0);
       } else {
-        toast.error("Failed to load products");
+        toast.error(t('failedToLoadProducts'));
       }
     } finally {
       setLoading(false);
@@ -291,14 +291,14 @@ const ProductList = ({ token }) => {
       else await API.products.activate(product.id, token);
       toast.success("Status updated");
       fetchProducts();
-    } catch (e) { toast.error("Update failed"); }
+    } catch (e) { toast.error(t('updateFailed')); }
   }, [token, fetchProducts]);
 
   const handleDelete = useCallback((id, name) => {
     setConfirmState({
       open: true,
-      title: 'Delete Product',
-      message: `"${name || 'This product'}" will be permanently deleted. This action cannot be undone.`,
+      title: t('deleteProduct'),
+      message: t('deleteProductMessage'),
       variant: 'danger',
       loading: false,
       onConfirm: async () => {
@@ -308,7 +308,7 @@ const ProductList = ({ token }) => {
           toast.success("Product deleted");
           fetchProducts();
         } catch (e) {
-          toast.error("Delete failed");
+          toast.error(t('deleteFailed'));
         } finally {
           setConfirmState(s => ({ ...s, open: false, loading: false }));
         }
@@ -319,18 +319,18 @@ const ProductList = ({ token }) => {
   const handleRemoveDiscount = useCallback((id, name) => {
     setConfirmState({
       open: true,
-      title: 'Remove Discount',
-      message: `Remove the discount from "${name || 'this product'}"?`,
+      title: t('removeDiscount'),
+      message: t('removeDiscountMessage'),
       variant: 'warning',
       loading: false,
       onConfirm: async () => {
         setConfirmState(s => ({ ...s, loading: true }));
         try {
           await API.products.removeDiscount(id, token);
-          toast.success("Discount removed");
+          toast.success(t('discountRemoved'));
           fetchProducts();
         } catch (e) {
-          toast.error("Failed to remove discount");
+          toast.error(t('failedToRemoveDiscount'));
         } finally {
           setConfirmState(s => ({ ...s, open: false, loading: false }));
         }
@@ -342,9 +342,9 @@ const ProductList = ({ token }) => {
   const handleRestore = useCallback(async (id) => {
     try {
       await API.products.restore(id, token);
-      toast.success("Product restored");
+      toast.success(t('productRestored'));
       fetchProducts();
-    } catch (e) { toast.error("Restore failed"); }
+    } catch (e) { toast.error(t('restoreFailed')); }
   }, [token, fetchProducts]);
 
   // Sync filter when URL params change (from external navigation)
@@ -360,7 +360,7 @@ const ProductList = ({ token }) => {
         title={confirmState.title}
         message={confirmState.message}
         confirmVariant={confirmState.variant}
-        confirmLabel={confirmState.variant === 'warning' ? 'Remove' : 'Delete'}
+        confirmLabel={confirmState.variant === 'warning' ? t('remove') : t('delete')}
         loading={confirmState.loading}
         onConfirm={confirmState.onConfirm}
         onCancel={() => setConfirmState(s => ({ ...s, open: false }))}
@@ -372,9 +372,9 @@ const ProductList = ({ token }) => {
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-black text-xs shadow-lg">🎯</div>
             <div className="flex flex-col">
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Active Content Matrix</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">{t('activeContentMatrix')}</span>
               <span className="text-sm font-bold text-emerald-900 leading-none">
-                {categoryFilter ? `Filtering Products by Category #${categoryFilter}` : `Filtering Products by Collection #${collectionIdFromUrl}`}
+                {categoryFilter ? `${t('filteringByCategory')} #${categoryFilter}` : `${t('filteringByCollection')} #${collectionIdFromUrl}`}
               </span>
             </div>
           </div>
@@ -385,7 +385,7 @@ const ProductList = ({ token }) => {
             }}
             className="px-6 py-2.5 bg-white border border-emerald-200 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
           >
-            Clear Filter Matrix
+            {t('clearFilterMatrix')}
           </button>
         </div>
       )}
@@ -395,7 +395,7 @@ const ProductList = ({ token }) => {
           <div className="flex-1 relative group">
             <input
               type="text"
-              placeholder="Search products by identity, code, or keyword..."
+              placeholder={t('searchProductsPlaceholder')}
               className="w-full pl-14 pr-6 py-5 bg-gray-50 border border-transparent rounded-[28px] outline-none focus:ring-8 focus:ring-emerald-50 focus:bg-white focus:border-emerald-300 transition-all font-bold text-sm shadow-inner"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -406,7 +406,7 @@ const ProductList = ({ token }) => {
           </div>
           
           <button onClick={() => navigate('/add')} className="px-12 py-5 bg-gray-900 text-white rounded-[28px] text-xs font-black uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl hover:scale-[1.02] active:scale-95 shrink-0">
-            Publish New Asset
+            {t('publishNewAsset')}
           </button>
         </div>
 
@@ -416,9 +416,9 @@ const ProductList = ({ token }) => {
             {/* Strategy Selectors */}
             <div className="flex bg-gray-100 p-1.5 rounded-[22px] border border-gray-200 shadow-inner">
               {[
-                { id: 'all', label: 'All', icon: '🌍' },
-                { id: 'newarrivals', label: 'Recent', icon: '✨' },
-                { id: 'bestsellers', label: 'Best Sellers', icon: '📈' }
+                { id: 'all', label: t('all'), icon: '🌍' },
+                { id: 'newarrivals', label: t('recent'), icon: '✨' },
+                { id: 'bestsellers', label: t('bestSellers'), icon: '📈' }
               ].map((f) => (
                 <button
                   key={f.id}
@@ -435,9 +435,9 @@ const ProductList = ({ token }) => {
             {/* Matrix Filters */}
             <div className="flex items-center gap-4">
               {[
-                { label: 'Status', value: statusFilter, setter: setStatusFilter, options: [{v:'all', l:'All'}, {v:'active', l:'Live'}, {v:'inactive', l:'Inactive'}] },
-                { label: 'Archive', value: deletedFilter, setter: setDeletedFilter, options: [{v:'all', l:'Combined'}, {v:'deleted', l:'Trashed'}, {v:'not_deleted', l:'Active Only'}] },
-                { label: 'Stock', value: stockFilter, setter: setStockFilter, options: [{v:'all', l:'Quantity: All'}, {v:'instock', l:'In Stock'}, {v:'outofstock', l:'Exhausted'}] }
+                { label: t('status'), value: statusFilter, setter: setStatusFilter, options: [{v:'all', l:t('all')}, {v:'active', l:t('live')}, {v:'inactive', l:t('inactive')}] },
+                { label: t('archive'), value: deletedFilter, setter: setDeletedFilter, options: [{v:'all', l:t('combined')}, {v:'deleted', l:t('trashed')}, {v:'not_deleted', l:t('activeOnly')}] },
+                { label: t('stock'), value: stockFilter, setter: setStockFilter, options: [{v:'all', l:t('quantityAll')}, {v:'instock', l:t('inStock')}, {v:'outofstock', l:t('exhausted')}] }
               ].map((filter) => (
                 <div key={filter.label} className="flex bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100 hover:border-orange-200 transition-colors">
                   <select
@@ -476,7 +476,7 @@ const ProductList = ({ token }) => {
         ) : products.length === 0 ? (
           <div className="col-span-full py-40 flex flex-col items-center gap-6 text-gray-300">
             <div className="text-8xl opacity-20">🔌</div>
-            <p className="font-black uppercase tracking-[0.3em] text-xs">No products found</p>
+            <p className="font-black uppercase tracking-[0.3em] text-xs">{t('noProductsFound')}</p>
           </div>
         ) : (
           products.map((p) => (
