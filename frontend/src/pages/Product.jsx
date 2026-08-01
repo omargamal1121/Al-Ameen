@@ -95,8 +95,36 @@ const Product = () => {
     if (!productData) return;
     setIsSubmitting(true);
     try {
-      const sizeParam = selectedVariant?.color || selectedVariant?.size || "default";
-      const colorParam = selectedVariant?.color || "standard";
+      // Extract size and color from variant - handle different possible structures
+      // If variant has both size and color, use them
+      // If variant only has color (hex), use it as both size and color for now
+      let sizeParam, colorParam;
+      
+      if (selectedVariant?.size && selectedVariant?.color) {
+        sizeParam = selectedVariant.size;
+        colorParam = selectedVariant.color;
+      } else if (selectedVariant?.color) {
+        // Only color available, use it as both for now
+        sizeParam = selectedVariant.color.toString();
+        colorParam = selectedVariant.color.toString();
+      } else if (selectedVariant?.size) {
+        // Only size available
+        sizeParam = selectedVariant.size.toString();
+        colorParam = "standard";
+      } else {
+        // No variant info, use defaults
+        sizeParam = "default";
+        colorParam = "standard";
+      }
+      
+      console.log("Adding to cart with:", {
+        productId: productData._id || productData.id,
+        size: sizeParam,
+        color: colorParam,
+        quantity,
+        variant: selectedVariant
+      });
+      
       await addToCart(
         productData._id || productData.id,
         sizeParam,

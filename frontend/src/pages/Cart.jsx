@@ -86,13 +86,26 @@ const Cart = () => {
             const variantId = typeof cartItem === 'object' ? cartItem.variantId : null;
             
             if (quantity > 0) {
-              // Parse size and color from the item key (format: "size_color" or just "size")
+              // Parse size and color from the item key (format: "size_color" or "color_color" or just "size")
               const parts = item.split('_');
-              const size = parts[0];
-              const color = parts[1] || 'Unknown';
+              let size, color;
+              
+              if (parts.length === 2) {
+                // If both parts are the same (e.g., "#FF0000_#FF0000"), treat first as color
+                if (parts[0] === parts[1]) {
+                  color = parts[0];
+                  size = 'default';
+                } else {
+                  size = parts[0];
+                  color = parts[1];
+                }
+              } else {
+                size = parts[0];
+                color = 'Unknown';
+              }
 
               // Look up productData from loaded products state
-              let productData = products.find(p => String(p._id) === String(items)) || {};
+              let productData = products.find(p => String(p.id) === String(items) || String(p._id) === String(items)) || {};
               
               // If product not found in global state, fetch it by ID
               if (!productData || !productData.name) {
