@@ -176,6 +176,49 @@ const OrderDetails = ({ token }) => {
             </div>
           </div>
 
+          {/* Payment Transactions */}
+          {order.payment && Array.isArray(order.payment) && order.payment.length > 0 && (
+            <div className="bg-blue-50 p-10 rounded-[56px] border border-blue-100 shadow-sm flex flex-col gap-8">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">Payment Transactions</h4>
+              <div className="flex flex-col gap-4">
+                {order.payment.map((payment, idx) => (
+                  <div key={idx} className="bg-white p-6 rounded-[32px] border border-blue-200 shadow-sm">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-sm font-black text-gray-900 uppercase">{payment.methodName || payment.paymentMethod || "Payment"}</span>
+                      <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full ${
+                        payment.status === 'Success' || payment.status === 'Paid' 
+                          ? 'bg-green-100 text-green-700' 
+                          : payment.status === 'Failed' || payment.status === 'Failed'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {payment.status || payment.paymentStatus || "Pending"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold text-gray-500 uppercase">Amount</span>
+                        <span className="text-lg font-black text-gray-900">{currency} {(payment.amount || payment.totalAmount || 0).toFixed(2)}</span>
+                      </div>
+                      {payment.transactionId && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase">Transaction ID</span>
+                          <span className="text-xs font-mono text-gray-700">{payment.transactionId}</span>
+                        </div>
+                      )}
+                      {payment.createdAt && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase">Date</span>
+                          <span className="text-xs font-bold text-gray-700">{new Date(payment.createdAt).toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Customer Details */}
           <div className="bg-white p-10 rounded-[56px] border border-gray-100 shadow-sm flex flex-col gap-8">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Customer Info</h4>
