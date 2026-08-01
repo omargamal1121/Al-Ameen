@@ -198,7 +198,38 @@ const AddCategory = ({
       resetForm();
     } catch (error) {
       console.error("❌ Error saving category:", error);
-      toast.error("An error occurred while saving.");
+      
+      // Extract specific error message from API response
+      let errorMessage = t('failedToSaveCategory');
+      
+      if (error.response?.data) {
+        const responseData = error.response.data;
+        
+        // Check for validation errors in different response formats
+        if (responseData.responseBody?.errors) {
+          const errors = responseData.responseBody.errors;
+          if (Array.isArray(errors) && errors.length > 0) {
+            errorMessage = errors.join(", ");
+          } else if (typeof errors === 'object') {
+            errorMessage = Object.values(errors).join(", ");
+          }
+        } else if (responseData.errors) {
+          const errors = responseData.errors;
+          if (Array.isArray(errors) && errors.length > 0) {
+            errorMessage = errors.join(", ");
+          } else if (typeof errors === 'object') {
+            errorMessage = Object.values(errors).join(", ");
+          }
+        } else if (responseData.responseBody?.message) {
+          errorMessage = responseData.responseBody.message;
+        } else if (responseData.message) {
+          errorMessage = responseData.message;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

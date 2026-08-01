@@ -113,6 +113,18 @@ const resources = {
       descriptionRequired: "Description is required",
       mainImageRequired: "Main image is required",
       
+      // Error Messages
+      errorOccurred: "An error occurred",
+      failedToSave: "Failed to save",
+      failedToSaveCategory: "An error occurred while saving category",
+      failedToSaveProduct: "Failed to save product",
+      nameTooShort: "Name is too short",
+      descriptionTooShort: "Description is too short",
+      invalidData: "Invalid data provided",
+      requestFailed: "Request failed",
+      categoryNameRequired: "Category name is required",
+      categoryDescriptionRequired: "Category description is required",
+      
       // Categories
       categoryManagement: "Category Management",
       categoryManagementSubtitle: "Organize your product groups",
@@ -359,6 +371,18 @@ const resources = {
       categoryRequired: "الفئة مطلوبة",
       descriptionRequired: "الوصف مطلوب",
       mainImageRequired: "الصورة الرئيسية مطلوبة",
+      
+      // Error Messages
+      errorOccurred: "حدث خطأ",
+      failedToSave: "فشل الحفظ",
+      failedToSaveCategory: "حدث خطأ أثناء حفظ الفئة",
+      failedToSaveProduct: "فشل حفظ المنتج",
+      nameTooShort: "الاسم قصير جداً",
+      descriptionTooShort: "الوصف قصير جداً",
+      invalidData: "بيانات غير صالحة",
+      requestFailed: "فشل الطلب",
+      categoryNameRequired: "اسم الفئة مطلوب",
+      categoryDescriptionRequired: "وصف الفئة مطلوب",
       
       // Categories
       categoryManagement: "إدارة الفئات",

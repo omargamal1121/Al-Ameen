@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API from "../../services/api";
 
 const ProductAdd = ({ token }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -157,14 +159,39 @@ const ProductAdd = ({ token }) => {
       toast.success(editId ? "Product updated successfully" : "Product created successfully");
       navigate("/products");
     } catch (err) {
-      // Extract the actual server message to give the admin useful feedback
-      const serverMsg =
-        err?.response?.data?.responseBody?.message ||
-        err?.response?.data?.message ||
-        (err?.response?.data?.errors && Object.values(err.response.data.errors).flat()[0]) ||
-        err?.message ||
-        "Failed to save product";
-      toast.error(serverMsg);
+      console.error("❌ Error saving product:", err);
+      
+      // Extract specific error message from API response
+      let errorMessage = t('failedToSaveProduct');
+      
+      if (err.response?.data) {
+        const responseData = err.response.data;
+        
+        // Check for validation errors in different response formats
+        if (responseData.responseBody?.errors) {
+          const errors = responseData.responseBody.errors;
+          if (Array.isArray(errors) && errors.length > 0) {
+            errorMessage = errors.join(", ");
+          } else if (typeof errors === 'object') {
+            errorMessage = Object.values(errors).join(", ");
+          }
+        } else if (responseData.errors) {
+          const errors = responseData.errors;
+          if (Array.isArray(errors) && errors.length > 0) {
+            errorMessage = errors.join(", ");
+          } else if (typeof errors === 'object') {
+            errorMessage = Object.values(errors).flat().join(", ");
+          }
+        } else if (responseData.responseBody?.message) {
+          errorMessage = responseData.responseBody.message;
+        } else if (responseData.message) {
+          errorMessage = responseData.message;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      toast.error(errorMessage);
     } finally { setLoading(false); }
   };
 
