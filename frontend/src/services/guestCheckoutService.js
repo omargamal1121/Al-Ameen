@@ -32,16 +32,16 @@ export const placeGuestOrder = async (payload) => {
     const result = data.data || data.responseBody?.data || data;
     
     // Save guest token if provided in response (handle both camelCase and PascalCase)
-    const guestToken = result.guestToken || result.GuestToken;
-    if (guestToken) {
-      saveGuestToken(guestToken);
+    const responseGuestToken = result.guestToken || result.GuestToken;
+    if (responseGuestToken) {
+      saveGuestToken(responseGuestToken);
     }
 
     return {
       success: true,
       orderNumber: result.orderNumber || result.OrderNumber,
       orderId: result.orderId || result.OrderId,
-      guestToken: guestToken,
+      guestToken: responseGuestToken,
       message: result.message || 'Order placed successfully'
     };
   } catch (error) {
