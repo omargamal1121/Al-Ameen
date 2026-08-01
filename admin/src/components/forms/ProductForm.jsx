@@ -1,6 +1,7 @@
 import React from "react";
 import FormInput from "./FormInput";
 import { toast } from "react-toastify"; // Make sure react-toastify is installed and configured
+import { useTranslation } from "react-i18next";
 
 const ProductForm = ({
   formData,
@@ -14,6 +15,7 @@ const ProductForm = ({
   resetForm,
   previewProducts,
 }) => {
+  const { t } = useTranslation();
   const {
     name,
     arName,
@@ -30,11 +32,11 @@ const ProductForm = ({
   } = formData;
 
   const validateForm = () => {
-    if (!name) return "Product name is required";
-    if (!price) return "Price is required";
-    if (!categoryId) return "Category is required";
-    if (!description) return "Description is required";
-    if (!mainImage) return "Main image is required";
+    if (!name) return t('productNameRequired');
+    if (!price) return t('priceRequired');
+    if (!categoryId) return t('categoryRequired');
+    if (!description) return t('descriptionRequired');
+    if (!mainImage) return t('mainImageRequired');
     return null;
   };
 
@@ -53,11 +55,11 @@ const ProductForm = ({
       onSubmit={handleFormSubmit}
       className="flex flex-col gap-4 bg-white p-6 rounded-lg shadow"
     >
-      <h2 className="text-xl font-semibold mb-2">Product Information</h2>
+      <h2 className="text-xl font-semibold mb-2">{t('productInformation')}</h2>
 
       {/* Main Image Upload */}
       <div>
-        <p className="mb-2">Upload Main Image</p>
+        <p className="mb-2">{t('uploadMainImage')}</p>
         {mainImage && (
           <div className="mb-2">
             <img
@@ -83,7 +85,7 @@ const ProductForm = ({
 
       {/* Additional Images Upload */}
       <div>
-        <p className="mb-2">Upload Additional Images</p>
+        <p className="mb-2">{t('uploadAdditionalImages')}</p>
         <FormInput
           type="file"
           name="additionalImages"
@@ -99,72 +101,72 @@ const ProductForm = ({
       {/* Basic Product Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormInput
-          label="Product Name"
+          label={t('productName')}
           name="name"
           value={name}
           onChange={handleInputChange}
-          placeholder="Enter product name"
+          placeholder={t('enterProductName')}
           required
         />
 
         <FormInput
-          label="Price"
+          label={t('price')}
           type="number"
           name="price"
           value={price}
           onChange={handleInputChange}
-          placeholder="Enter price"
+          placeholder={t('enterPrice')}
           min="0"
           step="0.01"
           required
         />
 
         <FormInput
-          label="Category"
+          label={t('category')}
           type="select"
           name="categoryId"
           value={categoryId}
           onChange={handleInputChange}
           options={categories}
-          placeholder="Select Category"
+          placeholder={t('selectCategory')}
           required
         />
       </div>
 
       {/* Description */}
       <FormInput
-        label="Description"
+        label={t('description')}
         type="textarea"
         name="description"
         value={description}
         onChange={handleInputChange}
-        placeholder="Enter product description"
+        placeholder={t('enterProductDescription')}
         required
       />
 
       {/* Arabic Name */}
       <FormInput
-        label="Arabic Name (Optional)"
+        label={t('arabicNameOptional')}
         name="arName"
         value={arName || ''}
         onChange={handleInputChange}
-        placeholder="Enter Arabic name"
+        placeholder={t('enterArabicName')}
       />
 
       {/* Arabic Description */}
       <FormInput
-        label="Arabic Description (Optional)"
+        label={t('arabicDescriptionOptional')}
         type="textarea"
         name="arDescription"
         value={arDescription || ''}
         onChange={handleInputChange}
-        placeholder="Enter Arabic description"
+        placeholder={t('enterArabicDescription')}
       />
 
       {/* Product Status */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormInput
-          label="Status"
+          label={t('status')}
           type="select"
           name="status"
           value={status || (isActive ? "active" : "inactive")}
@@ -184,10 +186,10 @@ const ProductForm = ({
             handleInputChange(syntheticEvent);
           }}
           options={[
-            { id: "active", name: "Active" },
-            { id: "inactive", name: "Inactive" },
+            { id: "active", name: t('active') },
+            { id: "inactive", name: t('inactive') },
           ]}
-          placeholder="Select Status"
+          placeholder={t('selectStatus')}
         />
 
         <div className="flex items-center">
@@ -214,7 +216,7 @@ const ProductForm = ({
             htmlFor="inStock"
             className="text-sm font-medium text-gray-700"
           >
-            In Stock
+            {t('inStock')}
           </label>
         </div>
 
@@ -228,7 +230,7 @@ const ProductForm = ({
             className="mr-2"
           />
           <label htmlFor="onSale" className="text-sm font-medium text-gray-700">
-            On Sale
+            {t('onSale')}
           </label>
         </div>
       </div>
@@ -249,7 +251,7 @@ const ProductForm = ({
             onClick={resetForm}
             className="flex-1 bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300"
           >
-            Reset Form
+            {t('resetForm')}
           </button>
         )}
 
@@ -259,7 +261,7 @@ const ProductForm = ({
             onClick={previewProducts}
             className="flex-1 bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300"
           >
-            Preview Products
+            {t('previewProducts')}
           </button>
         )}
       </div>
