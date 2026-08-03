@@ -56,12 +56,15 @@ const OrderDetails = ({ token }) => {
   if (!order) return null;
 
   const STATUS_LABELS = {
-    "Pending": { label: "Pending", color: "bg-gray-100 text-gray-600 border-gray-200" },
-    "Confirmed": { label: "Confirmed", color: "bg-blue-50 text-blue-600 border-blue-100" },
-    "Processing": { label: "Processing", color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
-    "Shipped": { label: "Shipped", color: "bg-purple-50 text-purple-600 border-purple-100" },
+    "PendingPayment": { label: "Pending Payment", color: "bg-gray-100 text-gray-600 border-gray-200" },
+    "Pending": { label: "Pending Payment", color: "bg-gray-100 text-gray-600 border-gray-200" },
+    "Paid": { label: "Paid", color: "bg-emerald-50 text-emerald-600 border-emerald-100" },
+    "InWay": { label: "On the Way", color: "bg-blue-50 text-blue-600 border-blue-100" },
     "Delivered": { label: "Delivered", color: "bg-emerald-50 text-emerald-600 border-emerald-100" },
+    "CancelledByUser": { label: "Cancelled (User)", color: "bg-rose-50 text-rose-600 border-rose-100" },
+    "CancelledByAdmin": { label: "Cancelled (Admin)", color: "bg-rose-50 text-rose-600 border-rose-100" },
     "Cancelled": { label: "Cancelled", color: "bg-rose-50 text-rose-600 border-rose-100" },
+    "Refunded": { label: "Refunded", color: "bg-amber-50 text-amber-600 border-amber-100" },
     "PaymentExpired": { label: "Payment Expired", color: "bg-orange-50 text-orange-600 border-orange-100" },
   };
 

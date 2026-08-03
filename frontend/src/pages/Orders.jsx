@@ -23,16 +23,13 @@ const Orders = () => {
 
   const statusMap = {
     0: 'Pending Payment',
-    1: 'Confirmed',
-    2: 'Processing',
-    3: 'Shipped',
-    4: 'Delivered',
-    5: 'Cancelled by User',
+    1: 'Paid',
+    2: 'On the Way',
+    3: 'Delivered',
+    4: 'Cancelled by User',
+    5: 'Cancelled by Admin',
     6: 'Refunded',
-    7: 'Returned',
-    8: 'Payment Expired',
-    9: 'Cancelled by Admin',
-    10: 'Complete'
+    7: 'Payment Expired'
   };
 
   // Helper function to check if status is pending payment
@@ -47,14 +44,14 @@ const Orders = () => {
     return false;
   };
 
-  // Helper function to check if status is confirmed
+  // Helper function to check if status is paid
   const isConfirmed = (status) => {
     if (typeof status === 'number') {
       return status === 1;
     }
     if (typeof status === 'string') {
       const normalizedStatus = status.toLowerCase().replace(/\s+/g, '');
-      return normalizedStatus === 'confirmed';
+      return ['paid', 'confirmed'].includes(normalizedStatus);
     }
     return false;
   };
@@ -71,32 +68,30 @@ const Orders = () => {
   const getStatusColorClass = (status) => {
     const statusStr = typeof status === 'string' ? status.toLowerCase() : statusMap[status]?.toLowerCase() || '';
 
-    if (statusStr.includes('delivered') || statusStr.includes('complete')) {
+    if (statusStr.includes('delivered')) {
       return 'bg-green-100 text-green-800 border-green-200';
-    } else if (statusStr.includes('shipped')) {
+    } else if (statusStr.includes('way') || statusStr.includes('inway') || statusStr.includes('shipped')) {
       return 'bg-blue-100 text-blue-800 border-blue-200';
     } else if (statusStr.includes('cancelled') || statusStr.includes('failed') || statusStr.includes('expired')) {
       return 'bg-red-100 text-red-800 border-red-200';
-    } else if (statusStr.includes('confirmed') || statusStr.includes('processing')) {
-      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+    } else if (statusStr.includes('paid') || statusStr.includes('confirmed')) {
+      return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+    } else if (statusStr.includes('refunded')) {
+      return 'bg-purple-100 text-purple-800 border-purple-200';
     }
     return 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
   const getOrderProgressLevel = (status) => {
-    if (!status) return 0;
+    if (status === null || status === undefined) return 0;
     const s = String(status).toLowerCase().replace(/\s+/g, '');
     
-    // Level 1: Confirmed
-    if (s === '1' || s === 'confirmed') return 1;
-    // Level 2: Processing
-    if (s === '2' || s === 'processing') return 2;
-    // Level 3: Shipped
-    if (s === '3' || s === 'shipped') return 3;
-    // Level 4: Delivered
-    if (s === '4' || s === 'delivered') return 4;
-    // Level 5: Complete
-    if (s === '10' || s === 'complete') return 5;
+    // Level 1: Paid
+    if (s === '1' || s === 'paid' || s === 'confirmed') return 1;
+    // Level 2: On the Way
+    if (s === '2' || s === 'inway' || s === 'ontheway' || s === 'shipped') return 2;
+    // Level 3: Delivered
+    if (s === '3' || s === 'delivered') return 3;
     
     return 0;
   };
@@ -108,40 +103,32 @@ const Orders = () => {
     const steps = [{ label: 'Placed', icon: '📝', active: true }];
 
     // Branch: Payment Expired
-    if (s === 'paymentexpired' || s === '8') {
+    if (s === 'paymentexpired' || s === '7' || s === '8') {
       steps.push({ label: 'Payment Expired', icon: '⏰', active: true, error: true });
       steps.push({ label: 'Closed', icon: '🔒', active: true, error: true });
       return steps;
     }
 
     // Branch: Cancelled (User or Admin)
-    if (s.includes('cancelled') || s === '5' || s === '9') {
-      const isConfirmed = order.statusDisplay !== 'PendingPayment' && s !== '0' && s !== '8';
-      if (isConfirmed) steps.push({ label: 'Confirmed', icon: '✅', active: true });
+    if (s.includes('cancelled') || s === '4' || s === '5' || s === '9') {
+      const isPaid = order.statusDisplay !== 'PendingPayment' && s !== '0' && s !== '7';
+      if (isPaid) steps.push({ label: 'Paid', icon: '💳', active: true });
       steps.push({ label: 'Cancelled', icon: '🛑', active: true, error: true });
       return steps;
     }
 
-    // Branch: Returns / Refunds
-    if (s === 'returned' || s === 'refunded' || s === '6' || s === '7') {
-      steps.push({ label: 'Confirmed', icon: '✅', active: true });
-      steps.push({ label: 'Shipped', icon: '🚚', active: true });
-      steps.push({ label: 'Delivered', icon: '🎁', active: true });
-      if (s === 'returned' || s === '7') steps.push({ label: 'Returned', icon: '🔄', active: true, neutral: true });
-      if (s === 'refunded' || s === '6') steps.push({ label: 'Refunded', icon: '💰', active: true, neutral: true });
+    // Branch: Refunded
+    if (s === 'refunded' || s === '6') {
+      steps.push({ label: 'Paid', icon: '💳', active: true });
+      steps.push({ label: 'Refunded', icon: '💰', active: true, neutral: true });
       return steps;
     }
 
     // Happy Path
     const level = getOrderProgressLevel(order.status);
-    steps.push({ label: 'Confirmed', icon: '✅', active: level >= 1 });
-    steps.push({ label: 'Processing', icon: '⚙️', active: level >= 2 });
-    steps.push({ label: 'Shipped', icon: '🚚', active: level >= 3 });
-    steps.push({ label: 'Delivered', icon: '🎁', active: level >= 4 });
-    
-    if (level === 5) {
-      steps.push({ label: 'Complete', icon: '🏁', active: true });
-    }
+    steps.push({ label: 'Paid', icon: '💳', active: level >= 1 });
+    steps.push({ label: 'On the Way', icon: '🚚', active: level >= 2 });
+    steps.push({ label: 'Delivered', icon: '🎁', active: level >= 3 });
 
     return steps;
   };
@@ -162,10 +149,13 @@ const Orders = () => {
       if (normalizedOrder === normalizedMap) return true;
 
       if (filterId === 0) return ['pending', 'pendingpayment', 'waiting', 'unpaid'].includes(normalizedOrder);
-      if (filterId === 1) return ['confirmed', 'approved', 'paid', 'success'].includes(normalizedOrder);
-      if (filterId === 8) return ['expired', 'paymentexpired'].includes(normalizedOrder);
-      if (filterId === 4) return ['delivered', 'received', 'complete', 'completed'].includes(normalizedOrder);
-      if (filterId === 5) return ['cancelled', 'canceled', 'usercancelled'].includes(normalizedOrder);
+      if (filterId === 1) return ['paid', 'confirmed', 'approved', 'success'].includes(normalizedOrder);
+      if (filterId === 2) return ['inway', 'ontheway', 'shipped', 'processing'].includes(normalizedOrder);
+      if (filterId === 3) return ['delivered', 'received', 'complete', 'completed'].includes(normalizedOrder);
+      if (filterId === 4) return ['cancelledbyuser', 'usercancelled', 'cancelled'].includes(normalizedOrder);
+      if (filterId === 5) return ['cancelledbyadmin', 'admincancelled'].includes(normalizedOrder);
+      if (filterId === 6) return ['refunded'].includes(normalizedOrder);
+      if (filterId === 7) return ['expired', 'paymentexpired'].includes(normalizedOrder);
     }
     
     return false;

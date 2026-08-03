@@ -25,40 +25,34 @@ const OrderList = ({ token }) => {
 
   const STATUS_ENUM = {
     PendingPayment: 0,
-    Confirmed: 1,
-    Processing: 2,
-    Shipped: 3,
-    Delivered: 4,
-    CancelledByUser: 5,
+    Paid: 1,
+    InWay: 2,
+    Delivered: 3,
+    CancelledByUser: 4,
+    CancelledByAdmin: 5,
     Refunded: 6,
-    Returned: 7,
-    PaymentExpired: 8,
-    CancelledByAdmin: 9,
-    Complete: 10,
+    PaymentExpired: 7,
   };
 
   const STATUS_LABELS = {
     0: 'Pending Payment',
-    1: 'Confirmed',
-    2: 'Processing',
-    3: 'Shipped',
-    4: 'Delivered',
-    5: 'Cancelled (User)',
+    1: 'Paid',
+    2: 'On the Way',
+    3: 'Delivered',
+    4: 'Cancelled (User)',
+    5: 'Cancelled (Admin)',
     6: 'Refunded',
-    7: 'Returned',
-    8: 'Payment Expired',
-    9: 'Cancelled (Admin)',
-    10: 'Complete',
+    7: 'Payment Expired',
   };
 
   const getStatusBadgeClass = (status) => {
     // Handle both string status from API and integer status from local state/mapping
     const statusInt = typeof status === 'string' ? STATUS_ENUM[status] : status;
 
-    if ([4, 10].includes(statusInt)) return 'bg-green-50 text-green-600 border-green-100';
-    if ([5, 9, 8].includes(statusInt)) return 'bg-rose-50 text-rose-600 border-rose-100';
-    if ([1, 2, 3].includes(statusInt)) return 'bg-blue-50 text-blue-600 border-blue-100';
-    if ([6, 7].includes(statusInt)) return 'bg-amber-50 text-amber-600 border-amber-100';
+    if (statusInt === 3) return 'bg-green-50 text-green-600 border-green-100'; // Delivered
+    if ([4, 5, 7].includes(statusInt)) return 'bg-rose-50 text-rose-600 border-rose-100'; // Cancelled / Expired
+    if ([1, 2].includes(statusInt)) return 'bg-blue-50 text-blue-600 border-blue-100'; // Paid / InWay
+    if (statusInt === 6) return 'bg-amber-50 text-amber-600 border-amber-100'; // Refunded
     return 'bg-gray-50 text-gray-500 border-gray-100';
   };
 
@@ -230,21 +224,17 @@ const OrderList = ({ token }) => {
               currentOrders.map((order) => {
                 const currentStatusInt = typeof order.status === 'string' ? STATUS_ENUM[order.status] : order.status;
 
-                // Define allowed transitions based on current status
+                // Define allowed transitions based on backend OrderCommandService
                 const getAllowedStatuses = (current) => {
                   switch (current) {
                     case STATUS_ENUM.PendingPayment: // 0
-                      return [STATUS_ENUM.Confirmed, STATUS_ENUM.PaymentExpired, STATUS_ENUM.CancelledByAdmin];
-                    case STATUS_ENUM.Confirmed: // 1
-                      return [STATUS_ENUM.Processing, STATUS_ENUM.CancelledByAdmin];
-                    case STATUS_ENUM.Processing: // 2
-                      return [STATUS_ENUM.Shipped, STATUS_ENUM.CancelledByAdmin];
-                    case STATUS_ENUM.Shipped: // 3
-                      return [STATUS_ENUM.Delivered];
-                    case STATUS_ENUM.Delivered: // 4
-                      return [STATUS_ENUM.Complete, STATUS_ENUM.Returned, STATUS_ENUM.Refunded];
-                    case STATUS_ENUM.PaymentExpired: // 8
-                      return [STATUS_ENUM.CancelledByAdmin];
+                      return [STATUS_ENUM.Paid, STATUS_ENUM.PaymentExpired, STATUS_ENUM.CancelledByAdmin];
+                    case STATUS_ENUM.Paid: // 1
+                      return [STATUS_ENUM.InWay, STATUS_ENUM.CancelledByAdmin, STATUS_ENUM.Refunded];
+                    case STATUS_ENUM.InWay: // 2
+                      return [STATUS_ENUM.Delivered, STATUS_ENUM.Refunded];
+                    case STATUS_ENUM.Delivered: // 3
+                      return [STATUS_ENUM.Refunded];
                     default:
                       return [];
                   }
