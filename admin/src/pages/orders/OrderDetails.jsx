@@ -41,6 +41,39 @@ const OrderDetails = ({ token }) => {
     }
   };
 
+  const [updatingCod, setUpdatingCod] = useState(false);
+
+  const handlePayCOD = async (paymentId) => {
+    const transactionId = window.prompt("Enter Transaction ID (optional / reference):", `COD-${Date.now()}`);
+    if (transactionId === null) return; // User cancelled prompt
+
+    try {
+      setUpdatingCod(true);
+      const res = await axios.put(
+        `${backendUrl}/api/Payment/cash-on-delivery/pay`,
+        {
+          paymentId: Number(paymentId),
+          transactionId: transactionId || `COD-${Date.now()}`
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (res.data?.isSuccess || res.status === 200) {
+        toast.success("Cash on Delivery payment marked as Paid!");
+        fetchOrderDetails();
+      } else {
+        toast.error(res.data?.message || "Failed to update payment status");
+      }
+    } catch (error) {
+      console.error("Error updating COD payment:", error);
+      toast.error(error.response?.data?.message || "Error updating Cash on Delivery payment status");
+    } finally {
+      setUpdatingCod(false);
+    }
+  };
+
   useEffect(() => {
     if (orderId) fetchOrderDetails();
   }, [orderId, token]);
@@ -190,6 +223,20 @@ const OrderDetails = ({ token }) => {
                         <div className="flex justify-between items-center">
                           <span className="text-[10px] font-bold text-gray-500 uppercase">Date</span>
                           <span className="text-xs font-bold text-gray-700">{new Date(payment.createdAt).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {((payment.methodName || payment.paymentMethod || "").toString().toLowerCase().includes("cash") || 
+                        (payment.methodName || payment.paymentMethod || "").toString().toLowerCase().includes("cod") ||
+                        (order.paymentMethod || "").toString().toLowerCase().includes("cash")) && 
+                       payment.status !== 'Success' && payment.status !== 'Paid' && (
+                        <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
+                          <button
+                            onClick={() => handlePayCOD(payment.id || payment.paymentId)}
+                            disabled={updatingCod}
+                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50 shadow-sm"
+                          >
+                            {updatingCod ? "Updating..." : "Mark COD as Paid"}
+                          </button>
                         </div>
                       )}
                     </div>

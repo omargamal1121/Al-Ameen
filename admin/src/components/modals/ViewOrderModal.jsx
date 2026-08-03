@@ -1,8 +1,44 @@
-import React from 'react';
-import { currency } from '../../App';
+import React, { useState } from 'react';
+import { currency, backendUrl } from '../../App';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const ViewOrderModal = ({ selectedOrder, setShowViewModal }) => {
+const ViewOrderModal = ({ selectedOrder, setShowViewModal, token, onOrderUpdated }) => {
+  const [updatingCod, setUpdatingCod] = useState(false);
+
   if (!selectedOrder) return null;
+
+  const handlePayCOD = async (paymentId) => {
+    const transactionId = window.prompt("Enter Transaction ID (optional / reference):", `COD-${Date.now()}`);
+    if (transactionId === null) return;
+
+    try {
+      setUpdatingCod(true);
+      const res = await axios.put(
+        `${backendUrl}/api/Payment/cash-on-delivery/pay`,
+        {
+          paymentId: Number(paymentId),
+          transactionId: transactionId || `COD-${Date.now()}`
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (res.data?.isSuccess || res.status === 200) {
+        toast.success("Cash on Delivery payment marked as Paid!");
+        if (onOrderUpdated) onOrderUpdated();
+        setShowViewModal(false);
+      } else {
+        toast.error(res.data?.message || "Failed to update payment status");
+      }
+    } catch (error) {
+      console.error("Error updating COD payment:", error);
+      toast.error(error.response?.data?.message || "Error updating Cash on Delivery payment status");
+    } finally {
+      setUpdatingCod(false);
+    }
+  };
 
   // Normalize core fields
   const orderId = selectedOrder.id || selectedOrder._id || "";
@@ -248,6 +284,20 @@ const ViewOrderModal = ({ selectedOrder, setShowViewModal }) => {
                         {payment.createdAt && (
                           <div className="text-xs text-gray-500 mt-1">
                             <span className="font-bold">Date:</span> {new Date(payment.createdAt).toLocaleString()}
+                          </div>
+                        )}
+                        {((payment.methodName || payment.paymentMethod || "").toString().toLowerCase().includes("cash") || 
+                          (payment.methodName || payment.paymentMethod || "").toString().toLowerCase().includes("cod") ||
+                          (paymentMethod || "").toString().toLowerCase().includes("cash")) && 
+                         payment.status !== 'Success' && payment.status !== 'Paid' && (
+                          <div className="mt-3 pt-2 border-t border-gray-100 flex justify-end">
+                            <button
+                              onClick={() => handlePayCOD(payment.id || payment.paymentId)}
+                              disabled={updatingCod}
+                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                            >
+                              {updatingCod ? "Updating..." : "Mark COD as Paid"}
+                            </button>
                           </div>
                         )}
                       </div>
