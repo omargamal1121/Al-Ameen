@@ -2,18 +2,22 @@ import axios from "axios";
 
 class AuthService {
   constructor() {
-    this._interceptorsSetup = false; // guard against duplicate registration
+    this._interceptorsSetup = false;
     this.isRefreshing = false;
     this.failedQueue = [];
     this.setupInterceptors();
   }
 
+  getApiClient() {
+    return axios;
+  }
+
   setupInterceptors() {
-    // Guard: only register interceptors once (prevents double-mount in React Strict Mode)
     if (this._interceptorsSetup) return;
     this._interceptorsSetup = true;
 
-    // 1. Request Interceptor: Add Authorization Header
+    axios.defaults.withCredentials = true;
+
     axios.interceptors.request.use(
       (config) => {
         const token = sessionStorage.getItem("token");
@@ -25,18 +29,15 @@ class AuthService {
       (error) => Promise.reject(error)
     );
 
-    // 2. Response Interceptor: Handle Errors Globally
     axios.interceptors.response.use(
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
 
-        // Skip auth refresh handling for requests that explicitly opt out
         if (originalRequest?.skipAuthRefresh) {
           return Promise.reject(error);
         }
 
-        // Handle 409 Conflict (e.g., product with same name)
         if (error.response?.status === 409) {
           const serverMsg =
             error.response?.data?.message ||
@@ -54,7 +55,6 @@ class AuthService {
           });
         }
 
-        // Handle 401 Unauthorized (token invalid or expired)
         if (error.response?.status === 401 && !originalRequest._retry) {
           const existingToken = sessionStorage.getItem("token");
 
@@ -96,8 +96,6 @@ class AuthService {
           }
         }
 
-        // For all other errors (403, 404, 500, etc.) — show a toast
-        // Skip 401 (handled above) and 409 (handled above) and 404 (callers handle "not found" gracefully)
         if (
           error.response?.status !== 401 &&
           error.response?.status !== 409 &&
@@ -126,22 +124,11 @@ class AuthService {
 
   async refreshToken() {
     try {
-      const currentToken = sessionStorage.getItem("token");
-      const refreshToken = sessionStorage.getItem("refreshToken");
-
-      if (!currentToken) {
-        throw new Error("No token to refresh");
-      }
-
-      if (!refreshToken) {
-        throw new Error("No refresh token available");
-      }
-
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
       const response = await axios.post(
         `${backendUrl}/api/Account/refresh-token`,
-        { refreshToken },
+        {},
         {
           headers: {
             "Content-Type": "application/json",
@@ -177,16 +164,7 @@ class AuthService {
         data?.responseBody?.data?.accessToken ||
         (typeof data === "string" ? data : null);
 
-      const newRefreshToken =
-        data?.refreshToken ||
-        data?.data?.refreshToken ||
-        data?.responseBody?.data?.refreshToken;
-
       if (newToken && typeof newToken === "string" && newToken.length > 10) {
-        // Update stored tokens
-        if (newRefreshToken) {
-          sessionStorage.setItem("refreshToken", newRefreshToken);
-        }
         return newToken;
       } else {
         throw new Error("Invalid token response format");
@@ -208,10 +186,10 @@ class AuthService {
     }
   }
 
-  processQueue(error, token = null) {
+  processQueue(err, token = null) {
     this.failedQueue.forEach(({ resolve, reject }) => {
-      if (error) {
-        reject(error);
+      if (err) {
+        reject(err);
       } else {
         resolve(token);
       }
@@ -221,6 +199,7 @@ class AuthService {
 
   redirectToLogin() {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("roles");
 
     if (window.showToast) {
       window.showToast("Session expired. Please login again.", "error");
@@ -249,10 +228,6 @@ class AuthService {
     return sessionStorage.getItem("token");
   }
 
-  /**
-   * Checks if the stored JWT is present AND not expired by decoding the exp claim.
-   * No network request — pure client-side check.
-   */
   hasValidToken() {
     const token = sessionStorage.getItem("token");
     if (!token || token.length < 10) return false;
@@ -263,21 +238,35 @@ class AuthService {
       const payload = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
       const exp = payload?.exp;
       if (!exp) return false;
-      // exp is Unix timestamp in seconds; add a 30s buffer to refresh slightly early
       return Date.now() / 1000 < exp - 30;
     } catch {
       return false;
     }
   }
 
-  logout() {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("refreshToken");
-    window.location.href = "/";
+  async logout() {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const token = sessionStorage.getItem("token");
+
+      if (token) {
+        await axios.get(`${backendUrl}/api/Account/logout`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          skipAuthRefresh: true,
+        });
+      }
+    } catch (error) {
+      console.warn("Logout API call failed, clearing client state anyway:", error.message);
+    } finally {
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("roles");
+      window.location.href = "/";
+    }
   }
 }
 
-// Singleton instance
 const authService = new AuthService();
 
 export default authService;

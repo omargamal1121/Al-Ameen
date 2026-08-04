@@ -62,13 +62,28 @@ const decodeJwtRoles = (jwt) => {
 function App() {
   const { t, i18n } = useTranslation();
 
-  // Migrate any leftover token from localStorage → sessionStorage (one-time)
   useEffect(() => {
     const legacyToken = localStorage.getItem("token");
     if (legacyToken) {
       sessionStorage.setItem("token", legacyToken);
       localStorage.removeItem("token");
     }
+    const legacyRoles = localStorage.getItem("roles");
+    if (legacyRoles) {
+      sessionStorage.setItem("roles", legacyRoles);
+      localStorage.removeItem("roles");
+    }
+    const legacyAdminToken = localStorage.getItem("admin_access_token");
+    if (legacyAdminToken && !sessionStorage.getItem("token")) {
+      sessionStorage.setItem("token", legacyAdminToken);
+      localStorage.removeItem("admin_access_token");
+    }
+    const legacyAdminRoles = localStorage.getItem("admin_roles");
+    if (legacyAdminRoles) {
+      sessionStorage.setItem("roles", legacyAdminRoles);
+      localStorage.removeItem("admin_roles");
+    }
+    sessionStorage.removeItem("refreshToken");
   }, []);
 
   // Set document direction based on language
