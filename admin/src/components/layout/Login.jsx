@@ -38,7 +38,7 @@ const Login = ({ setToken }) => {
 
     try {
       const response = await axios.post(
-        `${backendUrl}/api/Account/admin-login`,
+        `${backendUrl}/api/account/staff-login`,
         { email, password },
         {
           headers: {
@@ -166,7 +166,7 @@ const Login = ({ setToken }) => {
   return (
     <div className="flex justify-center items-center min-h-screen w-full">
       <div className="bg-white shadow-md rounded-lg px-8 py-6 max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-4 text-center">Admin Panel</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Staff Panel</h1>
 
         {rateLimited && (
           <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md text-sm text-amber-800 text-center">
