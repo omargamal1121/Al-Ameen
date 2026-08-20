@@ -271,8 +271,13 @@ const DiscountManager = ({ token }) => {
               handleSubmitDiscount={async (e) => {
                 e.preventDefault();
                 try {
-                  if (editId) await API.discounts.update(editId, formData, token);
-                  else await API.discounts.create(formData, token);
+                  const payload = {
+                    ...formData,
+                    startDate: formData.startDate ? new Date(formData.startDate).toISOString() : null,
+                    endDate: formData.endDate ? new Date(formData.endDate).toISOString() : null,
+                  };
+                  if (editId) await API.discounts.update(editId, payload, token);
+                  else await API.discounts.create(payload, token);
                   toast.success("Discount saved successfully");
                   setActiveTab("registry");
                   fetchDiscounts();

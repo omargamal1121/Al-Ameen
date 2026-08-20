@@ -353,32 +353,32 @@ const Orders = () => {
         <Title text1={'MY'} text2={'ORDERS'} />
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-wrap justify-between items-center mb-8 gap-4">
-        <div className="flex items-center gap-6">
-          <div className="group">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:flex-wrap sm:justify-between sm:items-center mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 w-full sm:w-auto">
+          <div className="group w-full sm:w-auto">
             <label className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-2 block">Status filter</label>
             <select
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); loadOrderData(e.target.value); }}
-              className="bg-gray-50 border-none rounded-lg px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-black transition-all cursor-pointer"
+              className="w-full sm:w-auto bg-gray-50 border-none rounded-lg px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-black transition-all cursor-pointer"
             >
               <option value="All">All Vibe</option>
               {Object.entries(statusMap).map(([id, label]) => <option key={id} value={id}>{label}</option>)}
             </select>
           </div>
-          <div>
+          <div className="w-full sm:w-auto">
             <label className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-2 block">Sort By</label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="bg-gray-50 border-none rounded-lg px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-black transition-all cursor-pointer"
+              className="w-full sm:w-auto bg-gray-50 border-none rounded-lg px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-black transition-all cursor-pointer"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
             </select>
           </div>
         </div>
-        <div className="text-sm font-bold text-gray-900 bg-gray-100 px-4 py-2 rounded-full">
+        <div className="self-start sm:self-center text-sm font-bold text-gray-900 bg-gray-100 px-4 py-2 rounded-full">
           {filteredOrders.length} {filteredOrders.length === 1 ? 'Order' : 'Orders'}
         </div>
       </div>
@@ -396,23 +396,23 @@ const Orders = () => {
               animate={{ opacity: 1, y: 0 }}
               className='bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group'
             >
-              <div className='flex flex-col md:flex-row md:items-center gap-6'>
-                <div className='relative w-24 h-24 shrink-0 overflow-hidden rounded-xl'>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6'>
+                <div className='relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 overflow-hidden rounded-xl'>
                   <img className='w-full h-full object-cover transition-transform group-hover:scale-110 duration-500' src={item.image[0]} alt={item.name} />
                 </div>
 
-                <div className='flex-1 space-y-1'>
-                  <div className="flex items-center gap-2 mb-1">
+                <div className='flex-1 space-y-1 min-w-0'>
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
                     <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded font-black tracking-tighter">#{item.orderNumber}</span>
                     <span className={`text-[10px] px-2 py-1 rounded-full font-bold border ${getStatusColorClass(item.status)}`}>{item.statusDisplay}</span>
                   </div>
-                  <h3 className='text-lg font-black text-gray-900'>{item.name}</h3>
-                  <div className='flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-500'>
+                  <h3 className='text-base sm:text-lg font-black text-gray-900 truncate'>{item.name}</h3>
+                  <div className='flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-semibold text-gray-500'>
                     <p className='text-black font-black text-sm'>{currency}{item.price}</p>
                     <p>Includes {item.quantity} {item.quantity === 1 ? 'item' : 'items'}</p>
                     <p>• {new Date(item.date).toLocaleDateString()}</p>
                   </div>
-                  <div className='flex items-center gap-2 mt-2'>
+                  <div className='flex flex-wrap items-center gap-2 mt-2'>
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Payment:</span>
                     <span className="text-[10px] font-black text-gray-900">{item.paymentMethod}</span>
                     <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase ${item.paymentStatus === 'Paid' || item.paymentStatus === 'Success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
@@ -421,12 +421,12 @@ const Orders = () => {
                   </div>
                 </div>
 
-                <div className='flex md:flex-col items-center md:items-end gap-3 shrink-0'>
-                  <button onClick={() => handleTrackOrder(item.orderNumber)} className='btn-premium bg-black text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg'>
+                <div className='flex sm:flex-col items-center sm:items-end gap-3 shrink-0 mt-2 sm:mt-0'>
+                  <button onClick={() => handleTrackOrder(item.orderNumber)} className='btn-premium bg-black text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg whitespace-nowrap'>
                     Track Vibe
                   </button>
                   {isPendingPayment(item.status) && (
-                    <button onClick={() => navigate(`/payment/${item.orderNumber}`)} className='text-xs font-black underline hover:text-black transition-colors'>
+                    <button onClick={() => navigate(`/payment/${item.orderNumber}`)} className='text-xs font-black underline hover:text-black transition-colors whitespace-nowrap'>
                       {item.paymentStatus === 'Failed' ? 'Pay Again' : 'Pay Now'}
                     </button>
                   )}
@@ -462,33 +462,33 @@ const Orders = () => {
                 selectedOrderDetails && (
                   <>
                   {/* Header */}
-                  <div className="p-8 border-b flex justify-between items-center bg-gray-50/50">
-                    <div>
-                      <h2 className="text-3xl font-black tracking-tighter">ORDER #{selectedOrderDetails.orderNumber}</h2>
+                  <div className="p-4 sm:p-8 border-b flex justify-between items-center bg-gray-50/50">
+                    <div className="min-w-0 pr-4">
+                      <h2 className="text-xl sm:text-3xl font-black tracking-tighter truncate">ORDER #{selectedOrderDetails.orderNumber}</h2>
                       <p className="text-gray-400 text-xs font-bold uppercase tracking-[0.2em] mt-1">Placed on {new Date(selectedOrderDetails.createdAt).toLocaleDateString()}</p>
                     </div>
-                    <button onClick={() => setShowModal(false)} className="h-10 w-10 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-transform">
+                    <button onClick={() => setShowModal(false)} className="h-10 w-10 shrink-0 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-transform">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+                  <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8 sm:space-y-10 custom-scrollbar">
                     {/* Stepper Progress */}
-                    <div className="relative flex justify-between items-start w-full max-w-3xl mx-auto mb-10 px-4">
+                    <div className="relative flex justify-between items-start w-full max-w-3xl mx-auto mb-6 sm:mb-10 px-1 sm:px-4 overflow-x-auto">
                       {getStepperSteps(selectedOrderDetails).map((step, i, arr) => (
-                        <div key={i} className="flex flex-col items-center relative z-10 flex-1">
-                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-lg transition-all duration-500 ${step.error ? 'bg-red-600' : step.neutral ? 'bg-blue-600' : step.active ? 'bg-black' : 'bg-gray-100 grayscale opacity-40'} ${step.active && !step.error && !step.neutral ? 'scale-110' : ''}`}>
+                        <div key={i} className="flex flex-col items-center relative z-10 flex-1 min-w-0">
+                          <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-base sm:text-xl shadow-lg transition-all duration-500 ${step.error ? 'bg-red-600' : step.neutral ? 'bg-blue-600' : step.active ? 'bg-black' : 'bg-gray-100 grayscale opacity-40'} ${step.active && !step.error && !step.neutral ? 'scale-110' : ''}`}>
                             {step.icon}
                           </div>
-                          <span className={`text-[9px] font-black uppercase tracking-tighter mt-3 text-center transition-colors ${step.active ? 'text-black' : 'text-gray-300'}`}>{step.label}</span>
+                          <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-tighter mt-2 sm:mt-3 text-center transition-colors leading-tight ${step.active ? 'text-black' : 'text-gray-300'}`}>{step.label}</span>
                           {i < arr.length - 1 && (
-                            <div className={`absolute top-6 left-[60%] w-[calc(100%-2rem)] h-1 -z-10 transition-all duration-1000 ${step.active && arr[i + 1].active ? (arr[i+1].error ? 'bg-red-200' : 'bg-black') : 'bg-gray-100'}`} />
+                            <div className={`absolute top-[18px] sm:top-6 left-[60%] w-[calc(100%-2rem)] h-1 -z-10 transition-all duration-1000 ${step.active && arr[i + 1].active ? (arr[i+1].error ? 'bg-red-200' : 'bg-black') : 'bg-gray-100'}`} />
                           )}
                         </div>
                       ))}
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                       {/* Left Column: Details */}
                       <div className="lg:col-span-2 space-y-8">
                         {/* Products */}
@@ -577,12 +577,12 @@ const Orders = () => {
                     </div>
                   </div>
 
-                  <div className="p-6 border-t flex justify-between gap-4 bg-gray-50/30">
+                  <div className="p-4 sm:p-6 border-t flex flex-col xs:flex-row justify-between gap-3 bg-gray-50/30">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Order is Live</span>
                     </div>
-                    <button onClick={() => setShowModal(false)} className="px-10 py-3 bg-black text-white font-black uppercase text-[10px] tracking-widest rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl">Close View</button>
+                    <button onClick={() => setShowModal(false)} className="w-full xs:w-auto px-8 sm:px-10 py-3 bg-black text-white font-black uppercase text-[10px] tracking-widest rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl">Close View</button>
                   </div>
                 </>
               )
