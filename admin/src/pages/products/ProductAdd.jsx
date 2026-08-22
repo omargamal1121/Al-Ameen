@@ -209,49 +209,49 @@ const ProductAdd = ({ token }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Product Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Product Name (English)</label>
                 <input
                   name="name" value={formData.name} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold text-lg"
-                  placeholder="Enter product name"
+                  placeholder="e.g. Samsung 65-inch QLED Smart TV"
                 />
               </div>
 
               <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Product Name (Arabic) — اسم المنتج</label>
                 <input
                   name="arName" value={formData.arName} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold text-lg"
-                  placeholder="اسم المنتج"
+                  placeholder="مثال: تلفزيون سامسونج 65 بوصة"
                   dir="rtl"
                 />
               </div>
 
               <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description (English)</label>
                 <textarea
                   name="description" value={formData.description} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
-                  placeholder="Enter product description..."
+                  placeholder="e.g. A high-quality 4K QLED smart TV with built-in Wi-Fi, HDR support, and multiple HDMI ports."
                 />
               </div>
 
               <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Arabic Description</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Description (Arabic) — الوصف</label>
                 <textarea
                   name="arDescription" value={formData.arDescription} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
-                  placeholder="وصف المنتج..."
+                  placeholder="مثال: تلفزيون ذكي بدقة 4K مع دعم Wi-Fi والاتصال بالإنترنت ومنافذ HDMI متعددة."
                   dir="rtl"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Price</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Price (EGP)</label>
                 <input
                   name="price" type="number" value={formData.price} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-black text-xl"
-                  placeholder="0.00"
+                  placeholder="e.g. 4999.00"
                 />
               </div>
 
