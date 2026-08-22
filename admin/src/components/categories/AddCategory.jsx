@@ -257,7 +257,7 @@ const AddCategory = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-bold text-gray-700"
-                  placeholder="e.g. Home Appliances"
+                  placeholder="e.g. Power Cables"
                   required
                 />
               </div>
@@ -280,7 +280,7 @@ const AddCategory = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-medium text-gray-600 min-h-[120px]"
-                placeholder="Enter category description in English, e.g. A wide range of household electrical appliances including washing machines, refrigerators, and air conditioners."
+                placeholder="Enter category description in English, e.g. High voltage and low voltage power cables for industrial applications."
               />
             </div>
 
@@ -290,7 +290,7 @@ const AddCategory = ({
                 value={arName}
                 onChange={(e) => setArName(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-bold text-gray-700"
-                placeholder="مثال: الأجهزة المنزلية"
+                placeholder="مثال: كابلات الطاقة"
                 dir="rtl"
                 required
               />
@@ -302,7 +302,7 @@ const AddCategory = ({
                 value={arDescription}
                 onChange={(e) => setArDescription(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-medium text-gray-600 min-h-[120px]"
-                placeholder="أدخل وصف القسم بالعربية، مثال: مجموعة متنوعة من الأجهزة الكهربائية المنزلية..."
+                placeholder="أدخل وصف القسم بالعربية، مثال: كابلات طاقة للجهد العالي والمنخفض للاستخدامات الصناعية..."
                 dir="rtl"
                 required
               />

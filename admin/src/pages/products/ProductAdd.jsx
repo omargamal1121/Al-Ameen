@@ -213,7 +213,7 @@ const ProductAdd = ({ token }) => {
                 <input
                   name="name" value={formData.name} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold text-lg"
-                  placeholder="e.g. Samsung 65-inch QLED Smart TV"
+                  placeholder="e.g. 16mm 4-Core Armored Copper Cable"
                 />
               </div>
 
@@ -222,7 +222,7 @@ const ProductAdd = ({ token }) => {
                 <input
                   name="arName" value={formData.arName} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-bold text-lg"
-                  placeholder="مثال: تلفزيون سامسونج 65 بوصة"
+                  placeholder="مثال: كابل نحاس مسلح 4 كور 16 مم"
                   dir="rtl"
                 />
               </div>
@@ -232,7 +232,7 @@ const ProductAdd = ({ token }) => {
                 <textarea
                   name="description" value={formData.description} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
-                  placeholder="e.g. A high-quality 4K QLED smart TV with built-in Wi-Fi, HDR support, and multiple HDMI ports."
+                  placeholder="e.g. Heavy-duty XLPE insulated armored copper cable suitable for underground power distribution."
                 />
               </div>
 
@@ -241,7 +241,7 @@ const ProductAdd = ({ token }) => {
                 <textarea
                   name="arDescription" value={formData.arDescription} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[32px] px-8 py-6 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-medium text-gray-600 min-h-[150px]"
-                  placeholder="مثال: تلفزيون ذكي بدقة 4K مع دعم Wi-Fi والاتصال بالإنترنت ومنافذ HDMI متعددة."
+                  placeholder="مثال: كابل نحاسي مسلح معزول بـ XLPE للاستخدام الشاق في تمديدات الطاقة الأرضية."
                   dir="rtl"
                 />
               </div>
@@ -251,7 +251,7 @@ const ProductAdd = ({ token }) => {
                 <input
                   name="price" type="number" value={formData.price} onChange={handleInputChange} required
                   className="w-full bg-gray-50 border border-gray-100 rounded-[24px] px-8 py-4 outline-none focus:ring-8 focus:ring-orange-50 focus:border-orange-300 transition-all font-black text-xl"
-                  placeholder="e.g. 4999.00"
+                  placeholder="e.g. 150.00"
                 />
               </div>
 
