@@ -125,10 +125,16 @@ class AuthService {
   async refreshToken() {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const storedRefreshToken = sessionStorage.getItem("refreshToken");
+
+      if (!storedRefreshToken) {
+        this.redirectToLogin();
+        throw new Error("No refresh token available");
+      }
 
       const response = await axios.post(
         `${backendUrl}/api/Account/refresh-token`,
-        {},
+        { refreshToken: storedRefreshToken },
         {
           headers: {
             "Content-Type": "application/json",
@@ -164,7 +170,17 @@ class AuthService {
         data?.responseBody?.data?.accessToken ||
         (typeof data === "string" ? data : null);
 
+      const newRefreshToken =
+        data?.refreshToken ||
+        data?.data?.refreshToken ||
+        data?.responseBody?.data?.refreshToken ||
+        null;
+
       if (newToken && typeof newToken === "string" && newToken.length > 10) {
+        // Persist the new refresh token if the server rotated it
+        if (newRefreshToken && typeof newRefreshToken === "string") {
+          sessionStorage.setItem("refreshToken", newRefreshToken);
+        }
         return newToken;
       } else {
         throw new Error("Invalid token response format");
@@ -199,6 +215,7 @@ class AuthService {
 
   redirectToLogin() {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("refreshToken");
     sessionStorage.removeItem("roles");
 
     if (window.showToast) {
@@ -261,6 +278,7 @@ class AuthService {
       console.warn("Logout API call failed, clearing client state anyway:", error.message);
     } finally {
       sessionStorage.removeItem("token");
+      sessionStorage.removeItem("refreshToken");
       sessionStorage.removeItem("roles");
       window.location.href = "/";
     }

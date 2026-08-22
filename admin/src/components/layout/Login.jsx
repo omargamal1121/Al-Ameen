@@ -51,12 +51,16 @@ const Login = ({ setToken }) => {
 
       const { statuscode, responseBody } = response.data || {};
       const token = responseBody?.data?.token;
+      const refreshToken = responseBody?.data?.refreshToken;
       const roles = responseBody?.data?.roles || [];
 
       if (statuscode === 200 && token) {
         setToken(token);
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("roles", JSON.stringify(roles));
+        if (refreshToken) {
+          sessionStorage.setItem("refreshToken", refreshToken);
+        }
         toast.success(responseBody?.message || "Login successful");
       } else {
         const errMsg =
