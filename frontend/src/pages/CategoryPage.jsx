@@ -162,7 +162,6 @@ const CategoryPage = () => {
                       id={product.id}
                       image={productImages}
                       name={product.name}
-                      arName={product.arName}
                       price={product.price}
                       finalPrice={product.finalPrice}
                       discountPrecentage={product.discountPrecentage}

@@ -11,8 +11,7 @@ import { useTranslation } from 'react-i18next';
  */
 export const getLocalizedName = (item, language) => {
   if (!item) return '';
-  const arabicName = item.arName || item.nameAr;
-  return language === 'ar' && arabicName ? arabicName : item.name;
+  return item.name;
 };
 
 /**
@@ -22,8 +21,7 @@ export const getLocalizedName = (item, language) => {
  */
 export const getLocalizedDescription = (item, language) => {
   if (!item) return '';
-  const arabicDescription = item.arDescription || item.descriptionAr;
-  return language === 'ar' && arabicDescription ? arabicDescription : item.description;
+  return item.description;
 };
 
 /**
@@ -31,7 +29,7 @@ export const getLocalizedDescription = (item, language) => {
  */
 export const getLocalizedCategory = (item, language) => {
   if (!item) return '';
-  return language === 'ar' && item.categoryAr ? item.categoryAr : item.category;
+  return item.category;
 };
 
 /**
@@ -39,7 +37,7 @@ export const getLocalizedCategory = (item, language) => {
  */
 export const getLocalizedSubcategory = (item, language) => {
   if (!item) return '';
-  return language === 'ar' && item.subCategoryAr ? item.subCategoryAr : item.subCategory;
+  return item.subCategory;
 };
 
 /**
@@ -47,7 +45,7 @@ export const getLocalizedSubcategory = (item, language) => {
  */
 export const getLocalizedDiscountName = (item, language) => {
   if (!item) return '';
-  return language === 'ar' && item.discountNameAr ? item.discountNameAr : item.discountName;
+  return item.discountName;
 };
 
 /**
@@ -55,7 +53,7 @@ export const getLocalizedDiscountName = (item, language) => {
  */
 export const getLocalizedSizes = (item, language) => {
   if (!item || !item.sizes) return [];
-  return language === 'ar' && item.sizesAr ? item.sizesAr : item.sizes;
+  return item.sizes;
 };
 
 /**

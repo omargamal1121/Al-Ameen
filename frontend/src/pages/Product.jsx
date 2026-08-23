@@ -27,7 +27,7 @@ import { useLocalization } from "../utils/localization";
 const Product = () => {
   const { t, i18n } = useTranslation();
   const isAr = i18n.language === "ar";
-  const { getLocalizedName } = useLocalization();
+  const { getLocalizedName, getLocalizedDescription } = useLocalization();
   const { productId } = useParams();
   const { addToCart, backendUrl, currency } = useContext(ShopContext);
 
@@ -151,7 +151,7 @@ const Product = () => {
 
   const displayName = getLocalizedName(productData) || (isAr ? "كابل كهربائي" : "Electrical Cable");
   const displayDescription =
-    (isAr ? productData.arDescription || productData.description : productData.description || productData.arDescription) ||
+    getLocalizedDescription(productData) ||
     (isAr
       ? "كابلات وأسلاك ذات موصفات صناعية عالية الجودة مصنعة وفق المعايير الدولية IEC 60502 ومطابقة للمواصفات القياسية المصرية. مناسبة للتمديدات السكنية والتجارية والصناعية."
       : "Industrial-grade electrical cable manufactured to IEC 60502 standards. Designed for high durability, safety, and optimal conductivity across residential and commercial installations.");
@@ -233,7 +233,7 @@ const Product = () => {
                   <FaBolt />
                   <span>{isAr ? `خصم ${discountPercentage}%` : `SAVE ${discountPercentage}%`}</span>
                   {productData.discount?.name && (
-                    <span className="opacity-90 text-[10px]">| {isAr ? (productData.discount?.arName || productData.discount.name) : productData.discount.name}</span>
+                    <span className="opacity-90 text-[10px]">| {productData.discount.name}</span>
                   )}
                 </div>
               )}
