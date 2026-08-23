@@ -22,7 +22,6 @@ const AddCategory = ({
   const [displayOrder, setDisplayOrder] = useState(1);
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
-  const [inputLang, setInputLang] = useState("en");
 
   const [oldImages, setOldImages] = useState([]);
   const [oldMainImage, setOldMainImage] = useState(null);
@@ -253,39 +252,17 @@ const AddCategory = ({
           <div className="bg-white rounded-[32px] p-6 md:p-8 border border-gray-100 shadow-sm flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Language</label>
-                  <div className="flex bg-gray-100 rounded-lg p-1">
-                    <button
-                      type="button"
-                      onClick={() => setInputLang('en')}
-                      className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${inputLang === 'en' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      English
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setInputLang('ar')}
-                      className={`px-3 py-1 rounded-md text-xs font-bold transition-all ${inputLang === 'ar' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      العربية
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
-                    {inputLang === 'en' ? 'Category Name' : 'اسم القسم'}
-                  </label>
-                  <input
-                    value={inputLang === 'en' ? name : arName}
-                    onChange={(e) => inputLang === 'en' ? setName(e.target.value) : setArName(e.target.value)}
-                    className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-bold text-gray-700"
-                    placeholder={inputLang === 'en' ? 'e.g. Power Cables' : 'مثال: كابلات الطاقة'}
-                    dir={inputLang === 'ar' ? 'rtl' : 'ltr'}
-                    required
-                  />
-                </div>
+                <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
+                  اسم القسم (Category Name)
+                </label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-bold text-gray-700"
+                  placeholder="مثال: كابلات الطاقة"
+                  dir="rtl"
+                  required
+                />
               </div>
 
               <div className="flex flex-col gap-2">
@@ -302,14 +279,14 @@ const AddCategory = ({
 
             <div className="flex flex-col gap-2">
               <label className="text-xs font-black uppercase tracking-widest text-gray-400 ml-1">
-                {inputLang === 'en' ? 'Description' : 'الوصف'}
+                الوصف (Description)
               </label>
               <textarea
-                value={inputLang === 'en' ? description : arDescription}
-                onChange={(e) => inputLang === 'en' ? setDescription(e.target.value) : setArDescription(e.target.value)}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-100 rounded-2xl px-5 py-3.5 outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-400 transition-all font-medium text-gray-600 min-h-[120px]"
-                placeholder={inputLang === 'en' ? 'Enter category description...' : 'أدخل وصف القسم بالعربية...'}
-                dir={inputLang === 'ar' ? 'rtl' : 'ltr'}
+                placeholder="أدخل وصف القسم بالعربية..."
+                dir="rtl"
               />
             </div>
           </div>
