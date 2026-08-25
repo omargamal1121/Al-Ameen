@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const WHATSAPP_NUMBER = '201006453998'; // Replace with real number
+const WHATSAPP_NUMBER = '201010814995'; // Replace with real number
 const WHATSAPP_MESSAGE = encodeURIComponent('Hello Al-Ameen Wires! I would like to inquire about your cable products.');
 
 const WhatsAppButton = () => {

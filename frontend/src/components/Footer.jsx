@@ -33,7 +33,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📞</span>
-                <a href="tel:+201006453998" className="hover:text-[#c9a227] transition-colors">+20 100 645 3998</a>
+                <a href="tel:+201010814995" className="hover:text-[#c9a227] transition-colors">+20 101 081 4995</a>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📧</span>

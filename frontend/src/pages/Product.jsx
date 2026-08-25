@@ -351,7 +351,7 @@ const Product = () => {
 
               {/* Bulk WhatsApp Order Button */}
               <a
-                href={`https://wa.me/201006453998?text=${whatsappMessage}`}
+                href={`https://wa.me/201010814995?text=${whatsappMessage}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3.5 px-6 border-2 border-emerald-600 text-emerald-800 bg-emerald-50/60 hover:bg-emerald-600 hover:text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 text-sm cursor-pointer shadow-xs"

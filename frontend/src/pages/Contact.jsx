@@ -98,7 +98,7 @@ const Contact = () => {
               <p className='text-gray-600 text-sm mb-4 leading-relaxed'>{t('CAREERS_DESC')}</p>
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://wa.me/201006453998"
+                  href="https://wa.me/201010814995"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3 bg-[#25D366] text-white font-bold text-xs rounded-full hover:bg-green-600 transition-all flex items-center gap-2 shadow-md"
