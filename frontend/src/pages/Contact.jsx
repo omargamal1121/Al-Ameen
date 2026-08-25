@@ -98,7 +98,7 @@ const Contact = () => {
               <p className='text-gray-600 text-sm mb-4 leading-relaxed'>{t('CAREERS_DESC')}</p>
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://wa.me/201234567890"
+                  href="https://wa.me/201006453998"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3 bg-[#25D366] text-white font-bold text-xs rounded-full hover:bg-green-600 transition-all flex items-center gap-2 shadow-md"
@@ -106,7 +106,7 @@ const Contact = () => {
                   💬 Chat on WhatsApp
                 </a>
                 <a
-                  href="mailto:info@alameenwires.com"
+                  href="mailto:al.ammen.cables.01@gmail.com"
                   className="px-6 py-3 bg-[#0f3d1a] text-white font-bold text-xs rounded-full hover:bg-[#1a6b2e] transition-all flex items-center gap-2 shadow-md"
                 >
                   ✉️ Email Sales Team

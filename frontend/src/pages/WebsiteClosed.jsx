@@ -59,7 +59,7 @@ const WebsiteClosed = () => {
           </button>
 
           <a
-            href="mailto:info@alameenwires.com"
+            href="mailto:al.ammen.cables.01@gmail.com"
             className="w-full sm:w-auto border border-neutral-800 text-neutral-300 px-8 py-3 rounded-none font-medium hover:bg-white hover:text-black hover:border-white transition duration-300 uppercase text-xs tracking-widest text-center"
           >
             {t('CONTACT_SUPPORT')}

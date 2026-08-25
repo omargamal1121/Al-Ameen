@@ -297,11 +297,12 @@ const Product = () => {
                     >
                       {v.color && (
                         <span
-                          className="w-3.5 h-3.5 rounded-full border border-white/40 shadow-xs"
+                          className="w-4 h-4 rounded-full border border-gray-300 shadow-sm"
                           style={{ backgroundColor: v.color.toLowerCase() }}
+                          title={v.color}
                         />
                       )}
-                      <span>{v.color || v.size || `Variant #${v.id}`}</span>
+                      {(!v.color || v.size) && <span>{v.size || `Variant #${v.id}`}</span>}
                     </button>
                   ))}
                 </div>
@@ -350,7 +351,7 @@ const Product = () => {
 
               {/* Bulk WhatsApp Order Button */}
               <a
-                href={`https://wa.me/201000000000?text=${whatsappMessage}`}
+                href={`https://wa.me/201006453998?text=${whatsappMessage}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full py-3.5 px-6 border-2 border-emerald-600 text-emerald-800 bg-emerald-50/60 hover:bg-emerald-600 hover:text-white font-extrabold rounded-2xl transition-all flex items-center justify-center gap-2 text-sm cursor-pointer shadow-xs"

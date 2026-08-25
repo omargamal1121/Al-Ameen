@@ -15,18 +15,7 @@ const ProductVariant = ({ token }) => {
   // New variant form
   const [color, setColor] = useState("");
 
-  const PRESET_COLORS = [
-    { name: "White", hex: "#FFFFFF" },
-    { name: "Black", hex: "#000000" },
-    { name: "Red", hex: "#FF0000" },
-    { name: "Blue", hex: "#0000FF" },
-    { name: "Green", hex: "#008000" },
-    { name: "Yellow", hex: "#FFFF00" },
-    { name: "Gray", hex: "#808080" },
-    { name: "Navy", hex: "#000080" },
-    { name: "Purple", hex: "#800080" },
-    { name: "Orange", hex: "#FFA500" },
-  ];
+
 
   const fetchProduct = async () => {
     setLoading(true);
@@ -186,39 +175,19 @@ const ProductVariant = ({ token }) => {
             ) : (
               <form onSubmit={handleAddVariant} className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
-                  <label className="text-[9px] font-bold uppercase text-gray-500 tracking-widest ml-1">Color (Hex or Name)</label>
+                  <label className="text-[9px] font-bold uppercase text-gray-500 tracking-widest ml-1">Color</label>
                   <div className="flex gap-2">
-                    <input
-                      type="text" value={color} onChange={(e) => setColor(e.target.value)}
-                      className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-3.5 outline-none focus:border-orange-500 font-bold text-sm transition-all text-white"
-                      placeholder="#FFFFFF or Black"
-                    />
-                    <div className="relative group">
-                      <input
-                        type="color" value={color.startsWith('#') ? color : "#000000"} onChange={(e) => setColor(e.target.value.toUpperCase())}
-                        className="w-12 h-[50px] bg-transparent border-none cursor-pointer p-0 opacity-0 absolute inset-0 z-10"
-                      />
-                      <div 
-                        className="w-12 h-[50px] rounded-2xl border border-white/10 flex items-center justify-center text-lg transition-all"
-                        style={{ backgroundColor: color || 'transparent' }}
-                      >
-                        {!color && "🎨"}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Preset Colors */}
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {PRESET_COLORS.map(c => (
-                      <button
-                        key={c.hex}
-                        type="button"
-                        onClick={() => setColor(c.hex)}
-                        title={c.name}
-                        className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-125 ${color === c.hex ? 'border-orange-500 scale-110' : 'border-white/20'}`}
-                        style={{ backgroundColor: c.hex }}
-                      />
-                    ))}
+                    <select
+                      value={color} onChange={(e) => setColor(e.target.value)}
+                      className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-3.5 outline-none focus:border-orange-500 font-bold text-sm transition-all text-white appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled className="bg-gray-900">Select a color...</option>
+                      <option value="Red" className="bg-gray-900">Red</option>
+                      <option value="Blue" className="bg-gray-900">Blue</option>
+                      <option value="Yellow" className="bg-gray-900">Yellow</option>
+                      <option value="Black" className="bg-gray-900">Black</option>
+                      <option value="Green" className="bg-gray-900">Green</option>
+                    </select>
                   </div>
                 </div>
 

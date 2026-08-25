@@ -33,11 +33,11 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📞</span>
-                <a href="tel:+201234567890" className="hover:text-[#c9a227] transition-colors">+20 123 456 7890</a>
+                <a href="tel:+201006453998" className="hover:text-[#c9a227] transition-colors">+20 100 645 3998</a>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📧</span>
-                <a href="mailto:info@alameenwires.com" className="hover:text-[#c9a227] transition-colors">info@alameenwires.com</a>
+                <a href="mailto:al.ammen.cables.01@gmail.com" className="hover:text-[#c9a227] transition-colors">al.ammen.cables.01@gmail.com</a>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📍</span>
