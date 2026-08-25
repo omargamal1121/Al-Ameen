@@ -33,7 +33,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📞</span>
-                <a href="tel:+201010814995" className="hover:text-[#c9a227] transition-colors">+20 101 081 4995</a>
+                <a href="tel:+201010814995" dir="ltr" className="hover:text-[#c9a227] transition-colors">+20 101 081 4995</a>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📧</span>
@@ -41,7 +41,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-[#c9a227]">📍</span>
-                <span className="text-gray-400">{t('STORE_ADDRESS').replace('<br />', ' ')}</span>
+                <span className="text-gray-400">القليوبية، القناطر، باسوس، شارع جسر النيل بجوار مسجد حمزه</span>
               </li>
             </ul>
           </div>
