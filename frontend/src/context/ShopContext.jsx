@@ -352,7 +352,6 @@ const ShopContextProvider = (props) => {
 
       if (response.ok && data.responseBody) {
         setCategories(data.responseBody.data || []);
-        setCategoriesFetched(true);
       } else {
         console.error("Failed to fetch categories:", data);
         setCategories([]);
@@ -361,6 +360,7 @@ const ShopContextProvider = (props) => {
       console.error("Error fetching categories:", error);
       setCategories([]);
     } finally {
+      setCategoriesFetched(true);
       setCategoriesLoading(false);
     }
   };

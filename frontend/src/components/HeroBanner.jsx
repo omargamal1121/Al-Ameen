@@ -15,20 +15,29 @@ import { useTranslation } from 'react-i18next';
 
 const HeroBanner = () => {
   const { t, i18n } = useTranslation();
-  const { backendUrl } = useContext(ShopContext);
-  const [collections, setCollections] = useState([]);
+  const { backendUrl, categories, getCategories } = useContext(ShopContext);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('none');
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    setViewMode('static');
+    getCategories();
+    setViewMode('categories');
     setLoading(false);
   }, []);
 
   const slidesData = useMemo(() => {
     const isAr = i18n.language === 'ar';
-    return viewMode === 'collections' ? collections : [
+    if (viewMode === 'categories' && categories && categories.length > 0) {
+      return categories.map(cat => ({
+        name: isAr ? (cat.nameAr || cat.name) : cat.name,
+        subtitleKey: 'FEATURED_SELECTION',
+        image: cat.images && cat.images.length > 0 ? cat.images[0].url : assets.brand_hero_main,
+        link: `/category/${cat.id || cat._id}`
+      }));
+    }
+    
+    return [
       { name: isAr ? "الأمين للكابلات والأسلاك" : "Al-Ameen Wires & Cables", subtitleKey: 'PREMIUM_CABLES', image: assets.brand_hero_main, link: "/collection" },
       { name: isAr ? "جودة عالمية معتمدة" : "ISO & IEC Certified Quality", subtitleKey: 'IEC_ISO_CERTIFIED', image: assets.brand_hero_2, link: "/collection" },
       { name: isAr ? "كابلات الطاقة والتوزيع" : "Power & Transmission Cables", subtitleKey: 'HIGH_VOLTAGE', image: assets.brand_img1, link: "/collection" },
@@ -38,7 +47,7 @@ const HeroBanner = () => {
       { name: isAr ? "المورد الموثوق في كافة المحافظات" : "Egypt's Premier Electrical Supplier", subtitleKey: 'EGYPT_TRUSTED', image: assets.brand_img5, link: "/collection" },
       { name: isAr ? "كابلات مدرعة للاستخدام الثقيل" : "Heavy-Duty Armoured Cable Series", subtitleKey: 'HEAVY_DUTY', image: assets.brand_img6, link: "/collection" },
     ];
-  }, [viewMode, collections, i18n.language, t]);
+  }, [viewMode, categories, i18n.language, t]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -81,7 +90,7 @@ const HeroBanner = () => {
       >
         {slidesData.map((item, index) => {
           const imgUrl = item.images ? (item.images.find(img => img.isMain)?.url || item.images[0]?.url) : item.image;
-          const finalLink = item.id ? `/collection-products/${item.id}` : item.link;
+
 
           return (
             <SwiperSlide key={index} className="w-full h-full overflow-hidden">
@@ -117,9 +126,9 @@ const HeroBanner = () => {
                           {item.name}
                         </motion.h2>
                         <motion.div variants={textVariants}>
-                          <Link to={finalLink}>
+                          <Link to={item.link}>
                             <button className="btn-premium px-16 py-5 bg-[#c9a227] text-[#0f3d1a] font-black text-xs uppercase tracking-[0.3em] rounded-full shadow-2xl hover:scale-110 hover:bg-yellow-300 active:scale-95 transition-all">
-                              {viewMode === 'collections' ? t('SEE_COLLECTION') : t('SHOP_NOW')}
+                              {viewMode === 'categories' ? t('SEE_COLLECTION') : t('SHOP_NOW')}
                             </button>
                           </Link>
                         </motion.div>
