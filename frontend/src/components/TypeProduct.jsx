@@ -129,27 +129,27 @@ const TypeProduct = () => {
                 />
               </div>
 
-              <div className="absolute bottom-0 left-0 w-full h-full p-4 flex flex-col gap-2 items-start justify-end py-15 px-10">
-                <h1 className="text-white text-4xl font-medium mb-2">
+              <div className="absolute bottom-0 left-0 w-full h-full p-4 flex flex-col gap-1 sm:gap-2 items-start justify-end py-6 px-4 sm:py-10 sm:px-8 md:py-15 md:px-10">
+                <h1 className="text-white text-xl sm:text-3xl md:text-4xl font-medium mb-1 sm:mb-2">
                   {getProductName(product)}
                 </h1>
-                <p className="text-white text-sm font-base mb-2">
+                <p className="text-white text-xs sm:text-sm font-base mb-1 sm:mb-2">
                   {getProductDescription(product)}
                 </p>
                 {product && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-white text-lg line-through opacity-75">
+                  <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                    <span className="text-white text-sm sm:text-lg line-through opacity-75">
                       {currency}
                       {product.originalPrice || product.price}
                     </span>
-                    <span className="text-red-400 text-xl font-bold">
+                    <span className="text-red-400 text-base sm:text-xl font-bold">
                       {currency}
                       {product.finalPrice}
                     </span>
                   </div>
                 )}
                 <button
-                  className="text-black border border-white cursor-pointer text-sm font-medium bg-white px-8 py-3 hover:bg-[#111111] hover:border-white hover:text-white transition-all duration-300"
+                  className="text-black border border-white cursor-pointer text-xs sm:text-sm font-medium bg-white px-5 sm:px-8 py-2 sm:py-3 hover:bg-[#111111] hover:border-white hover:text-white transition-all duration-300"
                   onClick={() =>
                     navigate(`/product/${getProductId(product, index)}`)
                   }

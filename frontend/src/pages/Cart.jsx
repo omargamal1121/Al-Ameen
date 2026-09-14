@@ -142,7 +142,7 @@ const Cart = () => {
   }, [cartItems, serverCart, products]);
 
   // 🗑️ Delete single item
-  const handleDeleteItem = async (productId, productVariantId) => {
+  const handleDeleteItem = async (productId, productVariantId, itemSize, itemColor) => {
     setErrorMessage("");
     setLoading(true);
     try {
@@ -164,29 +164,38 @@ const Cart = () => {
         );
       }
 
-      // تحديث الـ state بعد الحذف - Fix: compare variantId with variantId
+      // Update local cartData state
       setCartData((prev) =>
-        prev.filter(
-          (item) => !(item._id === productId && item.variantId === productVariantId)
-        )
+        prev.filter((item) => {
+          const isSameProduct = String(item._id) === String(productId);
+          const isSameVariant = productVariantId && item.variantId
+            ? Number(item.variantId) === Number(productVariantId)
+            : item.size === itemSize && item.color === itemColor;
+          return !(isSameProduct && isSameVariant);
+        })
       );
 
+      // Update ShopContext cartItems state (which syncs to localStorage for guest users)
       setCartItems((prev) => {
         const next = structuredClone(prev);
-        if (next[productId]) {
-          // Find the item key that matches the variantId
-          const itemToDelete = cartData.find(item =>
-            item._id === productId && item.variantId === productVariantId
-          );
-          if (itemToDelete) {
-            // Handle both old format (just size) and new format (size_color)
-            const itemKey = itemToDelete.color && itemToDelete.color !== 'Unknown'
-              ? `${itemToDelete.size}_${itemToDelete.color}`
-              : itemToDelete.size;
-            delete next[productId][itemKey];
-            if (Object.keys(next[productId]).length === 0) {
-              delete next[productId];
+        const pKey = Object.keys(next).find(k => String(k) === String(productId));
+        if (pKey && next[pKey]) {
+          const itemKey = itemColor && itemColor !== 'Unknown'
+            ? `${itemSize}_${itemColor}`
+            : itemSize;
+
+          if (next[pKey][itemKey]) {
+            delete next[pKey][itemKey];
+          } else {
+            // Fallback key search if exact itemKey doesn't match
+            const keyToDelete = Object.keys(next[pKey]).find(k => k === itemSize || k.startsWith(`${itemSize}_`));
+            if (keyToDelete) {
+              delete next[pKey][keyToDelete];
             }
+          }
+
+          if (Object.keys(next[pKey]).length === 0) {
+            delete next[pKey];
           }
         }
         return next;
@@ -376,7 +385,7 @@ const Cart = () => {
                   disabled={loading}
                   onChange={(e) =>
                     e.target.value === "" || e.target.value === "0"
-                      ? handleDeleteItem(item._id, item.variantId || item.size)
+                      ? handleDeleteItem(item._id, item.variantId, item.size, item.color)
                       : updataQuantity(
                         item._id,
                         item.size,
@@ -393,7 +402,7 @@ const Cart = () => {
                   src={assets.bin_icon}
                   alt={t('DELETE')}
                   onClick={() =>
-                    !loading && handleDeleteItem(item._id, item.variantId || item.size)
+                    !loading && handleDeleteItem(item._id, item.variantId, item.size, item.color)
                   }
                 />
               </div>

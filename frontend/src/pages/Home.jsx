@@ -21,9 +21,9 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="w-full overflow-x-hidden">
       {/* Hero full-width banner carousel */}
-      <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw]">
+      <div className="w-full overflow-hidden">
         <HeroBanner />
       </div>
 

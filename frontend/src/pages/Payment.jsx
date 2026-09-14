@@ -66,9 +66,16 @@ const Payment = () => {
         try {
             const response = await axios.get(`${backendUrl}/api/Enums/PaymentMethods`);
             const methods = response.data.responseBody?.data || [];
-            setPaymentMethods(methods);
-            if (methods.length > 0) {
-                setSelectedPaymentMethod(methods[0].id);
+            // Filter to keep only Cash on Delivery (COD)
+            const codMethods = methods.filter(m => 
+                String(m.name || '').toLowerCase().includes('cash') ||
+                String(m.name || '').toLowerCase().includes('cod') ||
+                m.id === 1
+            );
+            const finalMethods = codMethods.length > 0 ? codMethods : methods;
+            setPaymentMethods(finalMethods);
+            if (finalMethods.length > 0) {
+                setSelectedPaymentMethod(finalMethods[0].id);
             }
         } catch (error) {
             console.error("Error fetching payment methods:", error);

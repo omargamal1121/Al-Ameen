@@ -115,19 +115,19 @@ const HeroBanner = () => {
                         animate="visible"
                         className="flex flex-col items-center"
                       >
-                        <motion.span variants={textVariants} className="text-sm uppercase tracking-[0.5em] mb-6 font-bold text-white/70">
+                        <motion.span variants={textVariants} className="text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.5em] mb-3 sm:mb-6 font-bold text-white/80">
                           {item.subtitleKey ? t(item.subtitleKey) : t('FEATURED_SELECTION')}
                         </motion.span>
                         <motion.h2
                           variants={textVariants}
-                          className="text-5xl md:text-8xl font-black mb-12 drop-shadow-2xl"
+                          className="text-2xl sm:text-4xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-12 drop-shadow-2xl px-2"
                           style={{ letterSpacing: i18n.language === 'ar' ? '0' : '-0.02em' }}
                         >
                           {item.name}
                         </motion.h2>
                         <motion.div variants={textVariants}>
                           <Link to={item.link}>
-                            <button className="btn-premium px-16 py-5 bg-[#c9a227] text-[#0f3d1a] font-black text-xs uppercase tracking-[0.3em] rounded-full shadow-2xl hover:scale-110 hover:bg-yellow-300 active:scale-95 transition-all">
+                            <button className="btn-premium px-8 sm:px-16 py-3 sm:py-5 bg-[#c9a227] text-[#0f3d1a] font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-full shadow-2xl hover:scale-110 hover:bg-yellow-300 active:scale-95 transition-all">
                               {viewMode === 'categories' ? t('SEE_COLLECTION') : t('SHOP_NOW')}
                             </button>
                           </Link>

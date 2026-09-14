@@ -83,7 +83,21 @@ const Footer = () => {
 
         {/* Bottom row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-          <span>© 2025 Al-Ameen Wires & Cables — {t('ALL_RIGHTS_RESERVED')}</span>
+          <div className="flex flex-col md:flex-row items-center gap-1 md:gap-2 text-center md:text-left">
+            <span>© 2025 Al-Ameen Wires & Cables — {t('ALL_RIGHTS_RESERVED')}</span>
+            <span className="hidden md:inline">|</span>
+            <span>
+              Powered by{" "}
+              <a 
+                href="https://omar-gamal-eng.vercel.app/#" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-[#c9a227] hover:underline"
+              >
+                Omar Gamal
+              </a>
+            </span>
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-[#c9a227]">⚡</span>
             <span>{t('IEC_CERTIFIED')}</span>
