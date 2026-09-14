@@ -41,8 +41,8 @@ const Cart = () => {
 
     console.log("Cart data debug:", { serverCart, cartItemsList, cartItems, products });
 
-    if (cartItemsList.length > 0) {
-      // 🆕 Use server cart data directly if available
+    if (token && cartItemsList.length > 0) {
+      // 🆕 Use server cart data directly if user is logged in
       console.log("Using server cart data:", cartItemsList);
       const tempData = cartItemsList.map(item => {
         const product = item.product || {};
@@ -122,6 +122,7 @@ const Cart = () => {
 
               tempData.push({
                 _id: items,
+                itemKey: item,
                 quantity: quantity,
                 size: size,
                 color: color,
@@ -139,10 +140,10 @@ const Cart = () => {
 
       fetchMissingProducts();
     }
-  }, [cartItems, serverCart, products]);
+  }, [cartItems, serverCart, products, token]);
 
   // 🗑️ Delete single item
-  const handleDeleteItem = async (productId, productVariantId, itemSize, itemColor) => {
+  const handleDeleteItem = async (productId, itemKey, productVariantId, itemSize, itemColor) => {
     setErrorMessage("");
     setLoading(true);
     try {
@@ -168,10 +169,10 @@ const Cart = () => {
       setCartData((prev) =>
         prev.filter((item) => {
           const isSameProduct = String(item._id) === String(productId);
-          const isSameVariant = productVariantId && item.variantId
-            ? Number(item.variantId) === Number(productVariantId)
-            : item.size === itemSize && item.color === itemColor;
-          return !(isSameProduct && isSameVariant);
+          if (!isSameProduct) return true;
+          if (itemKey && item.itemKey) return item.itemKey !== itemKey;
+          if (productVariantId && item.variantId) return Number(item.variantId) !== Number(productVariantId);
+          return !(item.size === itemSize && item.color === itemColor);
         })
       );
 
@@ -180,17 +181,18 @@ const Cart = () => {
         const next = structuredClone(prev);
         const pKey = Object.keys(next).find(k => String(k) === String(productId));
         if (pKey && next[pKey]) {
-          const itemKey = itemColor && itemColor !== 'Unknown'
-            ? `${itemSize}_${itemColor}`
-            : itemSize;
-
-          if (next[pKey][itemKey]) {
+          if (itemKey && next[pKey][itemKey] !== undefined) {
             delete next[pKey][itemKey];
           } else {
-            // Fallback key search if exact itemKey doesn't match
-            const keyToDelete = Object.keys(next[pKey]).find(k => k === itemSize || k.startsWith(`${itemSize}_`));
-            if (keyToDelete) {
-              delete next[pKey][keyToDelete];
+            const fallbackKey = itemColor && itemColor !== 'Unknown'
+              ? `${itemSize}_${itemColor}`
+              : itemSize;
+            if (next[pKey][fallbackKey] !== undefined) {
+              delete next[pKey][fallbackKey];
+            } else {
+              const matchedKey = Object.keys(next[pKey]).find(k => k === itemSize || k.startsWith(`${itemSize}_`));
+              if (matchedKey) delete next[pKey][matchedKey];
+              else delete next[pKey][Object.keys(next[pKey])[0]];
             }
           }
 
@@ -385,7 +387,7 @@ const Cart = () => {
                   disabled={loading}
                   onChange={(e) =>
                     e.target.value === "" || e.target.value === "0"
-                      ? handleDeleteItem(item._id, item.variantId, item.size, item.color)
+                      ? handleDeleteItem(item._id, item.itemKey, item.variantId, item.size, item.color)
                       : updataQuantity(
                         item._id,
                         item.size,
@@ -402,7 +404,7 @@ const Cart = () => {
                   src={assets.bin_icon}
                   alt={t('DELETE')}
                   onClick={() =>
-                    !loading && handleDeleteItem(item._id, item.variantId, item.size, item.color)
+                    !loading && handleDeleteItem(item._id, item.itemKey, item.variantId, item.size, item.color)
                   }
                 />
               </div>

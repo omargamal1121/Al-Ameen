@@ -478,8 +478,8 @@ const ShopContextProvider = (props) => {
       fetchWishlist();
     } else {
       console.log("No token, using local cart from localStorage");
-      // Don't clear cart for guest users - it's already loaded from localStorage
-      // Just clear wishlist since that's server-side only
+      // Reset serverCart for guest users so local cart is used
+      setServerCart(null);
       setWishlistItems([]);
     }
   }, [token]);

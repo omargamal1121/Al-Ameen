@@ -87,25 +87,36 @@ const NavbarPage = () => {
       style={{ backdropFilter: "none" }}
     >
       <ul
-        className={`hidden sm:flex gap-5 text-sm text-gray-700 flex-1 ${i18n.language === 'ar' ? 'justify-end' : 'justify-start'}
+        className={`hidden sm:flex gap-6 text-sm flex-1 ${i18n.language === 'ar' ? 'justify-end' : 'justify-start'}
         `}
       >
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `flex flex-col items-center gap-1 group ${isActive ? "font-bold" : ""
+            `flex flex-col items-center gap-1 group transition-colors duration-200 ${isActive ? "text-[#0f3d1a] font-bold" : "text-gray-700 hover:text-[#0f3d1a]"
             }`
           }
         >
-          <p>{t("HOME")}</p>
-          <span className="w-2/4 h-[2px] transition-all duration-300 bg-gray-700 group-hover:w-full group-hover:bg-gray-300 group-hover:opacity-100 opacity-0"></span>
+          {({ isActive }) => (
+            <>
+              <p>{t("HOME")}</p>
+              <span className={`h-[2px] transition-all duration-300 bg-[#0f3d1a] ${isActive ? "w-full opacity-100" : "w-0 group-hover:w-full opacity-0 group-hover:opacity-100"}`}></span>
+            </>
+          )}
         </NavLink>
         <div className="relative group">
           <NavLink
             to="/collection"
-            className="flex items-center gap-1 focus:outline-none uppercase tracking-widest"
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-1 uppercase tracking-widest focus:outline-none transition-colors duration-200 ${isActive ? "text-[#0f3d1a] font-bold" : "text-gray-700 hover:text-[#0f3d1a]"}`
+            }
           >
-            {t("CATEGORY")}
+            {({ isActive }) => (
+              <>
+                <p>{t("CATEGORY")}</p>
+                <span className={`h-[2px] transition-all duration-300 bg-[#0f3d1a] ${isActive ? "w-full opacity-100" : "w-0 group-hover:w-full opacity-0 group-hover:opacity-100"}`}></span>
+              </>
+            )}
           </NavLink>
 
           {/* Main Categories Dropdown */}
@@ -116,7 +127,7 @@ const NavbarPage = () => {
                   <li key={cat.id} className="px-3">
                     <Link
                       to={`/category/${cat.id}`}
-                      className="flex justify-between items-center px-4 py-3.5 hover:bg-black hover:text-white rounded-xl cursor-pointer text-gray-800 font-black transition-all duration-200"
+                      className="flex justify-between items-center px-4 py-3.5 hover:bg-[#0f3d1a] hover:text-white rounded-xl cursor-pointer text-gray-800 font-medium transition-all duration-200"
                     >
                       <span className="text-sm tracking-tight">{cat.name}</span>
                     </Link>
@@ -133,10 +144,15 @@ const NavbarPage = () => {
         <NavLink
           to="/policy"
           className={({ isActive }) =>
-            `flex flex-col items-center gap-1 ${isActive ? "font-bold" : ""}`
+            `flex flex-col items-center gap-1 group transition-colors duration-200 ${isActive ? "text-[#0f3d1a] font-bold" : "text-gray-700 hover:text-[#0f3d1a]"}`
           }
         >
-          <p>{t("POLICY")}</p>
+          {({ isActive }) => (
+            <>
+              <p>{t("POLICY")}</p>
+              <span className={`h-[2px] transition-all duration-300 bg-[#0f3d1a] ${isActive ? "w-full opacity-100" : "w-0 group-hover:w-full opacity-0 group-hover:opacity-100"}`}></span>
+            </>
+          )}
         </NavLink>
       </ul>
 
