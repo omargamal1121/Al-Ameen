@@ -27,10 +27,10 @@ const GuestCheckout = () => {
         const response = await fetch(`${backendUrl}/api/Enums/PaymentMethods`);
         const data = await response.json();
         const methods = data.data || data.responseBody?.data || data;
-        setPaymentMethods(Array.isArray(methods) ? methods : ['COD', 'Card', 'MobileWallet']);
+        setPaymentMethods(['Cash on Delivery']);
       } catch (error) {
         console.error('Error fetching payment methods:', error);
-        setPaymentMethods(['COD', 'Card', 'MobileWallet']);
+        setPaymentMethods(['Cash on Delivery']);
       }
     };
 

@@ -38,11 +38,10 @@ const GuestCheckoutForm = ({ onSubmit, loading }) => {
           ? methods.map(m => typeof m === 'object' ? (m.name || m.value || m.id || JSON.stringify(m)) : m)
           : [];
         
-        setPaymentMethods(processedMethods);
+        setPaymentMethods(['Cash on Delivery']);
       } catch (error) {
         console.error('Error fetching payment methods:', error);
-        // Fallback to default payment methods if API fails
-        setPaymentMethods(['COD', 'Card', 'MobileWallet']);
+        setPaymentMethods(['Cash on Delivery']);
       }
     };
 
@@ -78,9 +77,7 @@ const GuestCheckoutForm = ({ onSubmit, loading }) => {
       newErrors.phoneNumber = 'Please enter a valid phone number';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (formData.email && formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
 
@@ -173,7 +170,7 @@ const GuestCheckoutForm = ({ onSubmit, loading }) => {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email <span className="text-red-500">*</span>
+              Email <span className="text-gray-400">(optional)</span>
             </label>
             <input
               type="email"
