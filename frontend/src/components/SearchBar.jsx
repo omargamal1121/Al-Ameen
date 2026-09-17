@@ -59,7 +59,9 @@ const SearchBar = () => {
 
     return products
       .filter((product) => {
-        const nameMatch = product.name?.toLowerCase().includes(lowerSearch);
+        if (!product) return false;
+        const productName = product.name || product.productName || product.title || "";
+        const nameMatch = productName.toLowerCase().includes(lowerSearch);
         const categoryMatch = product.category?.toLowerCase().includes(lowerSearch);
         const subcategoryMatch = product.subCategory?.toLowerCase().includes(lowerSearch);
         const descriptionMatch = product.description?.toLowerCase().includes(lowerSearch);

@@ -27,35 +27,44 @@ const Collection = () => {
 
     // Apply Search Filter
     if (showSearch && search) {
-        filteredProducts = filteredProducts.filter(product =>
-            product.name.toLowerCase().includes(search.toLowerCase())
-        );
+        filteredProducts = filteredProducts.filter(product => {
+            if (!product) return false;
+            const productName = product.name || product.productName || product.title || "";
+            const category = product.category || "";
+            const subCategory = product.subCategory || "";
+            const query = search.toLowerCase();
+            return (
+                productName.toLowerCase().includes(query) ||
+                category.toLowerCase().includes(query) ||
+                subCategory.toLowerCase().includes(query)
+            );
+        });
     }
 
     // Apply filters
     if (inStock) {
-        filteredProducts = filteredProducts.filter((item) => item.inStock);
+        filteredProducts = filteredProducts.filter((item) => item?.inStock);
     }
     if (minPrice) {
-        filteredProducts = filteredProducts.filter((item) => Number(item.price) >= Number(minPrice));
+        filteredProducts = filteredProducts.filter((item) => Number(item?.price) >= Number(minPrice));
     }
     if (maxPrice) {
-        filteredProducts = filteredProducts.filter((item) => Number(item.price) <= Number(maxPrice));
+        filteredProducts = filteredProducts.filter((item) => Number(item?.price) <= Number(maxPrice));
     }
 
     // Apply sorting
     if (sortOption === "price-low-high") {
-        filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
+        filteredProducts = [...filteredProducts].sort((a, b) => (a?.price || 0) - (b?.price || 0));
     } else if (sortOption === "price-high-low") {
-        filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
+        filteredProducts = [...filteredProducts].sort((a, b) => (b?.price || 0) - (a?.price || 0));
     } else if (sortOption === "az") {
-        filteredProducts = [...filteredProducts].sort((a, b) => a.name.localeCompare(b.name));
+        filteredProducts = [...filteredProducts].sort((a, b) => (a?.name || a?.productName || "").localeCompare(b?.name || b?.productName || ""));
     } else if (sortOption === "za") {
-        filteredProducts = [...filteredProducts].sort((a, b) => b.name.localeCompare(a.name));
+        filteredProducts = [...filteredProducts].sort((a, b) => (b?.name || b?.productName || "").localeCompare(a?.name || a?.productName || ""));
     } else if (sortOption === "date-old-new") {
-        filteredProducts = [...filteredProducts].sort((a, b) => a.date - b.date);
+        filteredProducts = [...filteredProducts].sort((a, b) => (a?.date || 0) - (b?.date || 0));
     } else if (sortOption === "date-new-old") {
-        filteredProducts = [...filteredProducts].sort((a, b) => b.date - a.date);
+        filteredProducts = [...filteredProducts].sort((a, b) => (b?.date || 0) - (a?.date || 0));
     }
 
     return (

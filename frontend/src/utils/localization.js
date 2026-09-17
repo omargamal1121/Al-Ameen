@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
  */
 export const getLocalizedName = (item, language) => {
   if (!item) return '';
-  return item.name;
+  return item.name || item.productName || item.title || '';
 };
 
 /**
@@ -21,7 +21,7 @@ export const getLocalizedName = (item, language) => {
  */
 export const getLocalizedDescription = (item, language) => {
   if (!item) return '';
-  return item.description;
+  return item.description || '';
 };
 
 /**
