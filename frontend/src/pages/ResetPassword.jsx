@@ -12,7 +12,8 @@ const ResetPassword = () => {
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
-  const tokenParam = queryParams.get("token");
+  const rawToken = queryParams.get("token");
+  const tokenParam = rawToken ? rawToken.replace(/ /g, "+") : "";
   const emailParam = queryParams.get("email");
 
   const [formData, setFormData] = useState({

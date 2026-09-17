@@ -38,10 +38,6 @@ const RequestPasswordReset = () => {
 
       if (response.ok) {
         setSent(true);
-        // After 2s, redirect to reset-password with email pre-filled
-        setTimeout(() => {
-          navigate(`/reset-password?email=${encodeURIComponent(email)}`);
-        }, 2500);
         setEmail('');
       } else {
         setError(
@@ -71,10 +67,15 @@ const RequestPasswordReset = () => {
           </h2>
           <p className="text-gray-500 text-sm leading-relaxed">
             {isAr
-              ? 'إذا كان البريد الإلكتروني مسجلاً، ستصل رسالة برابط استرداد كلمة المرور. يتم توجيهك الآن...'
-              : 'If that email is registered, you will receive a reset link shortly. Redirecting you now...'}
+              ? 'إذا كان البريد الإلكتروني مسجلاً، فقد تم إرسال رابط لإعادة تعيين كلمة المرور إلى بريدك الإلكتروني. يرجى فتح البريد والضغط على الرابط.'
+              : 'If that email is registered, a password reset link has been sent to your email. Please check your inbox and click the link.'}
           </p>
-          <div className="w-8 h-8 border-2 border-[#1a6b2e] border-t-transparent rounded-full animate-spin mt-2" />
+          <button
+            onClick={() => navigate('/login')}
+            className="mt-2 w-full py-3 bg-[#0f3d1a] text-white font-bold rounded-full hover:bg-[#1a6b2e] transition-all text-sm cursor-pointer"
+          >
+            {isAr ? 'العودة لتسجيل الدخول' : 'Back to Login'}
+          </button>
         </motion.div>
       </div>
     );

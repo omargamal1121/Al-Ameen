@@ -21,14 +21,13 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${backendUrl}/api/Account/reset-password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        `${backendUrl}/api/Account/request-password-reset?Email=${encodeURIComponent(email)}`,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        }
+      );
       const data = await response.json();
 
       if (response.ok) {
