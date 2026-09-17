@@ -74,7 +74,7 @@ const PlaceOrder = () => {
     }
   };
 
-  // Fetch payment methods from API
+  // Fetch payment methods from API (Restricted strictly to Cash on Delivery)
   const fetchPaymentMethods = async () => {
     try {
       const response = await axios.get(`${backendUrl}/api/Enums/PaymentMethods`);
@@ -85,16 +85,16 @@ const PlaceOrder = () => {
         String(m.name || '').toLowerCase().includes('cod') ||
         m.id === 1
       );
-      const finalMethods = codMethods.length > 0 ? codMethods : methods;
+      const finalMethods = codMethods.length > 0 ? codMethods : [{ id: 1, name: "CashOnDelivery", paymentMethod: "Cash on Delivery" }];
       setPaymentMethods(finalMethods);
 
       // Auto-select COD payment method
-      if (finalMethods.length > 0) {
-        setSelectedPaymentMethod(finalMethods[0].id);
-      }
+      setSelectedPaymentMethod(finalMethods[0].id);
     } catch (error) {
       console.error("Error fetching payment methods:", error);
-      toast.error("Failed to load payment methods");
+      const fallbackCod = [{ id: 1, name: "CashOnDelivery", paymentMethod: "Cash on Delivery" }];
+      setPaymentMethods(fallbackCod);
+      setSelectedPaymentMethod(1);
     }
   };
 
@@ -318,13 +318,23 @@ const PlaceOrder = () => {
     }
   };
 
+  const resolvePaymentMethodEnum = (method) => {
+    if (typeof method === 'number' && !isNaN(method)) return method;
+    if (!method) return 1;
+    const num = parseInt(method);
+    if (!isNaN(num) && num > 0) return num;
+
+    const clean = String(method).trim().toLowerCase().replace(/[\s_]+/g, '');
+    if (clean === 'cashondelivery' || clean === 'cod' || clean === 'cash') return 1;
+    if (clean === 'visa' || clean === 'card') return 2;
+    if (clean === 'meeza') return 3;
+    if (clean === 'wallet' || clean === 'mobilewallet') return 4;
+    return 1;
+  };
+
   const handleLoggedInOrder = async () => {
-    // Resolve method value from already-loaded list – no second network call needed
-    const methodValue = Number(selectedPaymentMethod);
-    if (!Number.isFinite(methodValue)) {
-      toast.error("Invalid payment method selected. Please try again.");
-      return;
-    }
+    // Resolve method value safely whether string or number
+    const methodValue = resolvePaymentMethodEnum(selectedPaymentMethod);
 
     setIsLoading(true);
     try {

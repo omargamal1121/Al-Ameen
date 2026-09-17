@@ -65,6 +65,20 @@ export const placeGuestOrder = async (payload) => {
  * @param {string} notes - Payment notes
  * @returns {Promise<Object>} - API response with redirect URL if applicable
  */
+const resolvePaymentMethodEnum = (method) => {
+  if (typeof method === 'number' && !isNaN(method)) return method;
+  if (!method) return 1;
+  const num = parseInt(method);
+  if (!isNaN(num) && num > 0) return num;
+  
+  const clean = String(method).trim().toLowerCase().replace(/[\s_]+/g, '');
+  if (clean === 'cashondelivery' || clean === 'cod' || clean === 'cash') return 1;
+  if (clean === 'visa' || clean === 'card') return 2;
+  if (clean === 'meeza') return 3;
+  if (clean === 'wallet' || clean === 'mobilewallet') return 4;
+  return 1;
+};
+
 export const initiateGuestPayment = async (orderNumber, paymentMethod, walletPhone = '', notes = '') => {
   try {
     const guestToken = getGuestToken();
@@ -79,7 +93,7 @@ export const initiateGuestPayment = async (orderNumber, paymentMethod, walletPho
     const payload = {
       orderNumber,
       paymentDetails: {
-        paymentMethod,
+        paymentMethod: resolvePaymentMethodEnum(paymentMethod),
         currency: 'EGP',
         walletPhoneNumber: walletPhone,
         notes
