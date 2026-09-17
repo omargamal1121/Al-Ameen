@@ -130,9 +130,36 @@ const SearchBar = () => {
     }
   };
 
+  const getImgUrl = (product) => {
+    if (!product) return assets.productImage;
+    const raw = product.images || product.image || product.imageUrl;
+    let url = null;
+    if (Array.isArray(raw) && raw.length > 0) {
+      const first = raw[0];
+      if (typeof first === "string") url = first;
+      else if (first && typeof first === "object") url = first.url || first.imageUrl || first.path;
+    } else if (typeof raw === "string") {
+      url = raw;
+    } else if (raw && typeof raw === "object") {
+      url = raw.url || raw.imageUrl || raw.path;
+    }
+
+    if (!url) return assets.productImage;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    if (context?.backendUrl && !url.startsWith('http')) {
+      return `${context.backendUrl.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
+    }
+    return url;
+  };
+
   // Handle product selection
   const handleProductSelect = (product) => {
-    navigate(`/product/${product._id}`);
+    const prodId = product.id || product._id || product.productId;
+    if (prodId) {
+      navigate(`/product/${prodId}`);
+    } else {
+      navigate('/collection');
+    }
     setShowSuggestions(false);
     setSelectedIndex(-1);
   };
@@ -203,58 +230,71 @@ const SearchBar = () => {
               ref={suggestionsRef}
               className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg z-50 max-h-96 overflow-y-auto"
             >
-              {searchResults.map((product, index) => (
-                <div
-                  key={product._id}
-                  className={`flex items-center p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors ${index === selectedIndex ? 'bg-gray-100' : ''
-                    }`}
-                  onClick={() => handleProductSelect(product)}
-                >
-                  {/* Product Image */}
-                  <div className="w-12 h-12 mr-3 flex-shrink-0">
-                    <img
-                      src={product.image?.[0] || assets.productImage}
-                      alt={product.name}
-                      className="w-full h-full object-cover rounded"
-                      onError={(e) => {
-                        e.target.src = assets.productImage;
-                      }}
-                    />
-                  </div>
+              {searchResults.map((product, index) => {
+                const prodId = product.id || product._id || product.productId || index;
+                const prodName = product.name || product.productName || product.title || t('PRODUCT');
+                const imgSrc = getImgUrl(product);
 
-                  {/* Product Info */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium text-gray-900 truncate">
-                      {product.name}
-                    </h4>
-                    <p className="text-xs text-gray-500 truncate">
-                      {product.category} {product.subCategory && `• ${product.subCategory}`}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      {product.finalPrice && product.finalPrice < product.price ? (
-                        <>
-                          <span className="text-xs text-red-600 font-medium">
-                            {currency}{product.finalPrice}
+                return (
+                  <div
+                    key={prodId}
+                    className={`flex items-center p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors ${index === selectedIndex ? 'bg-gray-100' : ''
+                      }`}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      handleProductSelect(product);
+                    }}
+                  >
+                    {/* Product Image */}
+                    <div className="w-12 h-12 mr-3 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+                      <img
+                        src={imgSrc}
+                        alt={prodName}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = assets.productImage || '';
+                        }}
+                      />
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0 text-left">
+                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                        {prodName}
+                      </h4>
+                      <p className="text-xs text-gray-500 truncate">
+                        {product.category || ''} {product.subCategory && `• ${product.subCategory}`}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {product.finalPrice && product.finalPrice < product.price ? (
+                          <>
+                            <span className="text-xs text-red-600 font-medium">
+                              {currency}{product.finalPrice}
+                            </span>
+                            <span className="text-xs text-gray-400 line-through">
+                              {currency}{product.price}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-xs text-gray-900 font-medium">
+                            {currency}{product.price || 0}
                           </span>
-                          <span className="text-xs text-gray-400 line-through">
-                            {currency}{product.price}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-xs text-gray-900 font-medium">
-                          {currency}{product.price}
-                        </span>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* View All Results */}
               <div
                 className={`p-3 text-center border-t border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors ${selectedIndex === searchResults.length ? 'bg-gray-100' : ''
                   }`}
-                onClick={handleViewAllResults}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleViewAllResults();
+                }}
               >
                 <span className="text-sm text-blue-600 font-medium">
                   {t('VIEW_ALL_RESULTS')} ({searchResults.length}+)

@@ -111,6 +111,7 @@ import prod_new3 from '../images/476243077_1133533211574455_7476219783936602942_
 export const assets = {
     logo,
     hero_img,
+    productImage: hero_banner_img,
     cart_icon,
     dropdown_icon,
     exchange_icon,
