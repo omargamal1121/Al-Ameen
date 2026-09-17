@@ -3,7 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { getAuthHeaders } from "../utils/apiUtils";
+import { getAuthHeaders, fetchWithTokenRefresh, safeParseJson } from "../utils/apiUtils";
 
 const ChangePassword = () => {
   const { t, i18n } = useTranslation();
@@ -63,30 +63,36 @@ const ChangePassword = () => {
     setSuccess("");
 
     try {
-      const response = await fetch(`${backendUrl}/api/Account/change-password`, {
-        method: "PATCH",
-        headers: {
-          ...getAuthHeaders(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentPass: formData.currentPassword,
-          newPass: formData.newPassword,
-          confirmNewPass: formData.confirmPassword,
-        }),
-      });
+      const response = await fetchWithTokenRefresh(
+        `${backendUrl}/api/Account/change-password`,
+        {
+          method: "PATCH",
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            currentPass: formData.currentPassword,
+            newPass: formData.newPassword,
+            confirmNewPass: formData.confirmPassword,
+          }),
+        }
+      );
 
-      const data = await response.json();
+      const data = await safeParseJson(response);
 
       if (response.ok) {
-        setSuccess(isAr ? "تم تغيير كلمة المرور بنجاح!" : "Your password has been changed successfully!");
-        setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      } else {
-        setError(
+        setSuccess(
           data.responseBody?.message ||
             data.message ||
-            (isAr ? "فشل تغيير كلمة المرور. حاول مجدداً." : "Failed to change password. Please try again.")
+            (isAr ? "تم تغيير كلمة المرور بنجاح!" : "Your password has been changed successfully!")
         );
+        setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      } else {
+        const errorMsg =
+          data.errorResponseBody?.errorDetails?.description ||
+          (Array.isArray(data.errorResponseBody?.errorDetails) ? data.errorResponseBody.errorDetails.join(", ") : null) ||
+          data.responseBody?.message ||
+          data.message ||
+          (isAr ? "فشل تغيير كلمة المرور. حاول مجدداً." : "Failed to change password. Please try again.");
+        setError(errorMsg);
       }
     } catch (err) {
       console.error("Change password error:", err);
