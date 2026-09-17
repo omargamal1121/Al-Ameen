@@ -90,29 +90,25 @@ const Navbar = () => {
         variants={navbarVariants}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className={`w-full transition-all duration-300 ${scrolled ? "shadow-lg" : ""
-          } border-b border-green-800/20 flex items-center py-3 font-medium px-4 sm:px-[2vw] md:px-[2vw] lg:px-[3vw]
-        relative `}
+        className={`w-full transition-all duration-300 ${scrolled ? "shadow-xl" : "shadow-md"
+          } border-b border-[#c9a227]/40 flex items-center py-3 font-medium px-4 sm:px-[2vw] md:px-[2vw] lg:px-[3vw] relative`}
       >
-        {/* Background: green gradient on scroll/hover, transparent on top */}
+        {/* Background: rich green gradient for maximum contrast and legibility */}
         <div
           className="absolute inset-0 z-[-1] transition-all duration-500"
           style={{
-            background: scrolled || hovered
-              ? 'linear-gradient(135deg, #0f3d1a 0%, #1a6b2e 100%)'
-              : 'transparent',
+            background: 'linear-gradient(135deg, #0f3d1a 0%, #165524 50%, #0f3d1a 100%)',
           }}
         />
 
         {/* --- الروابط الرئيسية --- */}
         <ul
-          className={`hidden sm:flex gap-5 text-sm ${scrolled || hovered ? "text-yellow-300" : "text-white"
-            } flex-1 ${i18n.language === 'ar' ? 'justify-end' : 'justify-start'}`}
+          className={`hidden sm:flex gap-6 text-sm text-white flex-1 ${i18n.language === 'ar' ? 'justify-end' : 'justify-start'}`}
         >
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 group ${isActive ? "font-bold" : ""
+              `flex flex-col items-center gap-1 group font-semibold transition-colors ${isActive ? "text-yellow-400 font-bold" : "hover:text-yellow-300"
               }`
             }
           >
@@ -123,7 +119,10 @@ const Navbar = () => {
           <div className="relative group">
             <NavLink
               to="/collection"
-              className="flex items-center gap-1 focus:outline-none uppercase tracking-widest"
+              className={({ isActive }) =>
+                `flex items-center gap-1 focus:outline-none uppercase tracking-widest font-semibold transition-colors ${isActive ? "text-yellow-400 font-bold" : "hover:text-yellow-300"
+                }`
+              }
             >
               {t("CATEGORY")}
             </NavLink>
@@ -136,7 +135,7 @@ const Navbar = () => {
                     <li key={cat.id} className="px-3">
                       <Link
                         to={`/category/${cat.id}`}
-                        className="flex justify-between items-center px-4 py-3.5 hover:bg-black hover:text-white rounded-xl cursor-pointer text-gray-800 font-black transition-all duration-200"
+                        className="flex justify-between items-center px-4 py-3.5 hover:bg-[#0f3d1a] hover:text-yellow-300 rounded-xl cursor-pointer text-gray-800 font-black transition-all duration-200"
                       >
                         <span className="text-sm tracking-tight">{getLocalizedName(cat)}</span>
                       </Link>
@@ -154,7 +153,7 @@ const Navbar = () => {
           <NavLink
             to="/policy"
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 group ${isActive ? "font-bold" : ""
+              `flex flex-col items-center gap-1 group font-semibold transition-colors ${isActive ? "text-yellow-400 font-bold" : "hover:text-yellow-300"
               }`
             }
           >
@@ -165,12 +164,12 @@ const Navbar = () => {
           <NavLink
             to="/orders"
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 group ${isActive ? "font-bold" : ""
+              `flex flex-col items-center gap-1 group font-semibold transition-colors ${isActive ? "text-yellow-400 font-bold" : "hover:text-yellow-300"
               }`
             }
           >
             <p>{t("ORDERS")}</p>
-            <span className="w-2/4 h-[2px] transition-all duration-300 bg-gray-700 group-hover:w-full group-hover:bg-gray-300 group-hover:opacity-100 opacity-0"></span>
+            <span className="w-2/4 h-[2px] transition-all duration-300 bg-yellow-400 group-hover:w-full group-hover:bg-yellow-300 group-hover:opacity-100 opacity-0"></span>
           </NavLink>
         </ul>
 
@@ -179,7 +178,7 @@ const Navbar = () => {
           <Link to={"/"}>
             <img
               src={assets.logo}
-              className={`w-16 h-16 object-contain rounded-full transition-all duration-300 ring-2 ring-yellow-400/60 ${scrolled || hovered ? "opacity-100 scale-105" : "opacity-90"
+              className={`w-16 h-16 object-contain rounded-full transition-all duration-300 ring-2 ring-yellow-400/80 shadow-md ${scrolled || hovered ? "scale-105" : "opacity-95"
                 }`}
               alt="الأمين Logo"
             />
@@ -187,11 +186,11 @@ const Navbar = () => {
         </div>
 
         {/* --- أيقونات يمين --- */}
-        <div className="flex items-center gap-6 flex-1 justify-end">
+        <div className="flex items-center gap-5 flex-1 justify-end">
           {/* Language Switcher Badge */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3 py-1 bg-white/10 hover:bg-[#c9a227] hover:text-[#0f3d1a] border border-white/20 text-xs font-bold text-white rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#c9a227] hover:bg-yellow-400 text-[#0f3d1a] font-extrabold text-xs rounded-full transition-all duration-300 shadow-md cursor-pointer border border-yellow-300 active:scale-95"
             title="Switch Language / تغيير اللغة"
           >
             <span className="text-sm">🌐</span>
@@ -199,18 +198,23 @@ const Navbar = () => {
           </button>
 
           {/* البحث */}
-          <img
+          <button
             onClick={() => {
               setShowSearch(true);
               navigate("/collection");
             }}
-            src={assets.search_icon}
-            className="w-5 cursor-pointer"
-            alt=""
-          />
+            className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
+            title="Search"
+          >
+            <img
+              src={assets.search_icon}
+              className="w-5 h-5 cursor-pointer brightness-0 invert"
+              alt="Search"
+            />
+          </button>
 
           {/* Wishlist */}
-          <Link to="/wishlist" className="relative">
+          <Link to="/wishlist" className="relative p-1.5 hover:bg-white/10 rounded-full transition-colors text-white hover:text-yellow-300">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -225,7 +229,7 @@ const Navbar = () => {
               />
             </svg>
             {getWishlistCount() > 0 && (
-              <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-red-500 text-white aspect-square rounded-full text-[8px]">
+              <p className="absolute right-[-2px] bottom-[-2px] w-4 text-center leading-4 bg-[#c9a227] text-[#0f3d1a] font-black aspect-square rounded-full text-[9px] shadow">
                 {getWishlistCount()}
               </p>
             )}
@@ -235,42 +239,46 @@ const Navbar = () => {
           <div className="relative z-50" ref={profileRef}>
             {user ? (
               <>
-                <img
-                  src={assets.profile_icon}
-                  className="w-5 cursor-pointer"
-                  alt=""
+                <button
                   onClick={() => setProfileMenuOpen((prev) => !prev)}
-                />
+                  className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center"
+                >
+                  <img
+                    src={assets.profile_icon}
+                    className="w-5 h-5 cursor-pointer brightness-0 invert"
+                    alt="Profile"
+                  />
+                </button>
 
                 {profileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border border-green-100 rounded-lg py-2 transition-all duration-200">
+                  <div className="absolute right-0 mt-2 w-52 bg-white shadow-2xl border border-gray-100 rounded-xl py-2 transition-all duration-200 z-[110]">
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      className="block px-4 py-2.5 text-sm font-semibold text-gray-800 hover:bg-[#0f3d1a] hover:text-yellow-300 rounded-lg mx-1"
                     >
                       My Profile
                     </Link>
                     <Link
                       to="/change-email"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      className="block px-4 py-2.5 text-sm font-semibold text-gray-800 hover:bg-[#0f3d1a] hover:text-yellow-300 rounded-lg mx-1"
                     >
                       Change Email
                     </Link>
                     <Link
                       to="/change-password"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      className="block px-4 py-2.5 text-sm font-semibold text-gray-800 hover:bg-[#0f3d1a] hover:text-yellow-300 rounded-lg mx-1"
                     >
                       Change Password
                     </Link>
                     <Link
                       to="/upload-photo"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800"
+                      className="block px-4 py-2.5 text-sm font-semibold text-gray-800 hover:bg-[#0f3d1a] hover:text-yellow-300 rounded-lg mx-1"
                     >
                       Upload Photo
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 rounded-lg mx-1 mt-1 border-t border-gray-100"
                     >
                       Logout
                     </button>
@@ -278,31 +286,32 @@ const Navbar = () => {
                 )}
               </>
             ) : (
-              <Link to="/login">
+              <Link to="/login" className="p-1.5 hover:bg-white/10 rounded-full transition-colors flex items-center justify-center">
                 <img
                   src={assets.profile_icon}
-                  className="w-5 cursor-pointer"
-                  alt=""
+                  className="w-5 h-5 cursor-pointer brightness-0 invert"
+                  alt="Login"
                 />
               </Link>
             )}
           </div>
 
           {/* عربة التسوق */}
-          <Link to="/cart" className="relative">
-            <img src={assets.cart_icon} className="w-5 min-w-5" alt="" />
-            <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
+          <Link to="/cart" className="relative p-1.5 hover:bg-white/10 rounded-full transition-colors">
+            <img src={assets.cart_icon} className="w-5 min-w-5 h-5 brightness-0 invert" alt="Cart" />
+            <p className="absolute right-[-2px] bottom-[-2px] w-4 text-center leading-4 bg-[#c9a227] text-[#0f3d1a] font-black aspect-square rounded-full text-[9px] shadow">
               {getCartCount()}
             </p>
           </Link>
 
           {/* القائمة للموبايل */}
-          <img
-            src={assets.menu_icon}
-            className="w-5 cursor-pointer sm:hidden"
-            alt=""
-            onClick={() => setvisible(true)}
-          />
+          <button onClick={() => setvisible(true)} className="p-1.5 sm:hidden hover:bg-white/10 rounded-full">
+            <img
+              src={assets.menu_icon}
+              className="w-5 h-5 cursor-pointer brightness-0 invert"
+              alt="Menu"
+            />
+          </button>
         </div>
 
         {/* Sidebar menu for small screen — uses translateX so RTL doesn't bleed */}
