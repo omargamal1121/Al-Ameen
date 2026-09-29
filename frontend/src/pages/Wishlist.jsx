@@ -136,7 +136,7 @@ const Wishlist = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-10">
+    <div className="min-h-screen bg-gray-50 pt-[110px] sm:pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>

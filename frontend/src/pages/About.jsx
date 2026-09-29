@@ -45,7 +45,7 @@ const About = () => {
         <Title text1={t('ABOUT')} text2={t('US')} />
       </motion.div>
 
-      <div className='my-12 flex flex-col md:flex-row items-center gap-12 lg:gap-16'>
+      <div className='my-8 sm:my-12 flex flex-col md:flex-row items-center gap-8 sm:gap-12 lg:gap-16'>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -56,7 +56,7 @@ const About = () => {
           <img
             src={assets.brand_hero_main || assets.about_img}
             alt="Al-Ameen Wires Facility"
-            className='w-full h-[400px] object-cover hover:scale-105 transition-transform duration-700'
+            className='w-full h-[250px] sm:h-[400px] object-cover hover:scale-105 transition-transform duration-700'
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
             <div className="text-white">

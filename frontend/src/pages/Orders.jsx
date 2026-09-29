@@ -348,7 +348,7 @@ const Orders = () => {
   }, [orderData, sortOrder, statusFilter]);
 
   return (
-    <div className='min-h-screen pt-24 pb-20 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] bg-gray-50/30'>
+    <div className='min-h-screen pt-[110px] sm:pt-24 pb-20 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] bg-gray-50/30'>
       <div className='mb-12'>
         <Title text1={'MY'} text2={'ORDERS'} />
       </div>

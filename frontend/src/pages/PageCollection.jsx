@@ -52,7 +52,7 @@ const PageCollection = () => {
 
   return (
     <motion.div
-      className="max-w-screen-2xl mx-auto px-4 py-8 mt-20"
+      className="max-w-screen-2xl mx-auto px-4 py-8 mt-[110px] sm:mt-20"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
@@ -65,7 +65,7 @@ const PageCollection = () => {
       </div>
 
       {/* Title */}
-      <h1 className="text-4xl font-bold text-center my-20 tracking-widest">{displayName}</h1>
+      <h1 className="text-2xl sm:text-4xl font-bold text-center my-8 sm:my-20 tracking-widest">{displayName}</h1>
 
 
       {/* Filter/Sort Row */}

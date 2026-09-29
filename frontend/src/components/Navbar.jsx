@@ -186,15 +186,15 @@ const Navbar = () => {
         </div>
 
         {/* --- أيقونات يمين --- */}
-        <div className="flex items-center gap-5 flex-1 justify-end">
+        <div className="flex items-center gap-2 sm:gap-5 flex-1 justify-end">
           {/* Language Switcher Badge */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#c9a227] hover:bg-yellow-400 text-[#0f3d1a] font-extrabold text-xs rounded-full transition-all duration-300 shadow-md cursor-pointer border border-yellow-300 active:scale-95"
+            className="flex items-center gap-1 px-2 sm:px-3.5 py-1.5 bg-[#c9a227] hover:bg-yellow-400 text-[#0f3d1a] font-extrabold text-xs rounded-full transition-all duration-300 shadow-md cursor-pointer border border-yellow-300 active:scale-95"
             title="Switch Language / تغيير اللغة"
           >
             <span className="text-sm">🌐</span>
-            <span>{i18n.language === "en" ? "العربية" : "English"}</span>
+            <span className="hidden sm:inline">{i18n.language === "en" ? "العربية" : "English"}</span>
           </button>
 
           {/* البحث */}

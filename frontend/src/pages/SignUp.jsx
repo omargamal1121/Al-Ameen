@@ -140,7 +140,7 @@ const SignUp = () => {
     return (
         <motion.form
             onSubmit={onSubmitHandler}
-            className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto gap-4 text-gray-800 mt-20'
+            className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto gap-4 text-gray-800 mt-[110px] sm:mt-20'
             initial="hidden"
             animate="visible"
             variants={formVariants}

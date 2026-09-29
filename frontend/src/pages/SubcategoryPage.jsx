@@ -64,7 +64,7 @@ const SubcategoryPage = () => {
   return (
     <div className="bg-white min-h-screen">
       {/* Cinematic Header */}
-      <section className="bg-gray-50 pt-32 pb-20 px-4 md:px-12 border-b border-gray-100">
+      <section className="bg-gray-50 pt-[110px] sm:pt-32 pb-20 px-4 md:px-12 border-b border-gray-100">
         <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-end gap-8">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <div className="flex items-center gap-3 text-[10px] font-black tracking-[0.3em] text-gray-400 uppercase mb-4">
@@ -74,7 +74,7 @@ const SubcategoryPage = () => {
               <span>/</span>
               <span className="text-black">{getLocalizedName(subcategory)}</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-4 leading-[0.8]">{getLocalizedName(subcategory)}</h1>
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter uppercase mb-4 leading-[0.8]">{getLocalizedName(subcategory)}</h1>
             <p className="text-gray-400 font-medium italic max-w-xl">{getLocalizedDescription(subcategory) || "A masterfully curated selection of high-end fashion pieces for the discerning eye."}</p>
           </motion.div>
 

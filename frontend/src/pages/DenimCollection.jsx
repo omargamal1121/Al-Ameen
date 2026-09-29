@@ -50,7 +50,7 @@ const DenimCollection = () => {
 
   return (
     <motion.div
-      className="max-w-screen-2xl mx-auto px-4 py-8 mt-20"
+      className="max-w-screen-2xl mx-auto px-4 py-8 mt-[110px] sm:mt-20"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
@@ -63,7 +63,7 @@ const DenimCollection = () => {
       </div>
 
       {/* Title */}
-      <h1 className="text-3xl sm:text-5xl font-black text-center my-12 tracking-widest text-[#0f3d1a] uppercase">{pageTitle}</h1>
+      <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-center my-6 sm:my-12 tracking-widest text-[#0f3d1a] uppercase">{pageTitle}</h1>
 
 
       {/* Filter/Sort Row */}

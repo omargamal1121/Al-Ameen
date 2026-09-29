@@ -175,7 +175,7 @@ const Product = () => {
   );
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pt-28 pb-20">
+    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pt-[110px] sm:pt-28 pb-20">
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-8 overflow-x-auto whitespace-nowrap py-1">
@@ -192,16 +192,16 @@ const Product = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* LEFT: Image Gallery */}
-          <div className="lg:col-span-6 grid grid-cols-12 gap-4">
-            {/* Thumbnails */}
+          <div className="lg:col-span-6">
+            {/* Thumbnails — horizontal row on mobile, vertical column on desktop */}
             {imagesList.length > 1 && (
-              <div className="col-span-2 flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1">
+              <div className="flex flex-row lg:hidden gap-2 mb-3 overflow-x-auto pb-1">
                 {imagesList.map((img, i) => (
                   <div
                     key={i}
                     onClick={() => setActiveImage(img)}
-                    className={`aspect-square rounded-2xl overflow-hidden cursor-pointer border-2 transition-all p-1 bg-white ${
-                      activeImage === img ? "border-[#0f3d1a] shadow-md scale-95" : "border-gray-200 hover:border-gray-300"
+                    className={`flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden cursor-pointer border-2 transition-all p-1 bg-white ${
+                      activeImage === img ? "border-[#0f3d1a] shadow-md" : "border-gray-200"
                     }`}
                   >
                     <img src={img} alt={`Preview ${i}`} className="w-full h-full object-contain" />
@@ -209,39 +209,57 @@ const Product = () => {
                 ))}
               </div>
             )}
-
-            {/* Main Stage */}
-            <div className={`${imagesList.length > 1 ? "col-span-10" : "col-span-12"} relative group bg-white border border-gray-200 rounded-3xl p-6 shadow-xl flex items-center justify-center min-h-[420px]`}>
-              <motion.img
-                key={activeImage}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                src={activeImage || imagesList[0]}
-                alt={displayName}
-                className="max-h-[460px] w-auto object-contain cursor-zoom-in"
-                onClick={() => setIsZoomOpen(true)}
-              />
-
-              {/* Top Action Buttons */}
-              <div className="absolute top-6 right-6 z-10 flex gap-2">
-                <WishlistButton productId={productData._id || productData.id} variant="floating" size="lg" />
-              </div>
-
-              {/* Discount Tag */}
-              {hasDiscount && (
-                <div className="absolute top-6 left-6 z-10 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-xs py-1.5 px-4 rounded-full shadow-lg tracking-wider flex items-center gap-1.5">
-                  <FaBolt />
-                  <span>{isAr ? `خصم ${discountPercentage}%` : `SAVE ${discountPercentage}%`}</span>
-                  {productData.discount?.name && (
-                    <span className="opacity-90 text-[10px]">| {productData.discount.name}</span>
-                  )}
+            <div className="grid grid-cols-12 gap-4">
+              {/* Thumbnails — vertical column on desktop */}
+              {imagesList.length > 1 && (
+                <div className="hidden lg:flex col-span-2 flex-col gap-3 max-h-[500px] overflow-y-auto pr-1">
+                  {imagesList.map((img, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setActiveImage(img)}
+                      className={`aspect-square rounded-2xl overflow-hidden cursor-pointer border-2 transition-all p-1 bg-white ${
+                        activeImage === img ? "border-[#0f3d1a] shadow-md scale-95" : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <img src={img} alt={`Preview ${i}`} className="w-full h-full object-contain" />
+                    </div>
+                  ))}
                 </div>
               )}
+
+              {/* Main Stage */}
+              <div className={`${imagesList.length > 1 ? "col-span-12 lg:col-span-10" : "col-span-12"} relative group bg-white border border-gray-200 rounded-3xl p-4 sm:p-6 shadow-xl flex items-center justify-center min-h-[280px] sm:min-h-[420px]`}>
+                <motion.img
+                  key={activeImage}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  src={activeImage || imagesList[0]}
+                  alt={displayName}
+                  className="max-h-[300px] sm:max-h-[460px] w-auto object-contain cursor-zoom-in"
+                  onClick={() => setIsZoomOpen(true)}
+                />
+
+                {/* Top Action Buttons */}
+                <div className="absolute top-6 right-6 z-10 flex gap-2">
+                  <WishlistButton productId={productData._id || productData.id} variant="floating" size="lg" />
+                </div>
+
+                {/* Discount Tag */}
+                {hasDiscount && (
+                  <div className="absolute top-6 left-6 z-10 bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-xs py-1.5 px-4 rounded-full shadow-lg tracking-wider flex items-center gap-1.5">
+                    <FaBolt />
+                    <span>{isAr ? `خصم ${discountPercentage}%` : `SAVE ${discountPercentage}%`}</span>
+                    {productData.discount?.name && (
+                      <span className="opacity-90 text-[10px]">| {productData.discount.name}</span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* RIGHT: Technical Product Details Panel */}
-          <div className="lg:col-span-6 bg-white border border-gray-200 rounded-3xl p-8 shadow-xl space-y-8">
+          <div className="lg:col-span-6 bg-white border border-gray-200 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl space-y-6 sm:space-y-8">
             {/* Header / Title */}
             <div>
               <div className="flex items-center justify-between gap-4 mb-3">
@@ -362,7 +380,7 @@ const Product = () => {
             </div>
 
             {/* Guarantee Pills */}
-            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 pt-4 border-t border-gray-100">
               {[
                 { icon: <FaTruck className="text-[#c9a227]" />, title: isAr ? "توصيل سريع" : "Fast Delivery", desc: isAr ? "لكافة المحافظات" : "Nationwide shipping" },
                 { icon: <FaShieldAlt className="text-[#c9a227]" />, title: isAr ? "ضمان مصنعي" : "Factory Warranty", desc: isAr ? "معايير دولية" : "ISO Certified" },
@@ -379,7 +397,7 @@ const Product = () => {
         </div>
 
         {/* MIDDLE TABS: Specs & Full Description */}
-        <div className="mt-16 bg-white border border-gray-200 rounded-3xl p-8 shadow-lg">
+        <div className="mt-10 sm:mt-16 bg-white border border-gray-200 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-lg">
           <div className="flex border-b border-gray-200 gap-8 mb-8 overflow-x-auto">
             {[
               { id: "description", label: isAr ? "الوصف والتفاصيل" : "Detailed Description" },

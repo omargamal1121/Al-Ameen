@@ -69,7 +69,7 @@ const Collection = () => {
 
     return (
         <motion.div
-            className="max-w-screen-2xl mx-auto px-4 py-8 mt-20"
+            className="max-w-screen-2xl mx-auto px-4 py-8 mt-[110px] sm:mt-20"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
@@ -82,7 +82,7 @@ const Collection = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl font-bold text-center my-20 tracking-widest">{displayName}</h1>
+            <h1 className="text-2xl sm:text-4xl font-bold text-center my-8 sm:my-20 tracking-widest">{displayName}</h1>
 
 
             {/* Filter/Sort Row */}
@@ -130,7 +130,7 @@ const Collection = () => {
                         />
                         {/* Sidebar */}
                         <motion.div
-                            className="fixed top-0 left-0 h-full w-100 bg-white p-6 shadow-lg z-50"
+                            className="fixed top-0 left-0 h-full w-full max-w-[85vw] sm:max-w-sm bg-white p-6 shadow-lg z-50"
                             initial={{ x: -320 }}
                             animate={{ x: 0 }}
                             exit={{ x: -380 }}
@@ -195,7 +195,7 @@ const Collection = () => {
             </AnimatePresence>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
                 {filteredProducts.length > 0 ? (
                     filteredProducts.map(product => (
                         <ProductItem

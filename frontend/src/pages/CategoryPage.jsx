@@ -93,7 +93,7 @@ const CategoryPage = () => {
   return (
     <div className="bg-white min-h-screen">
       {/* Dynamic Luxury Hero */}
-      <section className="relative h-[40vh] md:h-[60vh] overflow-hidden flex items-center justify-center mt-16 group">
+      <section className="relative h-[35vh] sm:h-[40vh] md:h-[60vh] overflow-hidden flex items-center justify-center mt-[100px] group">
         <div className="absolute inset-0 z-0">
           <img
             src={category?.images?.[0]?.url || "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=2000"}
@@ -109,14 +109,14 @@ const CategoryPage = () => {
           className="relative z-10 text-center px-4"
         >
           <span className="text-white/60 text-xs font-black uppercase tracking-[0.5em] mb-4 block">Store Directory</span>
-          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase mb-6 drop-shadow-2xl">{getLocalizedName(category)}</h1>
+          <h1 className="text-3xl sm:text-5xl md:text-8xl font-black text-white tracking-tighter uppercase mb-6 drop-shadow-2xl">{getLocalizedName(category)}</h1>
           <div className="w-20 h-1 bg-white mx-auto shadow-2xl"></div>
         </motion.div>
       </section>
 
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12 py-12">
         {/* Navigation / Filter Bar */}
-        <div className="sticky top-20 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 py-4 flex flex-col md:flex-row justify-between items-center gap-6 mb-12 rounded-2xl px-6 shadow-sm">
+        <div className="sticky top-[100px] z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-6 mb-8 sm:mb-12 rounded-2xl px-4 sm:px-6 shadow-sm">
           <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
             <Link to="/" className="hover:text-black">HOME</Link>
             <span>/</span>
