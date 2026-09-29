@@ -173,6 +173,9 @@ const Navbar = () => {
           </NavLink>
         </ul>
 
+        {/* Dummy div to balance mobile layout since the ul is hidden on small screens */}
+        <div className="flex-1 sm:hidden"></div>
+
         {/* --- اللوجو --- */}
         <div className="flex-1 flex justify-center">
           <Link to={"/"}>

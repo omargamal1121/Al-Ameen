@@ -43,11 +43,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2d9e4a;
+  background: #c1c1c1;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c9a227;
+  background: #a8a8a8;
 }
 
 /* === Base Styles === */
