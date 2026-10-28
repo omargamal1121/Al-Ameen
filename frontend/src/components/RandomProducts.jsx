@@ -50,7 +50,7 @@ const RandomProducts = () => {
     return (
       <div className="my-20 px-4 sm:px-[5vw]">
         <div className="flex flex-col items-center text-center mb-10">
-          <Title text1={t('RANDOM')} text2={t('PRODUCTS')} />
+          <Title text1={t('DISCOVER')} text2={t('OUR_COLLECTION')} />
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
           {[...Array(8)].map((_, index) => (
@@ -73,10 +73,10 @@ const RandomProducts = () => {
           className="flex flex-col items-center text-center mb-16"
         >
           <div className="mb-4">
-            <Title text1={t('RANDOM')} text2={t('PRODUCTS')} />
+            <Title text1={t('DISCOVER')} text2={t('OUR_COLLECTION')} />
           </div>
           <p className="max-w-2xl text-gray-500 font-light italic text-lg shimmer-text">
-            {t('RANDOM_PRODUCTS_DESC') || "Discover something new from our curated selection"}
+            {t('DISCOVER_DESC') || "Discover something new from our curated selection"}
           </p>
         </motion.div>
 
