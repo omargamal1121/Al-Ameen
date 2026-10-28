@@ -340,6 +340,25 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  const getRandomProducts = async (count = 10) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/Products/random?count=${count}&isActive=true&includeDeleted=false`
+      );
+      const data = await response.json();
+
+      if (response.ok && data.responseBody) {
+        return data.responseBody.data || [];
+      } else {
+        console.error("Failed to fetch random products:", data);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching random products:", error);
+      return [];
+    }
+  };
+
   const getCategories = async () => {
     if (categoriesLoading || categoriesFetched) return;
     
@@ -714,6 +733,7 @@ const ShopContextProvider = (props) => {
     navigate,
     backendUrl,
     getProducts,
+    getRandomProducts,
     getCategories,
     categories,
     productsLoaded,

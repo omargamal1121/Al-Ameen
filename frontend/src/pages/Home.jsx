@@ -1,6 +1,7 @@
 import React from "react";
 import LatestCollection from "../components/LatestCollection";
 import BestSeller from "../components/BestSeller";
+import RandomProducts from "../components/RandomProducts";
 import OurPolicy from "../components/OurPolicy";
 import NewLetterBox from '../components/NewLetterBox';
 import { motion } from "framer-motion";
@@ -36,6 +37,10 @@ const Home = () => {
 
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={itemVariants}>
         <BestSeller />
+      </motion.div>
+
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={itemVariants}>
+        <RandomProducts />
       </motion.div>
 
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={itemVariants}>
