@@ -446,7 +446,7 @@ const PlaceOrder = () => {
   const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } };
 
   return (
-    <div className="mt-[110px] sm:mt-[80px] mb-5 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="mt-24 sm:mt-28 mb-12 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       <div className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] overflow-hidden">
         {/* Left - Address or Guest Form */}
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={formVariants} className="flex flex-col gap-4 w-full sm:max-w-[480px]">
@@ -726,7 +726,7 @@ const PlaceOrder = () => {
                 whileTap={{ scale: (token ? selectedAddressId : true) && selectedPaymentMethod && !isLoading ? 0.95 : 1 }}
                 onClick={onSubmitHandler}
                 disabled={token ? (!selectedAddressId || !selectedPaymentMethod || isLoading) : (!selectedPaymentMethod || isLoading)}
-                className={`px-16 py-3 uppercase font-medium transition-all duration-300 ${(token ? selectedAddressId : true) && selectedPaymentMethod && !isLoading ? "bg-black text-white cursor-pointer hover:bg-white hover:text-black border border-black" : "bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300"}`}
+                className={`px-12 sm:px-16 py-3.5 uppercase font-bold text-sm tracking-wider rounded-xl transition-all duration-300 shadow-lg ${(token ? selectedAddressId : true) && selectedPaymentMethod && !isLoading ? "bg-[#0f3d1a] hover:bg-[#c9a227] text-white cursor-pointer hover:shadow-xl" : "bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-200"}`}
               >
                 {isLoading ? "Processing..." : (token ? "Place Order & Pay" : "Place Order")}
               </motion.button>

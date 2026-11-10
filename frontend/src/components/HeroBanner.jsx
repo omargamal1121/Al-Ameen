@@ -76,7 +76,7 @@ const HeroBanner = () => {
   }
 
   return (
-    <div className="w-full h-[65vh] md:h-[85vh] relative overflow-hidden bg-[#0f3d1a]" dir="ltr">
+    <div className="w-full h-[70vh] sm:h-[80vh] md:h-[90vh] relative overflow-hidden bg-[#0f3d1a]" dir="ltr">
       <Swiper
         modules={[Autoplay, Pagination, Navigation, EffectCoverflow]}
         effect="coverflow"
@@ -100,11 +100,11 @@ const HeroBanner = () => {
                   alt={item.name}
                   className="w-full h-full object-cover object-center scale-100 transition-transform duration-[12000ms] ease-out swiper-zoom-in"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a2a10] via-black/30 to-transparent opacity-85"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a2a10] via-black/35 to-transparent"></div>
 
                 {/* Text overlay: restore RTL direction for Arabic text */}
                 <div
-                  className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4"
+                  className="absolute inset-0 flex flex-col items-center justify-end pb-16 sm:pb-20 md:pb-24 text-center text-white px-4 sm:px-8"
                   dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                 >
                   <AnimatePresence mode="wait">
@@ -113,21 +113,21 @@ const HeroBanner = () => {
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="flex flex-col items-center"
+                        className="flex flex-col items-center max-w-4xl"
                       >
-                        <motion.span variants={textVariants} className="text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.5em] mb-3 sm:mb-6 font-bold text-white/80">
+                        <motion.span variants={textVariants} className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.4em] mb-2 sm:mb-4 font-bold text-[#c9a227]">
                           {item.subtitleKey ? t(item.subtitleKey) : t('FEATURED_SELECTION')}
                         </motion.span>
                         <motion.h2
                           variants={textVariants}
-                          className="text-2xl sm:text-4xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-12 drop-shadow-2xl px-2"
+                          className="text-xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-5 sm:mb-8 drop-shadow-2xl px-2 leading-tight"
                           style={{ letterSpacing: i18n.language === 'ar' ? '0' : '-0.02em' }}
                         >
                           {item.name}
                         </motion.h2>
                         <motion.div variants={textVariants}>
                           <Link to={item.link}>
-                            <button className="btn-premium px-8 sm:px-16 py-3 sm:py-5 bg-[#c9a227] text-[#0f3d1a] font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-full shadow-2xl hover:scale-110 hover:bg-yellow-300 active:scale-95 transition-all">
+                            <button className="btn-premium px-6 sm:px-12 py-2.5 sm:py-4 bg-[#c9a227] text-[#0f3d1a] font-black text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-full shadow-2xl hover:scale-110 hover:bg-yellow-300 active:scale-95 transition-all">
                               {viewMode === 'categories' ? t('SEE_COLLECTION') : t('SHOP_NOW')}
                             </button>
                           </Link>
@@ -142,9 +142,9 @@ const HeroBanner = () => {
         })}
       </Swiper>
       <style>{`
-        .hero-banner-swiper .swiper-pagination-bullet { background: #c9a227 !important; width: 10px; height: 10px; transition: all 0.3s; opacity: 0.5; }
-        .hero-banner-swiper .swiper-pagination-bullet-active { width: 30px; border-radius: 5px; opacity: 1 !important; }
-        .hero-banner-swiper .swiper-slide-active img { transform: scale(1.1); }
+        .hero-banner-swiper .swiper-pagination-bullet { background: #c9a227 !important; width: 8px; height: 8px; transition: all 0.3s; opacity: 0.5; }
+        .hero-banner-swiper .swiper-pagination-bullet-active { width: 24px; border-radius: 4px; opacity: 1 !important; }
+        .hero-banner-swiper .swiper-slide-active img { transform: scale(1.06); }
       `}</style>
     </div>
   );

@@ -362,7 +362,7 @@ const Orders = () => {
               onChange={(e) => { setStatusFilter(e.target.value); loadOrderData(e.target.value); }}
               className="w-full sm:w-auto bg-gray-50 border-none rounded-lg px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-black transition-all cursor-pointer"
             >
-              <option value="All">All Vibe</option>
+              <option value="All">All Orders</option>
               {Object.entries(statusMap).map(([id, label]) => <option key={id} value={id}>{label}</option>)}
             </select>
           </div>
@@ -422,8 +422,8 @@ const Orders = () => {
                 </div>
 
                 <div className='flex sm:flex-col items-center sm:items-end gap-3 shrink-0 mt-2 sm:mt-0'>
-                  <button onClick={() => handleTrackOrder(item.orderNumber)} className='btn-premium bg-black text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg whitespace-nowrap'>
-                    Track Vibe
+                  <button onClick={() => handleTrackOrder(item.orderNumber)} className='btn-premium bg-[#0f3d1a] hover:bg-[#c9a227] text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg whitespace-nowrap transition-colors'>
+                    Track Order
                   </button>
                   {isPendingPayment(item.status) && (
                     <button onClick={() => navigate(`/payment/${item.orderNumber}`)} className='text-xs font-black underline hover:text-black transition-colors whitespace-nowrap'>
@@ -456,7 +456,7 @@ const Orders = () => {
               {modalLoading ? (
                 <div className="flex-1 flex flex-col items-center justify-center p-20">
                   <div className="animate-spin h-12 w-12 border-b-2 border-black mb-4"></div>
-                  <p className="font-black tracking-widest uppercase text-xs">Fetching Vibe Details...</p>
+                  <p className="font-black tracking-widest uppercase text-xs">Fetching Order Details...</p>
                 </div>
               ) : (
                 selectedOrderDetails && (

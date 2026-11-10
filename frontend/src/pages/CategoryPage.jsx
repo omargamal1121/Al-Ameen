@@ -93,7 +93,7 @@ const CategoryPage = () => {
   return (
     <div className="bg-white min-h-screen">
       {/* Dynamic Luxury Hero */}
-      <section className="relative h-[35vh] sm:h-[40vh] md:h-[60vh] overflow-hidden flex items-center justify-center mt-[100px] group">
+      <section className="relative h-[35vh] sm:h-[40vh] md:h-[60vh] overflow-hidden flex items-center justify-center mt-20 sm:mt-[88px] group">
         <div className="absolute inset-0 z-0">
           <img
             src={category?.images?.[0]?.url || "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=2000"}
@@ -116,7 +116,7 @@ const CategoryPage = () => {
 
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12 py-12">
         {/* Navigation / Filter Bar */}
-        <div className="sticky top-[100px] z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-6 mb-8 sm:mb-12 rounded-2xl px-4 sm:px-6 shadow-sm">
+        <div className="sticky top-[88px] z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-6 mb-8 sm:mb-12 rounded-2xl px-4 sm:px-6 shadow-sm">
           <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
             <Link to="/" className="hover:text-black">HOME</Link>
             <span>/</span>

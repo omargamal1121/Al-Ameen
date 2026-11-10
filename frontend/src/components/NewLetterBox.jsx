@@ -36,36 +36,51 @@ const NewLetterBox = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       variants={itemVariants}
-      className="text-center my-20 bg-gray-50 py-12 px-4 rounded-xl mx-4 sm:mx-auto max-w-4xl shadow-sm">
-      <p className="text-2xl font-medium text-gray-800">
-        Stay Ahead with Al-Ameen Wires Updates
-      </p>
-      <p className="text-gray-500 mt-3 text-sm">
-        Get alerts on new cable releases, bulk pricing deals &amp; technical product updates.
-      </p>
+      className="relative overflow-hidden my-16 py-14 px-5 sm:px-8 mx-4 sm:mx-auto max-w-4xl rounded-3xl shadow-xl bg-gradient-to-br from-[#0a2010] via-[#0f3d1a] to-[#092010] border border-[#c9a227]/30 text-white text-center"
+    >
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-[#c9a227]/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Description removed as requested */}
+      <div className="relative z-10">
+        <span className="inline-block bg-[#c9a227]/15 border border-[#c9a227]/40 text-[#c9a227] text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full mb-4">
+          ⚡ {status === t('NEWSLETTER_SUCCESS') ? '✅' : ''} Newsletter
+        </span>
 
-      <form
-        onSubmit={onSubmitHanndler}
-        className="w-full sm:w-3/4 flex items-center gap-3 mx-auto my-6 border border-gray-300 pl-3 bg-white rounded overflow-hidden"
-      >
-        <input
-          className="w-full sm:flex-1 outline-none py-3"
-          type="email"
-          placeholder={t('NEWSLETTER_PLACEHOLDER')}
-          required
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="bg-black text-white text-xs px-10 py-4 hover:bg-gray-800 transition-colors duration-300"
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-2 leading-tight">
+          Stay Ahead with Al-Ameen Cables Updates
+        </h2>
+        <p className="text-gray-400 text-sm sm:text-base max-w-lg mx-auto leading-relaxed mb-7">
+          Get alerts on new cable arrivals, bulk pricing deals &amp; technical product sheets direct to your inbox.
+        </p>
+
+        <form
+          onSubmit={onSubmitHanndler}
+          className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto"
         >
-          {t('NEWSLETTER_SUBSCRIBE')}
-        </button>
-      </form>
-      {status && <p className="mt-2 text-sm text-green-600">{status}</p>}
+          <input
+            className="flex-1 w-full bg-white/10 border border-white/20 focus:border-[#c9a227] focus:ring-1 focus:ring-[#c9a227]/40 outline-none py-3 px-4 rounded-xl text-white placeholder-white/40 text-sm transition-colors"
+            type="email"
+            placeholder={t('NEWSLETTER_PLACEHOLDER') || "Enter your work email"}
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="w-full sm:w-auto bg-[#c9a227] hover:bg-yellow-400 text-[#0a2010] font-black px-7 py-3 rounded-xl text-xs sm:text-sm uppercase tracking-wider transition-colors shadow-lg"
+          >
+            {t('NEWSLETTER_SUBSCRIBE')}
+          </button>
+        </form>
+
+        {status && (
+          <p className={`mt-4 text-sm font-semibold ${status === t('NEWSLETTER_SUCCESS') ? 'text-emerald-400' : 'text-red-400'}`}>
+            {status}
+          </p>
+        )}
+
+        <p className="text-gray-600 text-xs mt-5">🔒 No spam. Unsubscribe anytime.</p>
+      </div>
     </motion.div>
   );
 };

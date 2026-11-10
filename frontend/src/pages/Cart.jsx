@@ -274,7 +274,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="mt-[120px] mb-5 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="mt-24 sm:mt-28 mb-12 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       {/* Title Section */}
       <motion.div
         initial="hidden"
@@ -464,8 +464,8 @@ const Cart = () => {
                 }
               }}
               disabled={loading || cartData.length === 0}
-              className="bg-black text-white px-6 sm:px-8 py-3 my-8 uppercase font-medium cursor-pointer 
-                         hover:bg-white hover:text-black border border-black transition-all duration-300
+              className="bg-[#0f3d1a] hover:bg-[#c9a227] text-white px-8 py-3.5 my-8 uppercase font-bold rounded-xl cursor-pointer 
+                         transition-all duration-300 shadow-lg hover:shadow-xl active:scale-[0.99]
                          disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto text-sm sm:text-base"
             >
               {loading ? t('PROCESSING') : cartData.length === 0 ? t('CART_IS_EMPTY') : t('PROCEED_TO_CHECKOUT')}

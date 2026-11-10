@@ -34,7 +34,7 @@ const About = () => {
   };
 
   return (
-    <div className="mt-[100px] mb-12 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="mt-20 sm:mt-24 mb-12 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       {/* About Us Section */}
       <motion.div
         initial="hidden"

@@ -175,7 +175,7 @@ const Product = () => {
   );
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pt-[110px] sm:pt-28 pb-20">
+    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pt-24 sm:pt-28 pb-20">
       <div className="max-w-screen-2xl mx-auto px-4 md:px-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-8 overflow-x-auto whitespace-nowrap py-1">

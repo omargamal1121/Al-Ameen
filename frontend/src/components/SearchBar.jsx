@@ -194,10 +194,10 @@ const SearchBar = () => {
   };
 
   return showSearch && visible ? (
-    <div className="mt-[90px] mb-5 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
-      <div className="text-center relative">
-        <form onSubmit={handleSearchSubmit} className="relative inline-block w-3/4 sm:w-1/2">
-          <div className="inline-flex items-center justify-center border border-gray-400 px-5 py-2 mt-20 rounded w-full relative">
+    <div className="pt-28 pb-4 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] bg-gray-50/80 border-b border-gray-200">
+      <div className="max-w-2xl mx-auto flex items-center gap-3">
+        <form onSubmit={handleSearchSubmit} className="relative flex-1">
+          <div className="flex items-center justify-between bg-white border border-[#1a6b2e]/40 focus-within:border-[#c9a227] focus-within:ring-2 focus-within:ring-[#c9a227]/30 px-4 py-2.5 rounded-full shadow-sm transition-all">
             <input
               ref={searchInputRef}
               value={search || ""}
@@ -205,21 +205,22 @@ const SearchBar = () => {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               onKeyDown={handleKeyDown}
-              className="flex-1 outline-none bg-inherit text-sm"
+              className="flex-1 outline-none bg-transparent text-sm text-gray-800 placeholder-gray-400"
               type="text"
-              placeholder={t('SEARCH_PRODUCTS')}
+              placeholder={t('SEARCH_PRODUCTS') || "ابحث عن أسلاك، كابلات طاقة، كابلات مسلحة..."}
               autoComplete="off"
             />
             {search && (
               <button
                 type="button"
                 onClick={handleClearSearch}
-                className="mr-2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="mx-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                aria-label="Clear Search"
               >
                 <img src={assets.cross_icon} className="w-3" alt="Clear" />
               </button>
             )}
-            <button type="submit">
+            <button type="submit" className="text-[#0f3d1a] hover:text-[#c9a227] transition-colors p-1" aria-label="Search">
               <img src={assets.search_icon} className="w-4" alt="Search" />
             </button>
           </div>
